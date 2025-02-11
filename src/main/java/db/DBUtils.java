@@ -522,15 +522,6 @@ public class DBUtils {
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
     ////////////////////////////////////////////////////////////////////
     
     /////////////////// DRIVER /////////////////////////////////
@@ -639,6 +630,108 @@ public class DBUtils {
         }
 
         return false;
+    }
+      ///////////////// BILLING /////////////////////
+    
+    ////////////////////////////////////////////////
+  public List<Billing> getBillings() {
+        List<Billing> billings = new ArrayList<>();
+        String query = "SELECT * FROM billing";
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                billings.add(new Billing(
+                        rs.getInt("billing_id"),
+                        rs.getInt("booking_id"),
+                        rs.getBigDecimal("base_fare"),
+                        rs.getBigDecimal("distance_fare"),
+                        rs.getBigDecimal("passenger_fare"),
+                        rs.getBigDecimal("discount"),
+                        rs.getBigDecimal("tax"),
+                        rs.getBigDecimal("total_fare"),
+                        rs.getTimestamp("date")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return billings;
+    }
+
+    public Billing getBillingById(int id) {
+        Billing billing = null;
+        String query = "SELECT * FROM billing WHERE billing_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                billing = new Billing(
+                        rs.getInt("billing_id"),
+                        rs.getInt("booking_id"),
+                        rs.getBigDecimal("base_fare"),
+                        rs.getBigDecimal("distance_fare"),
+                        rs.getBigDecimal("passenger_fare"),
+                        rs.getBigDecimal("discount"),
+                        rs.getBigDecimal("tax"),
+                        rs.getBigDecimal("total_fare"),
+                        rs.getTimestamp("date")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return billing;
+    }
+
+    public boolean addBilling(Billing billing) {
+        String query = "INSERT INTO billing (booking_id, base_fare, distance_fare, passenger_fare, discount, tax, total_fare) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, billing.getBookingId());
+            stmt.setBigDecimal(2, billing.getBaseFare());
+            stmt.setBigDecimal(3, billing.getDistanceFare());
+            stmt.setBigDecimal(4, billing.getPassengerFare());
+            stmt.setBigDecimal(5, billing.getDiscount());
+            stmt.setBigDecimal(6, billing.getTax());
+            stmt.setBigDecimal(7, billing.getTotalFare());
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateBilling(Billing billing) {
+        String query = "UPDATE billing SET booking_id = ?, base_fare = ?, distance_fare = ?, passenger_fare = ?, discount = ?, tax = ?, total_fare = ? WHERE billing_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, billing.getBookingId());
+            stmt.setBigDecimal(2, billing.getBaseFare());
+            stmt.setBigDecimal(3, billing.getDistanceFare());
+            stmt.setBigDecimal(4, billing.getPassengerFare());
+            stmt.setBigDecimal(5, billing.getDiscount());
+            stmt.setBigDecimal(6, billing.getTax());
+            stmt.setBigDecimal(7, billing.getTotalFare());
+            stmt.setInt(8, billing.getBillingId());  // Set the billing ID to identify the record
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteBilling(int id) {
+        String query = "DELETE FROM billing WHERE billing_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
 

@@ -205,84 +205,123 @@ public class DBUtils {
         }
         return null;
     }
-
+    
+    ////////////////////////////////////////////////////
+    
+    //////////////////////// USERS ////////////////////
+    ////////////////////////////////////////////////////
+    
+      // Retrieve all users
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
-        String query = "SELECT * FROM users WHERE is_active = TRUE"; // Added condition to return only active users
+        String query = "SELECT * FROM users";
+
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
+
             while (rs.next()) {
                 users.add(new User(
-                        rs.getInt("user_id"),
-                        rs.getString("username"),
-                        rs.getString("email"),
-                        rs.getString("phone"),
-                        rs.getString("address"),
-                        rs.getString("nic"),
-                        rs.getString("role")
+                    rs.getInt("user_id"),
+                    rs.getString("username"),
+                    rs.getString("email"),
+                    rs.getString("phone"),
+                    rs.getString("address"),
+                    rs.getString("nic"),
+                    rs.getString("role")
                 ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return users;
     }
 
-    public User getUserById(int id) {
+    // Retrieve a single user by ID
+    public User getUser(int userId) throws SQLException {
         String query = "SELECT * FROM users WHERE user_id = ?";
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
             if (rs.next()) {
                 return new User(
-                        rs.getInt("user_id"),
-                        rs.getString("username"),
-                        rs.getString("email"),
-                        rs.getString("phone"),
-                        rs.getString("address"),
-                        rs.getString("nic"),
-                        rs.getString("role")
+                    rs.getInt("user_id"),
+                    rs.getString("username"),
+                    rs.getString("email"),
+                    rs.getString("phone"),
+                    rs.getString("address"),
+                    rs.getString("nic"),
+                    rs.getString("role")
                 );
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return null;
     }
 
-    public boolean updateUser(User user) {
-        String query = "UPDATE users SET username=?, email=?, phone=?, address=?, nic=?, role=? WHERE user_id=?";
+    // Add a new user
+    public boolean addUser(User user) {
+        String query = "INSERT INTO users (username, email, phone, address, nic, role) VALUES (?, ?, ?, ?, ?, ?)";
+
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getEmail());
-            stmt.setString(3, user.getPhone());
-            stmt.setString(4, user.getAddress());
-            stmt.setString(5, user.getNic());
-            stmt.setString(6, user.getRole());
-            stmt.setInt(7, user.getUserId());
-            return stmt.executeUpdate() > 0;
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getEmail());
+            pstmt.setString(3, user.getPhone());
+            pstmt.setString(4, user.getAddress());
+            pstmt.setString(5, user.getNic());
+            pstmt.setString(6, user.getRole());
+
+            return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+
+        return false;
     }
 
-    public boolean deleteUser(int id) {
+    // Update an existing user
+    public boolean updateUser(User user) {
+        String query = "UPDATE users SET username = ?, email = ?, phone = ?, address = ?, nic = ?, role = ? WHERE user_id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getEmail());
+            pstmt.setString(3, user.getPhone());
+            pstmt.setString(4, user.getAddress());
+            pstmt.setString(5, user.getNic());
+            pstmt.setString(6, user.getRole());
+            pstmt.setInt(7, user.getUserId());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    // Delete a user by ID
+    public boolean deleteUser(int userId) {
         String query = "DELETE FROM users WHERE user_id = ?";
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, userId);
+            return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+
+        return false;
     }
 
-    
+  
     ////////////////////////////////////////////////////
              // BOOKING //
     /////////////////////////////////////////////////////
@@ -412,10 +451,9 @@ public class DBUtils {
     ////////////////////////////////////////////////
     
     
-     public List<Car> getCars() {
+  public List<Car> getCars() {
         List<Car> cars = new ArrayList<>();
         String query = "SELECT * FROM cars";
-
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
@@ -435,7 +473,6 @@ public class DBUtils {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return cars;
     }
 
@@ -464,10 +501,8 @@ public class DBUtils {
 
     public boolean addCar(Car car) {
         String query = "INSERT INTO cars (make, model, license_plate, capacity, base_fare, price_per_km, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
-
             pstmt.setString(1, car.getMake());
             pstmt.setString(2, car.getModel());
             pstmt.setString(3, car.getLicensePlate());
@@ -480,46 +515,41 @@ public class DBUtils {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return false;
     }
-    
+
     public boolean updateCar(Car car) {
-    String query = "UPDATE cars SET make = ?, model = ?, license_plate = ?, capacity = ?, base_fare = ?, price_per_km = ?, status = ? WHERE car_id = ?";
+        String query = "UPDATE cars SET make = ?, model = ?, license_plate = ?, capacity = ?, base_fare = ?, price_per_km = ?, status = ? WHERE car_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, car.getMake());
+            pstmt.setString(2, car.getModel());
+            pstmt.setString(3, car.getLicensePlate());
+            pstmt.setInt(4, car.getCapacity());
+            pstmt.setDouble(5, car.getBaseFare());
+            pstmt.setDouble(6, car.getPricePerKm());
+            pstmt.setString(7, car.getStatus());
+            pstmt.setInt(8, car.getCarId());
 
-    try (Connection conn = getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-        pstmt.setString(1, car.getMake());
-        pstmt.setString(2, car.getModel());
-        pstmt.setString(3, car.getLicensePlate());
-        pstmt.setInt(4, car.getCapacity());
-        pstmt.setDouble(5, car.getBaseFare());
-        pstmt.setDouble(6, car.getPricePerKm());
-        pstmt.setString(7, car.getStatus());
-        pstmt.setInt(8, car.getCarId());
-
-        return pstmt.executeUpdate() > 0;
-    } catch (SQLException e) {
-        e.printStackTrace();
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
-
-    return false;
-}
 
     public boolean deleteCar(int carId) {
         String query = "DELETE FROM cars WHERE car_id = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
-
             pstmt.setInt(1, carId);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return false;
     }
+
     
     
     ////////////////////////////////////////////////////////////////////
@@ -631,6 +661,9 @@ public class DBUtils {
 
         return false;
     }
+    
+    
+    
       ///////////////// BILLING /////////////////////
     
     ////////////////////////////////////////////////

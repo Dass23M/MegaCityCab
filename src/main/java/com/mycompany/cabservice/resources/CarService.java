@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Path("cars")
 public class CarService {
-    @GET
+ @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllCars() {
         DBUtils utils = new DBUtils();

@@ -330,118 +330,124 @@ public class DBUtils {
       public List<Booking> getBookings() {
         List<Booking> bookings = new ArrayList<>();
         String query = "SELECT * FROM bookings";
-        
+
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
+
             while (rs.next()) {
                 bookings.add(new Booking(
-                        rs.getInt("booking_id"),
-                        rs.getInt("user_id"),
-                        rs.getInt("pick_up_station_id"),
-                        rs.getInt("drop_off_station_id"),
-                        rs.getDouble("distance"),
-                        rs.getString("date_time"),
-                        rs.getInt("num_passengers"),
-                        rs.getInt("car_id"),
-                        rs.getInt("driver_id"),
-                        rs.getString("status")
+                    rs.getInt("booking_id"),
+                    rs.getInt("user_id"),
+                    rs.getString("pick_up_station"),
+                    rs.getString("drop_off_station"),
+                    rs.getDouble("distance"),
+                    rs.getString("date_time"),
+                    rs.getInt("num_passengers"),
+                    rs.getString("car_model"),
+                    rs.getString("driver_name"),
+                    rs.getString("status")
                 ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return bookings;
     }
 
-    // Method to get a single booking by ID
-    public Booking getBooking(int id) {
-        Booking booking = null;
+    // Retrieve a single booking by ID
+    public Booking getBooking(int bookingId) throws SQLException {
         String query = "SELECT * FROM bookings WHERE booking_id = ?";
-        
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, bookingId);
+            ResultSet rs = pstmt.executeQuery();
+
             if (rs.next()) {
-                booking = new Booking(
-                        rs.getInt("booking_id"),
-                        rs.getInt("user_id"),
-                        rs.getInt("pick_up_station_id"),
-                        rs.getInt("drop_off_station_id"),
-                        rs.getDouble("distance"),
-                        rs.getString("date_time"),
-                        rs.getInt("num_passengers"),
-                        rs.getInt("car_id"),
-                        rs.getInt("driver_id"),
-                        rs.getString("status")
+                return new Booking(
+                    rs.getInt("booking_id"),
+                    rs.getInt("user_id"),
+                    rs.getString("pick_up_station"),
+                    rs.getString("drop_off_station"),
+                    rs.getDouble("distance"),
+                    rs.getString("date_time"),
+                    rs.getInt("num_passengers"),
+                    rs.getString("car_model"),
+                    rs.getString("driver_name"),
+                    rs.getString("status")
                 );
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return booking;
+        return null;
     }
 
-    // Method to add a booking
+    // Add a new booking
     public boolean addBooking(Booking booking) {
-        String query = "INSERT INTO bookings (user_id, pick_up_station_id, drop_off_station_id, distance, date_time, num_passengers, car_id, driver_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+        String query = "INSERT INTO bookings (user_id, pick_up_station, drop_off_station, distance, date_time, num_passengers, car_model, driver_name, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, booking.getUserId());
-            stmt.setInt(2, booking.getPickUpStationId());
-            stmt.setInt(3, booking.getDropOffStationId());
-            stmt.setDouble(4, booking.getDistance());
-            stmt.setString(5, booking.getDateTime());
-            stmt.setInt(6, booking.getNumPassengers());
-            stmt.setInt(7, booking.getCarId());
-            stmt.setInt(8, booking.getDriverId());
-            stmt.setString(9, booking.getStatus());
-            return stmt.executeUpdate() > 0;
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, booking.getUserId());
+            pstmt.setString(2, booking.getPickUpStation());
+            pstmt.setString(3, booking.getDropOffStation());
+            pstmt.setDouble(4, booking.getDistance());
+            pstmt.setString(5, booking.getDateTime());
+            pstmt.setInt(6, booking.getNumPassengers());
+            pstmt.setString(7, booking.getCarModel());
+            pstmt.setString(8, booking.getDriverName());
+            pstmt.setString(9, booking.getStatus());
+
+            return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return false;
     }
 
-    // Method to update a booking
+    // Update an existing booking
     public boolean updateBooking(Booking booking) {
-        String query = "UPDATE bookings SET user_id=?, pick_up_station_id=?, drop_off_station_id=?, distance=?, date_time=?, num_passengers=?, car_id=?, driver_id=?, status=? WHERE booking_id=?";
-        
+        String query = "UPDATE bookings SET user_id = ?, pick_up_station = ?, drop_off_station = ?, distance = ?, date_time = ?, num_passengers = ?, car_model = ?, driver_name = ?, status = ? WHERE booking_id = ?";
+
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, booking.getUserId());
-            stmt.setInt(2, booking.getPickUpStationId());
-            stmt.setInt(3, booking.getDropOffStationId());
-            stmt.setDouble(4, booking.getDistance());
-            stmt.setString(5, booking.getDateTime());
-            stmt.setInt(6, booking.getNumPassengers());
-            stmt.setInt(7, booking.getCarId());
-            stmt.setInt(8, booking.getDriverId());
-            stmt.setString(9, booking.getStatus());
-            stmt.setInt(10, booking.getBookingId());
-            return stmt.executeUpdate() > 0;
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, booking.getUserId());
+            pstmt.setString(2, booking.getPickUpStation());
+            pstmt.setString(3, booking.getDropOffStation());
+            pstmt.setDouble(4, booking.getDistance());
+            pstmt.setString(5, booking.getDateTime());
+            pstmt.setInt(6, booking.getNumPassengers());
+            pstmt.setString(7, booking.getCarModel());
+            pstmt.setString(8, booking.getDriverName());
+            pstmt.setString(9, booking.getStatus());
+            pstmt.setInt(10, booking.getBookingId());
+
+            return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return false;
     }
 
-    // Method to delete a booking
-    public boolean deleteBooking(int id) {
+    // Delete a booking
+    public boolean deleteBooking(int bookingId) {
         String query = "DELETE FROM bookings WHERE booking_id = ?";
-        
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, bookingId);
+            return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return false;
     }
-    
+
     
     
     ///////////////////////////////////////////////
@@ -766,7 +772,117 @@ public class DBUtils {
             return false;
         }
     }
+    // Retrieve all booking stations
+    public List<BookingStations> getBookingStations() {
+        List<BookingStations> stations = new ArrayList<>();
+        String query = "SELECT * FROM booking_stations";
+
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                stations.add(new BookingStations(
+                    rs.getInt("id"),
+                    rs.getString("from_station_name"),
+                    rs.getString("to_station_name"),
+                    rs.getDouble("distance_km")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return stations;
+    }
+
+    // Retrieve a specific distance between two stations
+    public BookingStations getDistanceBetweenStations(String fromStationName, String toStationName) {
+        String query = "SELECT * FROM booking_stations WHERE from_station_name = ? AND to_station_name = ?";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            
+            pstmt.setString(1, fromStationName);
+            pstmt.setString(2, toStationName);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return new BookingStations(
+                    rs.getInt("id"),
+                    rs.getString("from_station_name"),
+                    rs.getString("to_station_name"),
+                    rs.getDouble("distance_km")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Add a new booking station distance
+    public boolean addBookingStation(BookingStations bookingStation) {
+        String query = "INSERT INTO booking_stations (from_station_name, to_station_name, distance_km) VALUES (?, ?, ?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, bookingStation.getFromStationName());
+            pstmt.setString(2, bookingStation.getToStationName());
+            pstmt.setDouble(3, bookingStation.getDistanceKm());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    // Update an existing booking station distance
+    public boolean updateBookingStation(BookingStations bookingStation) {
+        String query = "UPDATE booking_stations SET distance_km = ? WHERE from_station_name = ? AND to_station_name = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setDouble(1, bookingStation.getDistanceKm());
+            pstmt.setString(2, bookingStation.getFromStationName());
+            pstmt.setString(3, bookingStation.getToStationName());
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    // Delete a booking station distance
+    public boolean deleteBookingStation(String fromStationName, String toStationName) {
+        String query = "DELETE FROM booking_stations WHERE from_station_name = ? AND to_station_name = ?";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            
+            pstmt.setString(1, fromStationName);
+            pstmt.setString(2, toStationName);
+            
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }
+
+
+    
+
+
+
 
 
 

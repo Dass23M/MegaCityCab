@@ -8,7 +8,9 @@ com\mycompany\cabservice\resources\StudentService.class
 db\Booking.class
 com\mycompany\cabservice\resources\BillingService.class
 db\Driver.class
+com\mycompany\cabservice\resources\BookingStationsService.class
 com\mycompany\cabservice\resources\UsersService.class
+db\BookingStations.class
 com\mycompany\cabservice\resources\CarService.class
 db\Car.class
 com\mycompany\cabservice\resources\BookingService.class

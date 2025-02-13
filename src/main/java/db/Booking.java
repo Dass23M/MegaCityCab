@@ -11,29 +11,28 @@ package db;
 public class Booking {
     private int bookingId;
     private int userId;
-    private int pickUpStationId;
-    private int dropOffStationId;
+    private String pickUpStation;
+    private String dropOffStation;
     private double distance;
     private String dateTime;
     private int numPassengers;
-    private int carId;
-    private int driverId;
+    private String carModel;
+    private String driverName;
     private String status;
 
     // Constructors
     public Booking() {}
 
-    public Booking(int bookingId, int userId, int pickUpStationId, int dropOffStationId, double distance, 
-                   String dateTime, int numPassengers, int carId, int driverId, String status) {
+    public Booking(int bookingId, int userId, String pickUpStation, String dropOffStation, double distance, String dateTime, int numPassengers, String carModel, String driverName, String status) {
         this.bookingId = bookingId;
         this.userId = userId;
-        this.pickUpStationId = pickUpStationId;
-        this.dropOffStationId = dropOffStationId;
+        this.pickUpStation = pickUpStation;
+        this.dropOffStation = dropOffStation;
         this.distance = distance;
         this.dateTime = dateTime;
         this.numPassengers = numPassengers;
-        this.carId = carId;
-        this.driverId = driverId;
+        this.carModel = carModel;
+        this.driverName = driverName;
         this.status = status;
     }
 
@@ -54,20 +53,20 @@ public class Booking {
         this.userId = userId;
     }
 
-    public int getPickUpStationId() {
-        return pickUpStationId;
+    public String getPickUpStation() {
+        return pickUpStation;
     }
 
-    public void setPickUpStationId(int pickUpStationId) {
-        this.pickUpStationId = pickUpStationId;
+    public void setPickUpStation(String pickUpStation) {
+        this.pickUpStation = pickUpStation;
     }
 
-    public int getDropOffStationId() {
-        return dropOffStationId;
+    public String getDropOffStation() {
+        return dropOffStation;
     }
 
-    public void setDropOffStationId(int dropOffStationId) {
-        this.dropOffStationId = dropOffStationId;
+    public void setDropOffStation(String dropOffStation) {
+        this.dropOffStation = dropOffStation;
     }
 
     public double getDistance() {
@@ -94,20 +93,20 @@ public class Booking {
         this.numPassengers = numPassengers;
     }
 
-    public int getCarId() {
-        return carId;
+    public String getCarModel() {
+        return carModel;
     }
 
-    public void setCarId(int carId) {
-        this.carId = carId;
+    public void setCarModel(String carModel) {
+        this.carModel = carModel;
     }
 
-    public int getDriverId() {
-        return driverId;
+    public String getDriverName() {
+        return driverName;
     }
 
-    public void setDriverId(int driverId) {
-        this.driverId = driverId;
+    public void setDriverName(String driverName) {
+        this.driverName = driverName;
     }
 
     public String getStatus() {

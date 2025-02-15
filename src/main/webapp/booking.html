@@ -8,22 +8,37 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
+            justify-content: center;
         }
         .booking-card {
             background: white;
             border-radius: 15px;
-            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             padding: 20px;
-            margin-top: 30px;
-            margin-bottom: 30px;
+            max-width: 800px;
+            width: 100%;
         }
         .form-control {
-            height: 45px;
-            border-radius: 8px;
+            border-radius: 25px;
+            padding: 10px 15px;
+        }
+        .btn-primary {
+            background-color: #667eea;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+        }
+        .btn-primary:hover {
+            background-color: #5a4bdf;
+        }
+        .input-group-text {
+            background: transparent;
+            border: none;
+            color: #667eea;
         }
         .user-info-card {
             background: #e9f5ff;
@@ -45,7 +60,7 @@
     </style>
 </head>
 <body>
-    <div class="container py-5">
+    <div class="container">
         <div class="booking-card">
             <!-- User Info Section -->
             <div class="user-info-card">
@@ -67,15 +82,21 @@
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
                         <label class="form-label">Pickup Location</label>
-                        <select id="pickUpStation" class="form-select" required>
-                            <option value="">Select pickup location</option>
-                        </select>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                            <select id="pickUpStation" class="form-select" required>
+                                <option value="">Select pickup location</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Drop-off Location</label>
-                        <select id="dropOffStation" class="form-select" required>
-                            <option value="">Select dropoff location</option>
-                        </select>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                            <select id="dropOffStation" class="form-select" required>
+                                <option value="">Select dropoff location</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -83,11 +104,17 @@
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
                         <label class="form-label">Booking Date & Time</label>
-                        <input type="datetime-local" id="dateTime" class="form-control" required>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                            <input type="datetime-local" id="dateTime" class="form-control" required>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Distance (km)</label>
-                        <input type="text" id="distance" class="form-control" readonly>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-road"></i></span>
+                            <input type="text" id="distance" class="form-control" readonly>
+                        </div>
                     </div>
                 </div>
 
@@ -95,23 +122,32 @@
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
                         <label class="form-label">Passengers (1-8)</label>
-                        <input type="number" id="numPassengers" class="form-control" 
-                               min="1" max="8" value="1" required>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-users"></i></span>
+                            <input type="number" id="numPassengers" class="form-control" 
+                                   min="1" max="8" value="1" required>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Select Vehicle</label>
-                        <select id="carSelect" class="form-select" required>
-                            <option value="">Choose vehicle</option>
-                        </select>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-car"></i></span>
+                            <select id="carSelect" class="form-select" required>
+                                <option value="">Choose vehicle</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Driver Selection -->
                 <div class="mb-4">
                     <label class="form-label">Select Driver</label>
-                    <select id="driverSelect" class="form-select" required>
-                        <option value="">Available drivers</option>
-                    </select>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
+                        <select id="driverSelect" class="form-select" required>
+                            <option value="">Available drivers</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Submit Button -->

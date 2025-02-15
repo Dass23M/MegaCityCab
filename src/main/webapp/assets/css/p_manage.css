@@ -1,0 +1,88 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Mar 15, 2024, 3:39:52 PM
+    Author     : User
+*/
+
+/* Manage Patient Section */
+.patient-content {
+    width: 80%;
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.patient-content h1 {
+    text-align: center;
+}
+
+.patient-form {
+    display: grid;
+    grid-gap: 20px;
+}
+
+.patient-form label {
+    font-weight: bold;
+}
+
+.patient-form input,
+.patient-form select {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.patient-form button {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.patient-form button:hover {
+    background-color: #4dabe9;
+}
+
+.patient-list {
+    width: 100%;
+}
+
+.patient-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background-color: #da190b;
+}
+
+#patientResult {
+    margin-top: 20px;
+    font-weight: bold;
+}

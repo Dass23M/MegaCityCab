@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Operations - Students</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #2a4d7f;
+            text-align: center;
+            font-size: 36px;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        td {
+            background-color: #f9f9f9;
+        }
+        tr:nth-child(even) td {
+            background-color: #f1f1f1;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            margin: 4px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .form-container, .update-form {
+            background-color: #fff;
+            padding: 20px;
+            margin: 10px auto;
+            width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-container input, .update-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .update-form input:disabled {
+            background-color: #f1f1f1;
+        }
+        .update-form {
+            display: none; /* Hidden by default */
+        }
+        .form-container button {
+            background-color: #008CBA;
+        }
+        .form-container button:hover {
+            background-color: #007B9F;
+        }
+        .cancel-btn {
+            background-color: #f44336;
+        }
+        .cancel-btn:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <h1>Students CRUD Operations</h1>
+
+    <div class="form-container">
+        <input type="text" id="studentId" placeholder="Enter student ID">
+        <input type="text" id="studentName" placeholder="Enter student name">
+        <button onclick="createStudent()">Create Student</button>
+    </div>
+
+    <div class="update-form" id="updateForm">
+        <h3>Edit Student</h3>
+        <input type="text" id="updateStudentId" disabled>
+        <input type="text" id="updateStudentName">
+        <button onclick="submitUpdate()">Update Student</button>
+        <button class="cancel-btn" onclick="cancelUpdate()">Cancel</button>
+    </div>
+
+    <h3>Student List</h3>
+    <table id="studentsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Student rows will go here -->
+        </tbody>
+    </table>
+
+    <script>
+        const apiUrl = 'http://localhost:8080/CABSERVICE/api/students';
+
+        // Fetch and display all students
+        async function getStudents() {
+            const response = await fetch(apiUrl);
+            const students = await response.json();
+            const tableBody = document.querySelector('#studentsTable tbody');
+            tableBody.innerHTML = ''; // Clear the table before inserting new data
+
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>
+                        <button onclick="editStudent(${student.id}, '${student.name}')">Edit</button>
+                        <button onclick="deleteStudent(${student.id})">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Create a new student
+        async function createStudent() {
+            const id = document.getElementById('studentId').value;
+            const name = document.getElementById('studentName').value;
+            
+            if (!id || !name) {
+                alert('Please enter both student ID and name');
+                return;
+            }
+
+            const newStudent = { id, name };
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newStudent)
+            });
+
+            if (response.ok) {
+                getStudents();
+                document.getElementById('studentId').value = ''; // Clear input
+                document.getElementById('studentName').value = ''; // Clear input
+            }
+        }
+
+        // Display the update form with pre-filled values
+        function editStudent(id, name) {
+            document.getElementById('updateStudentId').value = id;
+            document.getElementById('updateStudentName').value = name;
+            document.getElementById('updateForm').style.display = 'block'; // Show the form
+        }
+
+        // Submit the updated student
+        async function submitUpdate() {
+            const id = document.getElementById('updateStudentId').value;
+            const name = document.getElementById('updateStudentName').value;
+
+            const updatedStudent = { id, name };
+            const response = await fetch(apiUrl, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedStudent)
+            });
+
+            if (response.ok) {
+                getStudents();
+                cancelUpdate(); // Hide the update form
+            }
+        }
+
+        // Cancel the update and hide the form
+        function cancelUpdate() {
+            document.getElementById('updateForm').style.display = 'none'; // Hide the form
+        }
+
+        // Delete a student
+        async function deleteStudent(id) {
+            const confirmed = confirm('Are you sure you want to delete this student?');
+            if (confirmed) {
+                const response = await fetch(`${apiUrl}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    getStudents();
+                }
+            }
+        }
+
+        // Initial call to load students when the page loads
+        getStudents();
+    </script>
+</body>
+</html>

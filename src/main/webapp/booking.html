@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega City Cab - Book Your Ride</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .booking-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+            padding: 20px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .form-control {
+            height: 45px;
+            border-radius: 8px;
+        }
+        .user-info-card {
+            background: #e9f5ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .total-amount {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0d6efd;
+        }
+        .billing-details {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="booking-card">
+            <!-- User Info Section -->
+            <div class="user-info-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5>Welcome, <span id="usernameDisplay"></span></h5>
+                        <small class="text-muted">Ready to book your ride?</small>
+                    </div>
+                    <button class="btn btn-danger btn-sm" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Booking Form -->
+            <h2 class="text-center mb-4">Book Your Ride</h2>
+            <form id="bookingForm">
+                <!-- Location Section -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Pickup Location</label>
+                        <select id="pickUpStation" class="form-select" required>
+                            <option value="">Select pickup location</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Drop-off Location</label>
+                        <select id="dropOffStation" class="form-select" required>
+                            <option value="">Select dropoff location</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Date & Distance Section -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Booking Date & Time</label>
+                        <input type="datetime-local" id="dateTime" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Distance (km)</label>
+                        <input type="text" id="distance" class="form-control" readonly>
+                    </div>
+                </div>
+
+                <!-- Vehicle & Passengers Section -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Passengers (1-8)</label>
+                        <input type="number" id="numPassengers" class="form-control" 
+                               min="1" max="8" value="1" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Select Vehicle</label>
+                        <select id="carSelect" class="form-select" required>
+                            <option value="">Choose vehicle</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Driver Selection -->
+                <div class="mb-4">
+                    <label class="form-label">Select Driver</label>
+                    <select id="driverSelect" class="form-select" required>
+                        <option value="">Available drivers</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-car"></i> Confirm Booking
+                </button>
+            </form>
+
+            <!-- Billing Details Section -->
+            <div class="billing-details" id="billingDetails" style="display: none;">
+                <h4 class="text-center mb-4">Billing Details</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Base Fare:</strong> <span id="baseFare"></span></p>
+                        <p><strong>Distance Fare:</strong> <span id="distanceFare"></span></p>
+                        <p><strong>Passenger Fare:</strong> <span id="passengerFare"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Discount:</strong> <span id="discount"></span></p>
+                        <p><strong>Tax:</strong> <span id="tax"></span></p>
+                        <p><strong>Total Fare:</strong> <span id="totalFare" class="total-amount"></span></p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-success w-100 mt-3" id="confirmBilling">
+                    <i class="fas fa-check"></i> Confirm Billing
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Authentication Check
+        document.addEventListener('DOMContentLoaded', function() {
+            const loggedInUser = sessionStorage.getItem('loggedInUser');
+            if (!loggedInUser) {
+                alert('Please login first!');
+                window.location.href = 'register-login.jsp';
+                return;
+            }
+            
+            const user = JSON.parse(loggedInUser);
+            $('#usernameDisplay').text(user.username);
+            initializeBookingForm();
+        });
+
+        // Logout Handler
+        $('#logoutBtn').click(function() {
+            sessionStorage.removeItem('loggedInUser');
+            window.location.href = 'index.html';
+        });
+
+        // Initialize Booking Form
+        function initializeBookingForm() {
+            // Load Stations
+            $.ajax({
+                url: "http://localhost:8080/CABSERVICE/api/bookingstations",
+                success: function(stations) {
+                    const uniqueStations = [...new Set(stations.flatMap(s => [s.fromStationName, s.toStationName]))];
+                    uniqueStations.forEach(stationName => {
+                        $('#pickUpStation, #dropOffStation').append(
+                            `<option value="${stationName}">${stationName}</option>`
+                        );
+                    });
+                }
+            });
+
+            // Load Available Cars
+            $.ajax({
+                url: "http://localhost:8080/CABSERVICE/api/cars",
+                success: function(cars) {
+                    cars.filter(car => car.status === 'Available').forEach(car => {
+                        $('#carSelect').append(`
+                            <option value="${car.carId}" 
+                                data-model="${car.model}"
+                                data-capacity="${car.capacity}"
+                                data-base-fare="${car.baseFare}"
+                                data-price-per-km="${car.pricePerKm}">
+                                ${car.model} (Capacity: ${car.capacity})
+                            </option>
+                        `);
+                    });
+                }
+            });
+
+            // Load Available Drivers
+            $.ajax({
+                url: "http://localhost:8080/CABSERVICE/api/drivers",
+                success: function(drivers) {
+                    drivers.filter(driver => driver.status === 'Available').forEach(driver => {
+                        $('#driverSelect').append(`
+                            <option value="${driver.driverId}" 
+                                data-name="${driver.name}">
+                                ${driver.name} (${driver.licenseNumber})
+                            </option>
+                        `);
+                    });
+                }
+            });
+        }
+
+        // Distance Calculation
+        $('#pickUpStation, #dropOffStation').change(function() {
+            const from = $('#pickUpStation').val();
+            const to = $('#dropOffStation').val();
+
+            if (from && to && from !== to) {
+                $.ajax({
+                    url: `http://localhost:8080/CABSERVICE/api/bookingstations/${encodeURIComponent(from)}/${encodeURIComponent(to)}`,
+                    success: function(distanceData) {
+                        if (distanceData?.distanceKm) {
+                            $('#distance').val(distanceData.distanceKm);
+                            calculateBilling();
+                        } else {
+                            $('#distance').val('');
+                            alert('Distance not available for this route');
+                        }
+                    },
+                    error: () => {
+                        $('#distance').val('');
+                        alert('Error fetching distance');
+                    }
+                });
+            } else if (from === to) {
+                alert('Pickup and dropoff locations must be different');
+                $('#distance').val('');
+            }
+        });
+
+        // Calculate Billing
+        function calculateBilling() {
+            const distance = parseFloat($('#distance').val());
+            const passengers = parseInt($('#numPassengers').val());
+            const car = $('#carSelect option:selected');
+
+            if (distance && passengers && car.val()) {
+                const baseFare = parseFloat(car.data('base-fare'));
+                const pricePerKm = parseFloat(car.data('price-per-km'));
+                const distanceFare = distance * pricePerKm;
+                const passengerFare = passengers > 4 ? (passengers - 4) * 50 : 0; // Additional charge for more than 4 passengers
+                const discount = 0; // You can add discount logic here
+                const tax = (baseFare + distanceFare + passengerFare) * 0.1; // 10% tax
+                const totalFare = baseFare + distanceFare + passengerFare + tax - discount;
+
+                $('#baseFare').text(`Rs. ${baseFare.toFixed(2)}`);
+                $('#distanceFare').text(`Rs. ${distanceFare.toFixed(2)}`);
+                $('#passengerFare').text(`Rs. ${passengerFare.toFixed(2)}`);
+                $('#discount').text(`Rs. ${discount.toFixed(2)}`);
+                $('#tax').text(`Rs. ${tax.toFixed(2)}`);
+                $('#totalFare').text(`Rs. ${totalFare.toFixed(2)}`);
+
+                $('#billingDetails').show();
+            }
+        }
+
+   $('#bookingForm').submit(function(e) {
+        e.preventDefault();
+        const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+        
+        if (!user) {
+            alert('Session expired. Please login again.');
+            window.location.href = 'register-login.jsp';
+            return;
+        }
+
+        const pickup = $('#pickUpStation').val();
+        const dropoff = $('#dropOffStation').val();
+        const car = $('#carSelect option:selected');
+        const driver = $('#driverSelect option:selected');
+        const passengers = parseInt($('#numPassengers').val());
+
+        if (!validateForm(pickup, dropoff, car, driver, passengers)) return;
+
+        const bookingData = {
+            userId: user.user_id,
+            pickUpStation: pickup,
+            dropOffStation: dropoff,
+            distance: parseFloat($('#distance').val()),
+            dateTime: $('#dateTime').val().replace('T', ' ') + ':00',
+            numPassengers: passengers,
+            carModel: car.data('model'),
+            driverName: driver.data('name'),
+            status: 'Confirmed'
+        };
+
+        $.ajax({
+            url: "http://localhost:8080/CABSERVICE/api/bookings",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(bookingData),
+            success: function(response) {
+                updateVehicleAndDriverStatus(car.val(), driver.val());
+                alert('Booking confirmed successfully!');
+                
+                // Calculate billing AFTER booking is confirmed
+                calculateBilling(); // <-- Add this line
+                $('#billingDetails').show(); 
+                
+                // Store bookingId from response for billing
+                sessionStorage.setItem('currentBookingId', response.bookingId);
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || 'Booking failed. Please try again.');
+            }
+        });
+    });
+
+    // Confirm Billing
+    $('#confirmBilling').click(function() {
+        const bookingId = sessionStorage.getItem('currentBookingId');
+        if (!bookingId) {
+            alert('No booking found. Please complete the booking first.');
+            return;
+        }
+
+        const billingData = {
+            bookingId: parseInt(bookingId), // Use dynamic bookingId
+            baseFare: parseFloat($('#baseFare').text().replace('Rs. ', '')),
+            distanceFare: parseFloat($('#distanceFare').text().replace('Rs. ', '')),
+            passengerFare: parseFloat($('#passengerFare').text().replace('Rs. ', '')),
+            discount: parseFloat($('#discount').text().replace('Rs. ', '')),
+            tax: parseFloat($('#tax').text().replace('Rs. ', '')),
+            totalFare: parseFloat($('#totalFare').text().replace('Rs. ', ''))
+        };
+
+        $.ajax({
+            url: "http://localhost:8080/CABSERVICE/api/billing",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(billingData),
+            success: function(response) {
+                alert('Billing confirmed successfully!');
+                sessionStorage.removeItem('currentBookingId');
+                window.location.reload();
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || 'Billing failed. Please try again.');
+            }
+        });
+    });
+
+
+        // Confirm Billing
+        $('#confirmBilling').click(function() {
+            const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+            const bookingData = {
+                userId: user.user_id,
+                pickUpStation: $('#pickUpStation').val(),
+                dropOffStation: $('#dropOffStation').val(),
+                distance: parseFloat($('#distance').val()),
+                dateTime: $('#dateTime').val().replace('T', ' ') + ':00',
+                numPassengers: parseInt($('#numPassengers').val()),
+                carModel: $('#carSelect option:selected').data('model'),
+                driverName: $('#driverSelect option:selected').data('name'),
+                status: 'Confirmed'
+            };
+
+            const billingData = {
+                bookingId: 1, // This should be the actual booking ID from the response
+                baseFare: parseFloat($('#baseFare').text().replace('Rs. ', '')),
+                distanceFare: parseFloat($('#distanceFare').text().replace('Rs. ', '')),
+                passengerFare: parseFloat($('#passengerFare').text().replace('Rs. ', '')),
+                discount: parseFloat($('#discount').text().replace('Rs. ', '')),
+                tax: parseFloat($('#tax').text().replace('Rs. ', '')),
+                totalFare: parseFloat($('#totalFare').text().replace('Rs. ', ''))
+            };
+
+            $.ajax({
+                url: "http://localhost:8080/CABSERVICE/api/billing",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(billingData),
+                success: function(response) {
+                    alert('Billing confirmed successfully!');
+                    window.location.reload();
+                },
+                error: function(xhr) {
+                   
+                }
+            });
+        });
+
+        function validateForm(pickup, dropoff, car, driver, passengers) {
+            // Validation logic here
+            if (pickup === dropoff) {
+                alert('Pickup and dropoff locations must be different');
+                return false;
+            }
+            if (!car.val()) {
+                alert('Please select a vehicle');
+                return false;
+            }
+            if (passengers > parseInt(car.data('capacity'))) {
+                alert(`Selected vehicle can only accommodate ${car.data('capacity')} passengers`);
+                return false;
+            }
+            if (!driver.val()) {
+                alert('Please select a driver');
+                return false;
+            }
+            if (!$('#distance').val()) {
+                alert('Please select valid locations to calculate distance');
+                return false;
+            }
+            return true;
+        }
+
+        function updateVehicleAndDriverStatus(carId, driverId) {
+            // Update car status
+            $.ajax({
+                url: `http://localhost:8080/CABSERVICE/api/cars/${carId}`,
+                method: "GET",
+                success: function(carData) {
+                    carData.status = "In Service";
+                    $.ajax({
+                        url: "http://localhost:8080/CABSERVICE/api/cars",
+                        method: "PUT",
+                        contentType: "application/json",
+                        data: JSON.stringify(carData)
+                    });
+                }
+            });
+
+            // Update driver status
+            $.ajax({
+                url: `http://localhost:8080/CABSERVICE/api/drivers/${driverId}`,
+                method: "GET",
+                success: function(driverData) {
+                    driverData.status = "Busy";
+                    $.ajax({
+                        url: "http://localhost:8080/CABSERVICE/api/drivers",
+                        method: "PUT",
+                        contentType: "application/json",
+                        data: JSON.stringify(driverData)
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+
+ *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f1f1f1;
+}
+
+/* Container styles */
+.login-container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+    margin: auto;
+    margin-top: 10vh; 
+}
+
+/* Heading styles */
+.login-container h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333333;
+}
+
+/* Input styles */
+.login-container input[type="email"],
+.login-container input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Button styles */
+.login-container button {
+    width: 90%;
+    height: 5%;
+    background-color: #3498db;
+    color: white;
+    padding: 14px 0;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.login-container button:hover {
+    background-color: #4dabe9;
+}
+
+/* Message styles */
+.message {
+    margin-top: 20px;
+    color: #ff3333;
+    font-weight: bold;
+}
+
+/* Link styles */
+.login-container p {
+    margin-top: 20px;
+}
+
+.login-container p a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.login-container p a:hover {
+    text-decoration: underline;
+}

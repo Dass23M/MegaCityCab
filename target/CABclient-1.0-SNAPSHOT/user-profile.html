@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Mega City Cab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f4f6;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .profile-container {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+                        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 900px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .profile-header h2 {
+            color: #1f2937;
+            font-weight: 700;
+            font-size: 1.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .profile-header p {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .profile-section {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .profile-section h3 {
+            color: #3b82f6;
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .profile-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            transition: transform 0.2s;
+        }
+
+        .profile-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .profile-item i {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #3b82f6;
+            color: white;
+            border-radius: 8px;
+            margin-right: 1rem;
+            font-size: 1rem;
+        }
+
+        .profile-item strong {
+            color: #4b5563;
+            margin-right: 0.5rem;
+            font-weight: 500;
+        }
+
+        .profile-item span {
+            color: #1f2937;
+            font-weight: 400;
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .booking-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .booking-card h5 {
+            color: #3b82f6;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .booking-card p {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+
+        .booking-card i {
+            color: #3b82f6;
+            width: 20px;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .edit-profile {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .edit-profile-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .edit-profile-form {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-item i {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <h2><i class="fas fa-user-circle"></i> User Profile</h2>
+            <p>Manage your profile and view booking history</p>
+        </div>
+
+        <div class="profile-section">
+            <h3><i class="fas fa-user"></i> Personal Information</h3>
+            <div class="profile-item">
+                <i class="fas fa-user"></i>
+                <strong>Name:</strong>
+                <span id="profileName">John Doe</span>
+            </div>
+            <div class="profile-item">
+                <i class="fas fa-envelope"></i>
+                <strong>Email:</strong>
+                <span id="profileEmail">john@example.com</span>
+            </div>
+            <div class="profile-item">
+                <i class="fas fa-phone"></i>
+                <strong>Phone:</strong>
+                <span id="profilePhone">0712345678</span>
+            </div>
+            <div class="profile-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <strong>Address:</strong>
+                <span id="profileAddress">123 Main St, Colombo</span>
+            </div>
+            <div class="profile-item">
+                <i class="fas fa-id-card"></i>
+                <strong>NIC:</strong>
+                <span id="profileNIC">123456789V</span>
+            </div>
+            <div class="profile-item">
+                <i class="fas fa-user-tag"></i>
+                <strong>Role:</strong>
+                <span id="profileRole">Customer</span>
+            </div>
+            <button class="btn btn-primary mt-3" onclick="toggleEditProfile()">
+                <i class="fas fa-edit"></i> Edit Profile
+            </button>
+        </div>
+
+        <div class="edit-profile" id="editProfileSection" style="display: none;">
+            <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
+            <form id="editProfileForm" class="edit-profile-form">
+                <input type="text" id="editName" class="form-control" placeholder="Full Name" required>
+                <input type="email" id="editEmail" class="form-control" placeholder="Email" required>
+                <input type="tel" id="editPhone" class="form-control" placeholder="Phone Number" required>
+                <input type="text" id="editAddress" class="form-control" placeholder="Address" required>
+                <input type="text" id="editNIC" class="form-control" placeholder="NIC/Identification Number" required>
+                <input type="password" id="editPassword" class="form-control" placeholder="New Password">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+
+        <div class="profile-section booking-history">
+            <h3><i class="fas fa-car"></i> Booking History</h3>
+            <div id="bookingList">
+                <div class="booking-card">
+                    <h5><i class="fas fa-map-marker-alt"></i> Trip to Colombo</h5>
+                    <p><i class="fas fa-calendar-alt"></i> Date: 2025-02-10</p>
+                    <p><i class="fas fa-money-bill"></i> Price: $25.00</p>
+                    <p><i class="fas fa-car"></i> Vehicle: Sedan</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button class="btn btn-danger" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+    <script>
+        $(document).ready(function () {
+            // Fetch user profile data
+            const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+            if (!loggedInUser) {
+                window.location.href = "register-login.html";
+                return;
+            }
+
+            // Fetch user details
+            $.ajax({
+                url: `http://localhost:8080/CABSERVICE/api/users/${loggedInUser.user_id}`,
+                type: "GET",
+                success: function (user) {
+                    $("#profileName").text(user.username);
+                    $("#profileEmail").text(user.email);
+                    $("#profilePhone").text(user.phone);
+                    $("#profileAddress").text(user.address);
+                    $("#profileNIC").text(user.nic);
+                    $("#profileRole").text(user.role);
+
+                    // Populate edit form fields
+                    $("#editName").val(user.username);
+                    $("#editEmail").val(user.email);
+                    $("#editPhone").val(user.phone);
+                    $("#editAddress").val(user.address);
+                    $("#editNIC").val(user.nic);
+                },
+                error: function (xhr) {
+                    alert("Failed to fetch user details: " + xhr.responseJSON.message);
+                }
+            });
+
+            // Fetch booking history
+            $.ajax({
+                url: `http://localhost:8080/CABSERVICE/api/bookings?userId=${loggedInUser.user_id}`,
+                type: "GET",
+                success: function (bookings) {
+                    const bookingList = $("#bookingList");
+                    bookings.forEach(booking => {
+                        bookingList.append(`
+                            <div class="booking-card">
+                                <h5>Booking ID: ${booking.bookingId}</h5>
+                                <p><strong>Pickup:</strong> ${booking.pickUpStation}</p>
+                                <p><strong>Dropoff:</strong> ${booking.dropOffStation}</p>
+                                <p><strong>Date:</strong> ${new Date(booking.dateTime).toLocaleString()}</p>
+                                <p><strong>Passengers:</strong> ${booking.numPassengers}</p>
+                                <p><strong>Car Model:</strong> ${booking.carModel}</p>
+                                <p><strong>Driver:</strong> ${booking.driverName}</p>
+                                <p><strong>Status:</strong> ${booking.status}</p>
+                            </div>
+                        `);
+                    });
+                },
+                error: function (xhr) {
+                    alert("Failed to fetch booking history: " + xhr.responseJSON.message);
+                }
+            });
+        });
+
+        function toggleEditProfile() {
+            const editSection = document.getElementById("editProfileSection");
+            editSection.style.display = editSection.style.display === "none" ? "block" : "none";
+        }
+
+        function logout() {
+            sessionStorage.removeItem('loggedInUser');
+            window.location.href = "register-login.html";
+        }
+    </script>
+</body>
+
+</html>

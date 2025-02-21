@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega City Cab - Authentication</title>
+    <title>Mega City Cab - Authentication & Booking</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome Icons -->
@@ -23,18 +23,32 @@
             padding: 0;
             overflow: hidden;
         }
-        .auth-container {
+        .main-container {
+            display: flex;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             overflow: hidden;
-            max-width: 800px; /* Increased width for better spacing */
+            max-width: 1200px;
             width: 100%;
             animation: fadeIn 0.5s ease-in-out;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        .auth-container {
+            flex: 1;
+            padding: 20px;
+            max-width: 500px;
+        }
+        .booking-container {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .nav-pills .nav-link {
             border-radius: 25px;
@@ -86,6 +100,36 @@
             color: #666;
             margin-bottom: 30px;
         }
+        .booking-container h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 600;
+        }
+        .booking-container p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .booking-container .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .booking-container .card h5 {
+            color: #667eea;
+            font-weight: 600;
+        }
+        .booking-container .card p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .booking-container .btn {
+            width: 100%;
+            margin-top: 10px;
+        }
         /* Background Animation */
         body::before {
             content: '';
@@ -112,6 +156,12 @@
             margin-bottom: 15px;
         }
         @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .auth-container, .booking-container {
+                max-width: 100%;
+            }
             .register-form {
                 grid-template-columns: 1fr;
             }
@@ -119,7 +169,8 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="main-container">
+        <!-- Left Side: Login and Register Forms -->
         <div class="auth-container">
             <ul class="nav nav-pills nav-fill mb-3" id="authTabs">
                 <li class="nav-item">
@@ -210,6 +261,26 @@
                         </div>
                     </form>
                 </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Booking Section -->
+        <div class="booking-container">
+            <h3>Book Your Ride</h3>
+            <p>Quick and easy cab booking.</p>
+            <div class="card">
+                <h5>Why Choose Mega City Cab?</h5>
+                <p>? Reliable and safe rides</p>
+                <p>? Affordable pricing</p>
+                <p>?? On-time pickups</p>
+                <p>? 24/7 customer support</p>
+                <button class="btn btn-primary">Book Now</button>
+            </div>
+            <div class="card">
+                <h5>Special Offers</h5>
+                <p>? Get 20% off your first ride!</p>
+                <p>? Refer a friend and earn rewards</p>
+                <button class="btn btn-primary">View Offers</button>
             </div>
         </div>
     </div>

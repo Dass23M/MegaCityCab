@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cab Service Booking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(to bottom, #1a2a6c, #b21f1f, #fdbb2d);
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+        th {
+            background-color: #ffd700;
+            color: #1a2a6c;
+            font-weight: 600;
+        }
+        td {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .form-container, .update-form {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            margin: 20px auto;
+            width: 450px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .form-group {
+            position: relative;
+            margin: 15px 0;
+        }
+        .form-group i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #1a2a6c;
+        }
+        input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        button {
+            background-color: #ffd700;
+            color: #1a2a6c;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background-color: #ffcc00;
+            transform: translateY(-2px);
+        }
+        .cancel-btn {
+            background-color: #b21f1f;
+            color: white;
+        }
+        .cancel-btn:hover {
+            background-color: #911818;
+        }
+        .update-form {
+            display: none;
+        }
+        .action-buttons i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-taxi"></i> Cab Service Booking</h1>
+
+        <div class="form-container">
+            <h3><i class="fas fa-plus"></i> New Booking</h3>
+            <div class="form-group"><i class="fas fa-user"></i><input type="number" id="userId" placeholder="User ID"></div>
+            <div class="form-group"><i class="fas fa-map-marker-alt"></i><input type="text" id="pickUpStation" placeholder="Pickup Station"></div>
+            <div class="form-group"><i class="fas fa-map-pin"></i><input type="text" id="dropOffStation" placeholder="Drop-off Station"></div>
+            <div class="form-group"><i class="fas fa-ruler"></i><input type="number" id="distance" placeholder="Distance (km)"></div>
+            <div class="form-group"><i class="fas fa-calendar"></i><input type="datetime-local" id="dateTime"></div>
+            <div class="form-group"><i class="fas fa-users"></i><input type="number" id="numPassengers" placeholder="Passengers"></div>
+            <div class="form-group"><i class="fas fa-car"></i><input type="text" id="carModel" placeholder="Car Model"></div>
+            <div class="form-group"><i class="fas fa-user-tie"></i><input type="text" id="driverName" placeholder="Driver Name"></div>
+            <div class="form-group"><i class="fas fa-info-circle"></i><input type="text" id="status" placeholder="Status"></div>
+            <button onclick="createBooking()"><i class="fas fa-plus"></i> Create Booking</button>
+        </div>
+
+        <div class="update-form" id="updateForm">
+            <h3><i class="fas fa-edit"></i> Edit Booking</h3>
+            <div class="form-group"><i class="fas fa-id-badge"></i><input type="number" id="updateBookingId" disabled></div>
+            <div class="form-group"><i class="fas fa-user"></i><input type="number" id="updateUserId"></div>
+            <div class="form-group"><i class="fas fa-map-marker-alt"></i><input type="text" id="updatePickUpStation"></div>
+            <div class="form-group"><i class="fas fa-map-pin"></i><input type="text" id="updateDropOffStation"></div>
+            <div class="form-group"><i class="fas fa-ruler"></i><input type="number" id="updateDistance"></div>
+            <div class="form-group"><i class="fas fa-calendar"></i><input type="datetime-local" id="updateDateTime"></div>
+            <div class="form-group"><i class="fas fa-users"></i><input type="number" id="updateNumPassengers"></div>
+            <div class="form-group"><i class="fas fa-car"></i><input type="text" id="updateCarModel"></div>
+            <div class="form-group"><i class="fas fa-user-tie"></i><input type="text" id="updateDriverName"></div>
+            <div class="form-group"><i class="fas fa-info-circle"></i><input type="text" id="updateStatus"></div>
+            <button onclick="submitUpdate()"><i class="fas fa-save"></i> Update</button>
+            <button class="cancel-btn" onclick="cancelUpdate()"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+
+        <h3><i class="fas fa-list"></i> Booking List</h3>
+        <table id="bookingsTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>Pickup</th>
+                    <th>Drop-off</th>
+                    <th>Distance</th>
+                    <th>Date/Time</th>
+                    <th>Passengers</th>
+                    <th>Car Model</th>
+                    <th>Driver</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        const apiUrl = 'http://localhost:8080/CABSERVICE/api/bookings';
+
+        async function getBookings() {
+            const response = await fetch(apiUrl);
+            const bookings = await response.json();
+            const tableBody = document.querySelector('#bookingsTable tbody');
+            tableBody.innerHTML = '';
+
+            bookings.forEach(booking => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${booking.bookingId}</td>
+                    <td>${booking.userId}</td>
+                    <td>${booking.pickUpStation}</td>
+                    <td>${booking.dropOffStation}</td>
+                    <td>${booking.distance}</td>
+                    <td>${booking.dateTime}</td>
+                    <td>${booking.numPassengers}</td>
+                    <td>${booking.carModel}</td>
+                    <td>${booking.driverName}</td>
+                    <td>${booking.status}</td>
+                    <td class="action-buttons">
+                        <button onclick="editBooking(${booking.bookingId}, ${booking.userId}, '${booking.pickUpStation}', '${booking.dropOffStation}', ${booking.distance}, '${booking.dateTime}', ${booking.numPassengers}, '${booking.carModel}', '${booking.driverName}', '${booking.status}')"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="deleteBooking(${booking.bookingId})"><i class="fas fa-trash"></i> Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        async function createBooking() {
+            const newBooking = {
+                userId: document.getElementById('userId').value,
+                pickUpStation: document.getElementById('pickUpStation').value,
+                dropOffStation: document.getElementById('dropOffStation').value,
+                distance: document.getElementById('distance').value,
+                dateTime: document.getElementById('dateTime').value,
+                numPassengers: document.getElementById('numPassengers').value,
+                carModel: document.getElementById('carModel').value,
+                driverName: document.getElementById('driverName').value,
+                status: document.getElementById('status').value
+            };
+
+            await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newBooking)
+            });
+            getBookings();
+        }
+
+        function editBooking(id, userId, pickUp, dropOff, distance, dateTime, passengers, carModel, driver, status) {
+            document.getElementById('updateBookingId').value = id;
+            document.getElementById('updateUserId').value = userId;
+            document.getElementById('updatePickUpStation').value = pickUp;
+            document.getElementById('updateDropOffStation').value = dropOff;
+            document.getElementById('updateDistance').value = distance;
+            document.getElementById('updateDateTime').value = dateTime;
+            document.getElementById('updateNumPassengers').value = passengers;
+            document.getElementById('updateCarModel').value = carModel;
+            document.getElementById('updateDriverName').value = driver;
+            document.getElementById('updateStatus').value = status;
+            document.getElementById('updateForm').style.display = 'block';
+        }
+
+        async function submitUpdate() {
+            const id = document.getElementById('updateBookingId').value;
+            const updatedBooking = {
+                bookingId: id,
+                userId: document.getElementById('updateUserId').value,
+                pickUpStation: document.getElementById('updatePickUpStation').value,
+                dropOffStation: document.getElementById('updateDropOffStation').value,
+                distance: document.getElementById('updateDistance').value,
+                dateTime: document.getElementById('updateDateTime').value,
+                numPassengers: document.getElementById('updateNumPassengers').value,
+                carModel: document.getElementById('updateCarModel').value,
+                driverName: document.getElementById('updateDriverName').value,
+                status: document.getElementById('updateStatus').value
+            };
+
+            await fetch(apiUrl, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedBooking)
+            });
+            getBookings();
+            cancelUpdate();
+        }
+
+        async function deleteBooking(id) {
+            await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+            getBookings();
+        }
+
+        // Added cancelUpdate function
+        function cancelUpdate() {
+            document.getElementById('updateForm').style.display = 'none';
+        }
+
+        getBookings();
+    </script>
+</body>
+</html>

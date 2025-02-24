@@ -1,270 +1,303 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
-
-
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car CRUD Operations</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f7fc;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            color: #2a4d7f;
-            text-align: center;
-            font-size: 36px;
-        }
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        td {
-            background-color: #f9f9f9;
-        }
-        tr:nth-child(even) td {
-            background-color: #f1f1f1;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px 16px;
-            margin: 4px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .form-container, .update-form {
-            background-color: #fff;
-            padding: 20px;
-            margin: 10px auto;
-            width: 400px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .form-container input, .update-form input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        .update-form input:disabled {
-            background-color: #f1f1f1;
-        }
-        .update-form {
-            display: none; /* Hidden by default */
-        }
-        .form-container button {
-            background-color: #008CBA;
-        }
-        .form-container button:hover {
-            background-color: #007B9F;
-        }
-        .cancel-btn {
-            background-color: #f44336;
-        }
-        .cancel-btn:hover {
-            background-color: #d32f2f;
-        }
-    </style>
-</head>
-<body>
-    <h1>Car CRUD Operations</h1>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Car Management - CRUD Operations</title>
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                background-color: #f4f7fc;
+                margin: 0;
+                padding: 20px;
+            }
+            h1 {
+                color: #2a4d7f;
+                text-align: center;
+                font-size: 36px;
+            }
+            table {
+                width: 100%;
+                margin-top: 20px;
+                border-collapse: collapse;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+            th, td {
+                padding: 12px;
+                text-align: left;
+            }
+            th {
+                background-color: #4CAF50;
+                color: white;
+            }
+            td {
+                background-color: #f9f9f9;
+            }
+            tr:nth-child(even) td {
+                background-color: #f1f1f1;
+            }
+            button {
+                background-color: #4CAF50;
+                color: white;
+                padding: 8px 16px;
+                margin: 4px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            button:hover {
+                background-color: #45a049;
+            }
+            .form-container, .update-form {
+                background-color: #fff;
+                padding: 20px;
+                margin: 10px auto;
+                width: 400px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+            .form-container input, .update-form input, .form-container select, .update-form select {
+                width: 100%;
+                padding: 10px;
+                margin: 8px 0;
+                border-radius: 4px;
+                border: 1px solid #ddd;
+            }
+            .update-form input:disabled, .update-form select:disabled {
+                background-color: #f1f1f1;
+            }
+            .update-form {
+                display: none;
+            }
+            .cancel-btn {
+                background-color: #f44336;
+            }
+            .cancel-btn:hover {
+                background-color: #d32f2f;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Car Management CRUD Operations</h1>
 
-    <div class="form-container">
-        <input type="text" id="carId" placeholder="Enter car ID">
-        <input type="text" id="make" placeholder="Enter car make">
-        <input type="text" id="model" placeholder="Enter car model">
-        <input type="text" id="licensePlate" placeholder="Enter car license plate">
-        <input type="number" id="capacity" placeholder="Enter car capacity">
-        <input type="number" id="baseFare" placeholder="Enter base fare">
-        <input type="number" id="pricePerKm" placeholder="Enter price per km">
-        <input type="text" id="status" placeholder="Enter car status">
-        <button onclick="createCar()">Create Car</button>
-    </div>
+        <!-- Create Car Form -->
+        <div class="form-container" id="createForm">
+            <h3>Create New Car</h3>
+            <input type="text" id="carMake" placeholder="Car Make">
+            <input type="text" id="carModel" placeholder="Car Model">
+            <input type="text" id="carLicensePlate" placeholder="License Plate">
+            <input type="number" id="carCapacity" placeholder="Capacity">
+            <input type="number" step="0.01" id="carBaseFare" placeholder="Base Fare">
+            <input type="number" step="0.01" id="carPricePerKm" placeholder="Price per Km">
+            <input type="number" id="carCategoryId" placeholder="Category ID">
+            <select id="carStatus">
+                <option value="Available">Available</option>
+                <option value="In Service">In Service</option>
+                <option value="Unavailable">Unavailable</option>
+            </select>
+            <button onclick="createCar()">Create Car</button>
+        </div>
 
-    <div class="update-form" id="updateForm">
-        <h3>Edit Car</h3>
-        <input type="text" id="updateCarId" disabled>
-        <input type="text" id="updateMake">
-        <input type="text" id="updateModel">
-        <input type="text" id="updateLicensePlate">
-        <input type="number" id="updateCapacity">
-        <input type="number" id="updateBaseFare">
-        <input type="number" id="updatePricePerKm">
-        <input type="text" id="updateStatus">
-        <button onclick="submitUpdate()">Update Car</button>
-        <button class="cancel-btn" onclick="cancelUpdate()">Cancel</button>
-    </div>
+        <!-- Update Car Form -->
+        <div class="update-form" id="updateForm">
+            <h3>Edit Car</h3>
+            <input type="text" id="updateCarId" disabled>
+            <input type="text" id="updateCarMake" placeholder="Car Make">
+            <input type="text" id="updateCarModel" placeholder="Car Model">
+            <input type="text" id="updateCarLicensePlate" placeholder="License Plate">
+            <input type="number" id="updateCarCapacity" placeholder="Capacity">
+            <input type="number" step="0.01" id="updateCarBaseFare" placeholder="Base Fare">
+            <input type="number" step="0.01" id="updateCarPricePerKm" placeholder="Price per Km">
+            <input type="number" id="updateCarCategoryId" placeholder="Category ID">
+            <select id="updateCarStatus">
+                <option value="Available">Available</option>
+                <option value="In Service">In Service</option>
+                <option value="Unavailable">Unavailable</option>
+            </select>
+            <button onclick="submitUpdate()">Update Car</button>
+            <button class="cancel-btn" onclick="cancelUpdate()">Cancel</button>
+        </div>
 
-    <h3>Car List</h3>
-    <table id="carsTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Make</th>
-                <th>Model</th>
-                <th>License Plate</th>
-                <th>Capacity</th>
-                <th>Base Fare</th>
-                <th>Price/Km</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Car rows will go here -->
-        </tbody>
-    </table>
+        <h3>Car List</h3>
+        <table id="carsTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Make</th>
+                    <th>Model</th>
+                    <th>License Plate</th>
+                    <th>Capacity</th>
+                    <th>Base Fare</th>
+                    <th>Price per Km</th>
+                    <th>Category ID</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Car rows will be inserted here dynamically -->
+            </tbody>
+        </table>
 
-    <script>
-        const apiUrl = 'http://localhost:8080/CABSERVICE/api/cars';
+        <script>
+            const apiUrl = 'http://localhost:8080/CABSERVICE/api/cars';
 
-        // Fetch and display all cars
-        async function getCars() {
-            const response = await fetch(apiUrl);
-            const cars = await response.json();
-            const tableBody = document.querySelector('#carsTable tbody');
-            tableBody.innerHTML = ''; // Clear the table before inserting new data
-
-            cars.forEach(car => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${car.carId}</td>
-                    <td>${car.make}</td>
-                    <td>${car.model}</td>
-                    <td>${car.licensePlate}</td>
-                    <td>${car.capacity}</td>
-                    <td>${car.baseFare}</td>
-                    <td>${car.pricePerKm}</td>
-                    <td>${car.status}</td>
-                    <td>
-                        <button onclick="editCar(${car.carId}, '${car.make}', '${car.model}', '${car.licensePlate}', ${car.capacity}, ${car.baseFare}, ${car.pricePerKm}, '${car.status}')">Edit</button>
-                        <button onclick="deleteCar(${car.carId})">Delete</button>
-                    </td>
+            // Function to fetch and display all cars
+            async function getCars() {
+                try {
+                    const response = await fetch(apiUrl);
+                    if (!response.ok)
+                        throw new Error('Failed to fetch cars');
+                    const cars = await response.json();
+                    const tableBody = document.querySelector('#carsTable tbody');
+                    tableBody.innerHTML = ''; // Clear table
+                    cars.forEach(car => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                  <td>${car.carId}</td>
+                  <td>${car.make}</td>
+                  <td>${car.model}</td>
+                  <td>${car.licensePlate}</td>
+                  <td>${car.capacity}</td>
+                  <td>${car.baseFare}</td>
+                  <td>${car.pricePerKm}</td>
+                  <td>${car.categoryId}</td>
+                  <td>${car.status}</td>
+                  <td>
+                    <button onclick="editCar(${car.carId}, '${car.make}', '${car.model}', '${car.licensePlate}', ${car.capacity}, ${car.baseFare}, ${car.pricePerKm}, ${car.categoryId}, '${car.status}')">Edit</button>
+                    <button onclick="deleteCar(${car.carId})">Delete</button>
+                  </td>
                 `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        // Create a new car
-        async function createCar() {
-            const id = document.getElementById('carId').value;
-            const make = document.getElementById('make').value;
-            const model = document.getElementById('model').value;
-            const licensePlate = document.getElementById('licensePlate').value;
-            const capacity = document.getElementById('capacity').value;
-            const baseFare = document.getElementById('baseFare').value;
-            const pricePerKm = document.getElementById('pricePerKm').value;
-            const status = document.getElementById('status').value;
-
-            if (!id || !make || !model || !licensePlate || !capacity || !baseFare || !pricePerKm || !status) {
-                alert('Please enter all car details');
-                return;
-            }
-
-            const newCar = { carId: id, make, model, licensePlate, capacity, baseFare, pricePerKm, status };
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newCar)
-            });
-
-            if (response.ok) {
-                getCars();
-                document.getElementById('carId').value = '';
-                document.getElementById('make').value = '';
-                document.getElementById('model').value = '';
-                document.getElementById('licensePlate').value = '';
-                document.getElementById('capacity').value = '';
-                document.getElementById('baseFare').value = '';
-                document.getElementById('pricePerKm').value = '';
-                document.getElementById('status').value = '';
-            }
-        }
-
-        // Display the update form with pre-filled values
-        function editCar(id, make, model, licensePlate, capacity, baseFare, pricePerKm, status) {
-            document.getElementById('updateCarId').value = id;
-            document.getElementById('updateMake').value = make;
-            document.getElementById('updateModel').value = model;
-            document.getElementById('updateLicensePlate').value = licensePlate;
-            document.getElementById('updateCapacity').value = capacity;
-            document.getElementById('updateBaseFare').value = baseFare;
-            document.getElementById('updatePricePerKm').value = pricePerKm;
-            document.getElementById('updateStatus').value = status;
-            document.getElementById('updateForm').style.display = 'block';
-        }
-
-        // Submit the updated car
-        async function submitUpdate() {
-            const id = document.getElementById('updateCarId').value;
-            const make = document.getElementById('updateMake').value;
-            const model = document.getElementById('updateModel').value;
-            const licensePlate = document.getElementById('updateLicensePlate').value;
-            const capacity = document.getElementById('updateCapacity').value;
-            const baseFare = document.getElementById('updateBaseFare').value;
-            const pricePerKm = document.getElementById('updatePricePerKm').value;
-            const status = document.getElementById('updateStatus').value;
-
-            const updatedCar = { carId: id, make, model, licensePlate, capacity, baseFare, pricePerKm, status };
-            const response = await fetch(apiUrl, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updatedCar)
-            });
-
-            if (response.ok) {
-                getCars();
-                cancelUpdate();
-            }
-        }
-
-        // Cancel the update and hide the form
-        function cancelUpdate() {
-            document.getElementById('updateForm').style.display = 'none';
-        }
-
-        // Delete a car
-        async function deleteCar(id) {
-            const confirmed = confirm('Are you sure you want to delete this car?');
-            if (confirmed) {
-                const response = await fetch(`${apiUrl}/${id}`, {
-                    method: 'DELETE'
-                });
-
-                if (response.ok) {
-                    getCars();
+                        tableBody.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error('Error fetching cars:', error);
                 }
             }
-        }
 
-        // Initial call to load cars when the page loads
-        getCars();
-    </script>
-</body>
+            // Function to create a new car
+            async function createCar() {
+                const make = document.getElementById('carMake').value.trim();
+                const model = document.getElementById('carModel').value.trim();
+                const licensePlate = document.getElementById('carLicensePlate').value.trim();
+                const capacity = parseInt(document.getElementById('carCapacity').value);
+                const baseFare = parseFloat(document.getElementById('carBaseFare').value);
+                const pricePerKm = parseFloat(document.getElementById('carPricePerKm').value);
+                const categoryId = parseInt(document.getElementById('carCategoryId').value);
+                const status = document.getElementById('carStatus').value;
+
+                // Validate required fields
+                if (!make || !model || !licensePlate || isNaN(capacity) || isNaN(baseFare) || isNaN(pricePerKm) || isNaN(categoryId) || !status) {
+                    alert('Please fill in all fields with valid values');
+                    return;
+                }
+
+                const newCar = {make, model, licensePlate, capacity, baseFare, pricePerKm, categoryId, status};
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(newCar)
+                    });
+                    if (!response.ok)
+                        throw new Error('Failed to create car');
+                    // Refresh car list and clear form
+                    getCars();
+                    clearCreateForm();
+                } catch (error) {
+                    console.error('Error creating car:', error);
+                }
+            }
+
+            function clearCreateForm() {
+                document.getElementById('carMake').value = '';
+                document.getElementById('carModel').value = '';
+                document.getElementById('carLicensePlate').value = '';
+                document.getElementById('carCapacity').value = '';
+                document.getElementById('carBaseFare').value = '';
+                document.getElementById('carPricePerKm').value = '';
+                document.getElementById('carCategoryId').value = '';
+                document.getElementById('carStatus').value = 'Available';
+            }
+
+            // Function to show the update form with prefilled values
+            function editCar(carId, make, model, licensePlate, capacity, baseFare, pricePerKm, categoryId, status) {
+                document.getElementById('updateCarId').value = carId;
+                document.getElementById('updateCarMake').value = make;
+                document.getElementById('updateCarModel').value = model;
+                document.getElementById('updateCarLicensePlate').value = licensePlate;
+                document.getElementById('updateCarCapacity').value = capacity;
+                document.getElementById('updateCarBaseFare').value = baseFare;
+                document.getElementById('updateCarPricePerKm').value = pricePerKm;
+                document.getElementById('updateCarCategoryId').value = categoryId;
+                document.getElementById('updateCarStatus').value = status;
+                document.getElementById('updateForm').style.display = 'block';
+            }
+
+            // Function to submit the updated car data
+            async function submitUpdate() {
+                const carId = document.getElementById('updateCarId').value;
+                const make = document.getElementById('updateCarMake').value.trim();
+                const model = document.getElementById('updateCarModel').value.trim();
+                const licensePlate = document.getElementById('updateCarLicensePlate').value.trim();
+                const capacity = parseInt(document.getElementById('updateCarCapacity').value);
+                const baseFare = parseFloat(document.getElementById('updateCarBaseFare').value);
+                const pricePerKm = parseFloat(document.getElementById('updateCarPricePerKm').value);
+                const categoryId = parseInt(document.getElementById('updateCarCategoryId').value);
+                const status = document.getElementById('updateCarStatus').value;
+
+                // Validate required fields
+                if (!make || !model || !licensePlate || isNaN(capacity) || isNaN(baseFare) || isNaN(pricePerKm) || isNaN(categoryId) || !status) {
+                    alert('Please fill in all fields with valid values');
+                    return;
+                }
+
+                const updatedCar = {carId: parseInt(carId), make, model, licensePlate, capacity, baseFare, pricePerKm, categoryId, status};
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(updatedCar)
+                    });
+                    if (!response.ok)
+                        throw new Error('Failed to update car');
+                    getCars();
+                    cancelUpdate();
+                } catch (error) {
+                    console.error('Error updating car:', error);
+                }
+            }
+
+            // Function to cancel update and hide the update form
+            function cancelUpdate() {
+                document.getElementById('updateForm').style.display = 'none';
+            }
+
+            // Function to delete a car
+            async function deleteCar(carId) {
+                if (!confirm('Are you sure you want to delete this car?'))
+                    return;
+                try {
+                    const response = await fetch(`${apiUrl}/${carId}`, {
+                        method: 'DELETE'
+                    });
+                    if (!response.ok)
+                        throw new Error('Failed to delete car');
+                    getCars();
+                } catch (error) {
+                    console.error('Error deleting car:', error);
+                }
+            }
+
+            // Load car list when page loads
+            document.addEventListener('DOMContentLoaded', () => {
+                getCars();
+            });
+        </script>
+    </body>
 </html>

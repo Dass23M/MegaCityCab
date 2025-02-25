@@ -1,5 +1,8 @@
+db\Categories.class
+com\mycompany\cabservice\resources\NotificationsService.class
 db\Billing.class
 com\mycompany\cabservice\resources\LoginService.class
+com\mycompany\cabservice\resources\CategoriesService.class
 com\mycompany\cabservice\resources\DriverService.class
 com\mycompany\cabservice\resources\JakartaEE8Resource.class
 db\Student.class
@@ -14,5 +17,6 @@ db\BookingStations.class
 com\mycompany\cabservice\resources\CarService.class
 db\Car.class
 com\mycompany\cabservice\resources\BookingService.class
+db\Notifications.class
 com\mycompany\cabservice\JakartaRestConfiguration.class
 db\DBUtils.class

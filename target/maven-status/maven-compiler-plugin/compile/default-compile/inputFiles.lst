@@ -2,7 +2,9 @@ C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\com\mycompany\
 C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\com\mycompany\cabservice\resources\BillingService.java
 C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\db\Billing.java
 C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\db\DBUtils.java
+C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\com\mycompany\cabservice\resources\NotificationsService.java
 C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\db\User.java
+C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\db\Notifications.java
 C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\db\BookingStations.java
 C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\com\mycompany\cabservice\resources\BookingService.java
 C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\com\mycompany\cabservice\resources\StudentService.java
@@ -16,3 +18,5 @@ C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\com\mycompany\
 C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\db\Booking.java
 C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\com\mycompany\cabservice\resources\DriverService.java
 C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\com\mycompany\cabservice\resources\BookingStationsService.java
+C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\db\Categories.java
+C:\Users\DELL\Documents\NetBeansProjects\CABSERVICE\src\main\java\com\mycompany\cabservice\resources\CategoriesService.java

@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* Keeping your existing CSS unchanged for brevity */
         body {
             background: #1E3A8A;
             min-height: 100vh;
@@ -16,7 +17,6 @@
             position: relative;
             overflow-x: hidden;
         }
-
         #particles {
             position: fixed;
             top: 0;
@@ -37,7 +37,6 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-20vh); }
         }
-
         header {
             background: #FFFFFF;
             padding: 15px 0;
@@ -71,7 +70,6 @@
         .nav-menu a:hover {
             color: #FBBF24;
         }
-
         .booking-container {
             max-width: 900px;
             width: 100%;
@@ -153,7 +151,6 @@
         .btn-primary:hover {
             background: #EAA923;
         }
-
         .category-selection {
             text-align: center;
             margin-bottom: 30px;
@@ -183,7 +180,6 @@
             font-size: 0.9rem;
             color: #666;
         }
-
         .modal {
             display: none;
             position: fixed;
@@ -265,24 +261,42 @@
             filter: blur(5px);
             transition: filter 0.3s ease;
         }
-
         .notification {
             position: fixed;
             top: 20px;
-            right: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             padding: 15px 20px;
             border-radius: 6px;
             color: #FFF;
             z-index: 200;
             display: none;
-            max-width: 300px;
+            max-width: 500px; /* Increased width for better visibility */
+            width: 90%;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
         }
         .notification.success { background: #28A745; }
         .notification.error { background: #DC3545; }
         .notification.warning { background: #FFC107; color: #333; }
         .notification.info { background: #17A2B8; }
-
+        .status-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 20px;
+            border-radius: 6px;
+            color: #FFF;
+            z-index: 200;
+            display: none;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .status-notification.success { background: #28A745; }
+        .status-notification.error { background: #DC3545; }
         footer {
             background: #FFFFFF;
             padding: 20px 0;
@@ -411,17 +425,17 @@
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-car"></i> Confirm Booking
+                    <i class="fas fa-car"></i> Submit Booking Request
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- Popup Modal -->
+    <!-- Popup Modal (Booking Confirmation) -->
     <div class="modal" id="bookingModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Booking Confirmation</h3>
+                <h3>Booking Request Submitted</h3>
                 <button class="close-btn" id="closeModal">×</button>
             </div>
             <div class="modal-body">
@@ -442,10 +456,28 @@
                 <p><strong>Discount:</strong> <span id="modalDiscount"></span></p>
                 <p><strong>Tax:</strong> <span id="modalTax"></span></p>
                 <p><strong>Total Fare:</strong> <span id="modalTotalFare" class="total-amount"></span></p>
+                <p><strong>Status:</strong> <span id="modalStatus">Pending</span></p>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-print" id="printBill">Print Bill</button>
                 <button class="btn btn-close-modal" id="confirmClose">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Notification Modal for Customer (Admin Actions) -->
+    <div class="modal" id="statusNotificationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Booking Update</h3>
+                <button class="close-btn" id="closeStatusModal">×</button>
+            </div>
+            <div class="modal-body" id="statusNotificationBody">
+                <p><strong>Booking Status Update:</strong> <span id="statusMessage"></span></p>
+                <p><strong>Admin Comment:</strong> <span id="adminComment"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-close-modal" id="confirmStatusClose">Close</button>
             </div>
         </div>
     </div>
@@ -499,6 +531,7 @@
             $('#usernameDisplay').text(user.username);
             loadCategories();
             checkNotifications(user.userId);
+            pollForBookingUpdates(user.userId); // Start polling for booking status updates
         });
 
         // Logout Handler
@@ -512,10 +545,12 @@
         function loadCategories() {
             $.ajax({
                 url: "http://localhost:8080/CABSERVICE/api/categories",
+                method: "GET",
                 success: function (categories) {
                     const categoriesDiv = $('#categories');
                     categoriesDiv.empty();
-                    categories.forEach(category => {
+                    const categoryArray = Array.isArray(categories) ? categories : [categories];
+                    categoryArray.forEach(category => {
                         categoriesDiv.append(`
                             <div class="category-card" data-category-name="${category.categoryName}">
                                 <h4>${category.categoryName}</h4>
@@ -540,8 +575,10 @@
         function initializeBookingForm() {
             $.ajax({
                 url: "http://localhost:8080/CABSERVICE/api/bookingstations",
+                method: "GET",
                 success: function (stations) {
-                    const uniqueStations = [...new Set(stations.flatMap(s => [s.fromStationName, s.toStationName]))];
+                    const stationArray = Array.isArray(stations) ? stations : [stations];
+                    const uniqueStations = [...new Set(stationArray.flatMap(s => [s.fromStationName, s.toStationName]))];
                     $('#pickUpStation, #dropOffStation').empty().append('<option value="">Select location</option>');
                     uniqueStations.forEach(stationName => {
                         $('#pickUpStation, #dropOffStation').append(
@@ -554,19 +591,21 @@
 
             $.ajax({
                 url: `http://localhost:8080/CABSERVICE/api/cars?category=${encodeURIComponent(selectedCategoryName)}`,
+                method: "GET",
                 success: function (cars) {
                     $('#carSelect').empty().append('<option value="">Choose vehicle</option>');
-                    const availableCars = cars.filter(car => car.status === 'Available');
+                    const carArray = Array.isArray(cars) ? cars : [cars];
+                    const availableCars = carArray.filter(car => car.status === 'Available');
                     if (availableCars.length === 0) {
                         showNotification('No vehicles available in this category!', 'warning');
                     }
                     availableCars.forEach(car => {
                         $('#carSelect').append(`
                             <option value="${car.carId}" 
-                                data-model="${car.model}"
-                                data-capacity="${car.capacity}"
-                                data-base-fare="${car.baseFare}"
-                                data-price-per-km="${car.pricePerKm}">
+                                    data-model="${car.model}"
+                                    data-capacity="${car.capacity}"
+                                    data-base-fare="${car.baseFare}"
+                                    data-price-per-km="${car.pricePerKm}">
                                 ${car.model} (Capacity: ${car.capacity})
                             </option>
                         `);
@@ -577,12 +616,14 @@
 
             $.ajax({
                 url: "http://localhost:8080/CABSERVICE/api/drivers",
+                method: "GET",
                 success: function (drivers) {
                     $('#driverSelect').empty().append('<option value="">Available drivers</option>');
-                    drivers.filter(driver => driver.status === 'Available').forEach(driver => {
+                    const driverArray = Array.isArray(drivers) ? drivers : [drivers];
+                    driverArray.filter(driver => driver.status === 'Available').forEach(driver => {
                         $('#driverSelect').append(`
                             <option value="${driver.driverId}" 
-                                data-name="${driver.name}">
+                                    data-name="${driver.name}">
                                 ${driver.name} (${driver.licenseNumber})
                             </option>
                         `);
@@ -599,8 +640,9 @@
             if (from && to && from !== to) {
                 $.ajax({
                     url: `http://localhost:8080/CABSERVICE/api/bookingstations/${encodeURIComponent(from)}/${encodeURIComponent(to)}`,
+                    method: "GET",
                     success: function (distanceData) {
-                        if (distanceData?.distanceKm) {
+                        if (distanceData && distanceData.distanceKm) {
                             $('#distance').val(distanceData.distanceKm);
                             calculateBilling();
                         } else {
@@ -608,7 +650,10 @@
                             showNotification('Distance not available for this route!', 'warning');
                         }
                     },
-                    error: () => showNotification('Error fetching distance!', 'error')
+                    error: () => {
+                        $('#distance').val('');
+                        showNotification('Error fetching distance!', 'error');
+                    }
                 });
             } else if (from === to) {
                 showNotification('Pickup and dropoff locations must be different!', 'warning');
@@ -625,7 +670,7 @@
                 const baseFare = parseFloat(car.data('base-fare'));
                 const pricePerKm = parseFloat(car.data('price-per-km'));
                 const distanceFare = distance * pricePerKm;
-                const passengerFare = passengers > 4 ? (passengers - 4) * 50 : 0;
+                const passengerFare = passengers > 4 ? (passengers - 4) * 1 : 0;
                 const discount = 0;
                 const tax = (baseFare + distanceFare + passengerFare) * 0.1;
                 const totalFare = baseFare + distanceFare + passengerFare + tax - discount;
@@ -649,8 +694,9 @@
             const car = $('#carSelect option:selected');
             const driver = $('#driverSelect option:selected');
             const passengers = parseInt($('#numPassengers').val());
+            const dateTime = $('#dateTime').val();
 
-            if (!validateForm(pickup, dropoff, car, driver, passengers)) return;
+            if (!validateForm(pickup, dropoff, car, driver, passengers, dateTime)) return;
 
             const billing = calculateBilling();
             if (!billing) {
@@ -659,16 +705,17 @@
             }
 
             const bookingData = {
-                userId: user.user_id, // Fixed from user.user_Id to user.userId
+                userId: user.user_id,
                 pickUpStation: pickup,
                 dropOffStation: dropoff,
                 distance: parseFloat($('#distance').val()),
-                dateTime: $('#dateTime').val().replace('T', ' ') + ':00',
+                dateTime: dateTime.replace('T', ' ') + ':00',
                 numPassengers: passengers,
                 carModel: car.data('model'),
                 driverName: driver.data('name'),
                 categoryName: selectedCategoryName,
-                status: 'Confirmed'
+                status: 'Pending',
+                alertSent: false
             };
 
             $.ajax({
@@ -676,44 +723,77 @@
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(bookingData),
-                success: function (response) {
-                    const bookingId = response.bookingId;
-                    updateVehicleAndDriverStatus(car.val(), driver.val());
-                    sendNotification(user.userId, 'Your booking has been confirmed!', 'Booking');
-                    sendAdminNotification('New booking confirmed!', 'System');
-                    submitBilling(bookingId, billing);
-                    showBookingModal(bookingData, billing);
-                    sessionStorage.setItem('currentBookingId', bookingId);
+                success: function (response, textStatus, jqXHR) {
+                    console.log('Booking response:', response);
+                    let bookingId = response.bookingId || response.id;
+
+                    // If bookingId is not in response body, try extracting from Location header or fetch latest booking
+                    if (!bookingId) {
+                        const locationHeader = jqXHR.getResponseHeader('Location');
+                        if (locationHeader) {
+                            bookingId = locationHeader.split('/').pop(); // e.g., /bookings/2 -> 2
+                        } else {
+                            // Fallback: Fetch the latest booking for this user
+                            $.ajax({
+                                url: `http://localhost:8080/CABSERVICE/api/bookings?userId=${user.userId}`,
+                                method: "GET",
+                                success: function (bookings) {
+                                    const bookingArray = Array.isArray(bookings) ? bookings : [bookings];
+                                    const latestBooking = bookingArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+                                    bookingId = latestBooking.bookingId;
+                                    proceedWithBooking(bookingId, user, bookingData, billing);
+                                },
+                                error: () => {
+                                    showNotification('Booking created, but unable to retrieve ID!', 'warning');
+                                }
+                            });
+                            return;
+                        }
+                    }
+
+                    proceedWithBooking(bookingId, user, bookingData, billing);
                 },
                 error: function (xhr) {
                     console.error('Booking error:', xhr);
-                    showNotification(xhr.responseJSON?.message || 'Booking failed! Please try again.', 'error');
+                    showNotification(xhr.responseJSON?.message || 'Booking request failed!', 'error');
                 }
             });
         });
 
-        // Submit Billing
+        // Proceed with Booking Process
+        function proceedWithBooking(bookingId, user, bookingData, billing) {
+            console.log('Proceeding with bookingId:', bookingId);
+            sendNotification(user.userId, 'Your booking request is pending confirmation.', 'Booking');
+            sendAdminNotification(`New booking request (ID: ${bookingId}) from ${user.username}`, 'System');
+            submitBilling(bookingId, billing);
+            showBookingModal(bookingData, billing);
+            sessionStorage.setItem('currentBookingId', bookingId);
+        }
+
+        // Submit Billing Function
         function submitBilling(bookingId, billing) {
             const billingData = {
                 bookingId: bookingId,
-                baseFare: billing.baseFare,
-                distanceFare: billing.distanceFare,
-                passengerFare: billing.passengerFare,
-                discount: billing.discount,
-                tax: billing.tax,
-                totalFare: billing.totalFare
+                baseFare: parseFloat(billing.baseFare.toFixed(2)),
+                distanceFare: parseFloat(billing.distanceFare.toFixed(2)),
+                passengerFare: parseFloat(billing.passengerFare.toFixed(2)),
+                discount: parseFloat(billing.discount.toFixed(2)),
+                tax: parseFloat(billing.tax.toFixed(2)),
+                totalFare: parseFloat(billing.totalFare.toFixed(2))
             };
             $.ajax({
                 url: "http://localhost:8080/CABSERVICE/api/billing",
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(billingData),
-                success: function () {
-                    console.log('Billing submitted successfully');
+                success: function (response) {
+                    console.log('Billing submitted successfully:', response);
+                    showNotification('Billing submitted successfully!', 'success');
                 },
                 error: function (xhr) {
-                    console.error('Billing error:', xhr);
-                    showNotification('Billing submission failed!', 'error');
+                    console.error('Billing submission failed:', xhr);
+                    const errorMsg = xhr.responseJSON?.message || 'Billing submission failed! Please try again.';
+                    showNotification(errorMsg, 'error');
                 }
             });
         }
@@ -728,13 +808,13 @@
             $('#modalPassengers').text(bookingData.numPassengers);
             $('#modalVehicle').text(bookingData.carModel);
             $('#modalDriver').text(bookingData.driverName);
-
             $('#modalBaseFare').text(`Rs. ${billing.baseFare.toFixed(2)}`);
             $('#modalDistanceFare').text(`Rs. ${billing.distanceFare.toFixed(2)}`);
             $('#modalPassengerFare').text(`Rs. ${billing.passengerFare.toFixed(2)}`);
             $('#modalDiscount').text(`Rs. ${billing.discount.toFixed(2)}`);
             $('#modalTax').text(`Rs. ${billing.tax.toFixed(2)}`);
             $('#modalTotalFare').text(`Rs. ${billing.totalFare.toFixed(2)}`);
+            $('#modalStatus').text(bookingData.status);
 
             $('#bookingModal').css('display', 'flex');
             $('body > *:not(#bookingModal, #notification)').addClass('blur-background');
@@ -756,16 +836,17 @@
                 <head>
                     <title>Mega City Cab - Bill</title>
                     <style>
-                        body { font-family: 'Roboto', sans-serif; padding: 20px; }
-                        h4 { color: #1E3A8A; font-family: 'Poppins', sans-serif; }
-                        p { margin: 5px 0; }
+                        body { font-family: 'Roboto', sans-serif; padding: 10px; font-size: 12px; line-height: 1.2; }
+                        h2 { font-family: 'Poppins', sans-serif; color: #1E3A8A; text-align: center; font-size: 16px; margin: 5px 0; }
+                        h4 { font-family: 'Poppins', sans-serif; color: #1E3A8A; font-size: 14px; margin: 5px 0; }
+                        p { margin: 2px 0; font-size: 12px; }
                         strong { color: #1E3A8A; }
-                        .total-amount { font-size: 1.5rem; font-weight: 700; color: #FBBF24; }
-                        hr { border: 1px solid #D1D5DB; }
+                        .total-amount { font-size: 14px; font-weight: 700; color: #FBBF24; }
+                        hr { border: 1px solid #D1D5DB; margin: 5px 0; }
                     </style>
                 </head>
                 <body>
-                    <h2 style="text-align: center; color: #1E3A8A;">Mega City Cab - Bill</h2>
+                    <h2>Mega City Cab - Booking Receipt</h2>
                     ${printContent}
                 </body>
                 </html>
@@ -774,13 +855,11 @@
             printWindow.print();
         });
 
-        // Notification System
+        // Notification System (Updated for Top Center and 5-Second Display)
         function showNotification(message, type) {
             const notification = $('#notification');
-            notification.text(message);
-            notification.removeClass('success error warning info').addClass(type);
-            notification.fadeIn();
-            setTimeout(() => notification.fadeOut(), 3000);
+            notification.text(message).removeClass('success error warning info').addClass(type).fadeIn();
+            setTimeout(() => notification.fadeOut(), 5000); // Increased to 5 seconds
         }
 
         function sendNotification(userId, message, type) {
@@ -788,37 +867,96 @@
                 url: "http://localhost:8080/CABSERVICE/api/notifications",
                 method: "POST",
                 contentType: "application/json",
-                data: JSON.stringify({ userId, message, type }),
-                error: () => console.log('Failed to send notification')
+                data: JSON.stringify({ userId, message, type, isRead: false }),
+                error: function (xhr) {
+                    console.error('Notification error:', xhr);
+                    console.log('Failed to send notification');
+                }
             });
         }
 
         function sendAdminNotification(message, type) {
             $.ajax({
                 url: "http://localhost:8080/CABSERVICE/api/users?role=admin",
+                method: "GET",
                 success: function (admins) {
-                    admins.forEach(admin => {
+                    const adminArray = Array.isArray(admins) ? admins : [admins];
+                    adminArray.forEach(admin => {
                         sendNotification(admin.userId, message, type);
                     });
                 },
-                error: () => console.log('Failed to fetch admins')
+                error: function (xhr) {
+                    console.error('Admin fetch error:', xhr);
+                    console.log('Failed to fetch admins');
+                }
             });
         }
 
         function checkNotifications(userId) {
             $.ajax({
                 url: `http://localhost:8080/CABSERVICE/api/notifications?userId=${encodeURIComponent(userId)}&isRead=false`,
+                method: "GET",
+                dataType: "json",
                 success: function (notifications) {
-                    notifications.forEach(n => showNotification(n.message, n.type.toLowerCase()));
+                    const notificationArray = Array.isArray(notifications) ? notifications : [notifications];
+                    notificationArray.forEach(n => {
+                        if (n.type === 'Booking') {
+                            showStatusNotification(n.message, n.type.toLowerCase(), n.admin_comment || 'No comment');
+                        } else {
+                            showNotification(n.message, n.type.toLowerCase());
+                        }
+                    });
                 },
-                error: () => console.log('Failed to check notifications')
+                error: function (xhr) {
+                    console.error('Notifications error:', xhr);
+                    console.log('Failed to check notifications');
+                }
             });
         }
 
+        // Show Status Notification Modal for Customer
+        function showStatusNotification(message, type, adminComment) {
+            $('#statusMessage').text(message);
+            $('#adminComment').text(adminComment);
+            $('#statusNotificationModal').css('display', 'flex');
+            $('body > *:not(#statusNotificationModal, #notification)').addClass('blur-background');
+        }
+
+        // Close Status Notification Modal
+        $('#closeStatusModal, #confirmStatusClose').click(function () {
+            $('#statusNotificationModal').hide();
+            $('body > *:not(#statusNotificationModal, #notification)').removeClass('blur-background');
+        });
+
+        // Poll for Booking Status Updates
+        function pollForBookingUpdates(userId) {
+            setInterval(() => {
+                $.ajax({
+                    url: `http://localhost:8080/CABSERVICE/api/bookings?userId=${userId}&status=Confirmed,Cancelled`,
+                    method: "GET",
+                    dataType: "json",
+                    success: function (bookings) {
+                        const bookingArray = Array.isArray(bookings) ? bookings : [bookings];
+                        bookingArray.forEach(booking => {
+                            if (booking.alert_sent) {
+                                const message = `Your booking (ID: ${booking.bookingId}) has been ${booking.status.toLowerCase()}.`;
+                                showStatusNotification(message, 'booking', booking.admin_comment || 'No comment');
+                                // Optionally mark notification as read in backend (not implemented here)
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Polling error:', xhr);
+                        console.log('Failed to poll booking updates');
+                    }
+                });
+            }, 5000); // Poll every 5 seconds
+        }
+
         // Form Validation
-        function validateForm(pickup, dropoff, car, driver, passengers) {
-            if (pickup === dropoff) {
-                showNotification('Pickup and dropoff locations must be different!', 'warning');
+        function validateForm(pickup, dropoff, car, driver, passengers, dateTime) {
+            if (!pickup || !dropoff || pickup === dropoff) {
+                showNotification('Pickup and dropoff locations must be different and selected!', 'warning');
                 return false;
             }
             if (!car.val()) {
@@ -837,45 +975,12 @@
                 showNotification('Please select valid locations to calculate distance!', 'warning');
                 return false;
             }
-            const dateTime = new Date($('#dateTime').val());
-            if (dateTime < new Date()) {
+            const bookingDateTime = new Date(dateTime);
+            if (bookingDateTime < new Date()) {
                 showNotification('Booking date and time cannot be in the past!', 'warning');
                 return false;
             }
             return true;
-        }
-
-        // Update Vehicle and Driver Status
-        function updateVehicleAndDriverStatus(carId, driverId) {
-            $.ajax({
-                url: `http://localhost:8080/CABSERVICE/api/cars/${carId}`,
-                method: "GET",
-                success: function (carData) {
-                    carData.status = "In Service";
-                    $.ajax({
-                        url: "http://localhost:8080/CABSERVICE/api/cars",
-                        method: "PUT",
-                        contentType: "application/json",
-                        data: JSON.stringify(carData),
-                        error: () => console.log('Failed to update car status')
-                    });
-                }
-            });
-
-            $.ajax({
-                url: `http://localhost:8080/CABSERVICE/api/drivers/${driverId}`,
-                method: "GET",
-                success: function (driverData) {
-                    driverData.status = "Busy";
-                    $.ajax({
-                        url: "http://localhost:8080/CABSERVICE/api/drivers",
-                        method: "PUT",
-                        contentType: "application/json",
-                        data: JSON.stringify(driverData),
-                        error: () => console.log('Failed to update driver status')
-                    });
-                }
-            });
         }
     </script>
 </body>

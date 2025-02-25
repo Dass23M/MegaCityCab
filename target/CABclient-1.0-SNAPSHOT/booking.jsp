@@ -1,0 +1,913 @@
+<%-- 
+    Document   : booking
+    Created on : Feb 25, 2025, 5:54:06 PM
+    Author     : DELL
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega City Cab - Book Your Ride</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #1E3A8A;
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            position: relative;
+            overflow-x: hidden;
+        }
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            background: rgba(251, 191, 36, 0.3);
+            border-radius: 50%;
+            animation: float 10s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20vh); }
+        }
+        header {
+            background: #FFFFFF;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: #1E3A8A;
+        }
+        .nav-menu a {
+            color: #1E3A8A;
+            margin-left: 20px;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+        .nav-menu a:hover {
+            color: #FBBF24;
+        }
+        .booking-container {
+            max-width: 900px;
+            width: 100%;
+            margin: 40px auto;
+        }
+        .booking-card {
+            background: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        .user-info-card {
+            background: #1E3A8A;
+            color: #FFFFFF;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+        }
+        .user-info-card h5 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            margin: 0;
+        }
+        .btn-logout {
+            background: #FBBF24;
+            border: none;
+            padding: 8px 15px;
+            color: #1E3A8A;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+        .btn-logout:hover {
+            background: #EAA923;
+        }
+        h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: #1E3A8A;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .form-label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            color: #1E3A8A;
+            margin-bottom: 5px;
+        }
+        .form-control, .form-select {
+            border-radius: 6px;
+            border: 1px solid #D1D5DB;
+            padding: 12px 15px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #FBBF24;
+            box-shadow: 0 0 5px rgba(251, 191, 36, 0.5);
+        }
+        .input-group-text {
+            background: #1E3A8A;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 6px 0 0 6px;
+            padding: 12px;
+        }
+        .btn-primary {
+            background: #FBBF24;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 20px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: #1E3A8A;
+            transition: background 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: #EAA923;
+        }
+        .category-selection {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .category-card {
+            display: inline-block;
+            background: #FFFFFF;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+            width: 200px;
+            cursor: pointer;
+            border: 2px solid #D1D5DB;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+        .category-card:hover, .category-card.selected {
+            border-color: #FBBF24;
+            transform: scale(1.05);
+        }
+        .category-card h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: #1E3A8A;
+            margin: 0;
+        }
+        .category-card p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #FFFFFF;
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #D1D5DB;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .modal-header h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: #1E3A8A;
+            margin: 0;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #1E3A8A;
+            cursor: pointer;
+        }
+        .modal-body p {
+            margin: 5px 0;
+            font-family: 'Roboto', sans-serif;
+        }
+        .modal-body strong {
+            color: #1E3A8A;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .btn-print {
+            background: #FBBF24;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: #1E3A8A;
+        }
+        .btn-print:hover {
+            background: #EAA923;
+        }
+        .btn-close-modal {
+            background: #1E3A8A;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: #FFFFFF;
+        }
+        .btn-close-modal:hover {
+            background: #162E6F;
+        }
+        .blur-background {
+            filter: blur(5px);
+            transition: filter 0.3s ease;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 6px;
+            color: #FFF;
+            z-index: 200;
+            display: none;
+            max-width: 300px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .notification.success { background: #28A745; }
+        .notification.error { background: #DC3545; }
+        .notification.warning { background: #FFC107; color: #333; }
+        .notification.info { background: #17A2B8; }
+        footer {
+            background: #FFFFFF;
+            padding: 20px 0;
+            text-align: center;
+            color: #1E3A8A;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .social-links a {
+            color: #1E3A8A;
+            margin: 0 10px;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        .social-links a:hover {
+            color: #FBBF24;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div id="particles"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">Mega City Cab</div>
+            <nav class="nav-menu">
+                <a href="#">Home</a>
+                <a href="#">Book Now</a>
+                <a href="#">Services</a>
+                <a href="#">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Authentication Check -->
+    <%
+        // Check if user is logged in using session
+        Object loggedInUser = session.getAttribute("loggedInUser");
+        if (loggedInUser == null) {
+    %>
+        <script>
+            $(document).ready(function() {
+                showNotification('Please login first!', 'error');
+                setTimeout(() => window.location.href = 'register-login.jsp', 2000);
+            });
+        </script>
+    <%
+        } else {
+            // Parse user details (assuming it's stored as a JSON string or object)
+            String username = (String) ((java.util.Map) loggedInUser).get("username");
+            String userId = String.valueOf(((java.util.Map) loggedInUser).get("userId"));
+    %>
+
+    <!-- Booking Section -->
+    <div class="booking-container">
+        <div class="booking-card">
+            <div class="user-info-card d-flex justify-content-between align-items-center">
+                <div>
+                    <h5>Welcome, <span id="usernameDisplay"><%= username %></span></h5>
+                    <small>Ride with comfort and style!</small>
+                </div>
+                <button class="btn btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+
+            <!-- Category Selection -->
+            <div class="category-selection" id="categorySelection">
+                <h2>Select Your Ride Category</h2>
+                <div id="categories"></div>
+            </div>
+
+            <!-- Booking Form (Hidden Initially) -->
+            <form id="bookingForm" style="display: none;">
+                <h2>Book Your Ride</h2>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Pickup Location</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                            <select id="pickUpStation" class="form-select" required>
+                                <option value="">Select pickup location</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Drop-off Location</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                            <select id="dropOffStation" class="form-select" required>
+                                <option value="">Select dropoff location</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Booking Date & Time</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                            <input type="datetime-local" id="dateTime" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Distance (km)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-road"></i></span>
+                            <input type="text" id="distance" class="form-control" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Passengers (1-8)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-users"></i></span>
+                            <input type="number" id="numPassengers" class="form-control" min="1" max="8" value="1" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Select Vehicle</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-car"></i></span>
+                            <select id="carSelect" class="form-select" required>
+                                <option value="">Choose vehicle</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Select Driver</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
+                        <select id="driverSelect" class="form-select" required>
+                            <option value="">Available drivers</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-car"></i> Submit Booking Request
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Popup Modal -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Booking Request Submitted</h3>
+                <button class="close-btn" id="closeModal">×</button>
+            </div>
+            <div class="modal-body">
+                <h4>Booking Details</h4>
+                <p><strong>Category:</strong> <span id="modalCategory"></span></p>
+                <p><strong>Pickup Location:</strong> <span id="modalPickup"></span></p>
+                <p><strong>Drop-off Location:</strong> <span id="modalDropoff"></span></p>
+                <p><strong>Date & Time:</strong> <span id="modalDateTime"></span></p>
+                <p><strong>Distance:</strong> <span id="modalDistance"></span> km</p>
+                <p><strong>Passengers:</strong> <span id="modalPassengers"></span></p>
+                <p><strong>Vehicle:</strong> <span id="modalVehicle"></span></p>
+                <p><strong>Driver:</strong> <span id="modalDriver"></span></p>
+                <hr>
+                <h4>Billing Details</h4>
+                <p><strong>Base Fare:</strong> <span id="modalBaseFare"></span></p>
+                <p><strong>Distance Fare:</strong> <span id="modalDistanceFare"></span></p>
+                <p><strong>Passenger Fare:</strong> <span id="modalPassengerFare"></span></p>
+                <p><strong>Discount:</strong> <span id="modalDiscount"></span></p>
+                <p><strong>Tax:</strong> <span id="modalTax"></span></p>
+                <p><strong>Total Fare:</strong> <span id="modalTotalFare" class="total-amount"></span></p>
+                <p><strong>Status:</strong> <span id="modalStatus">Pending</span></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-print" id="printBill">Print Bill</button>
+                <button class="btn btn-close-modal" id="confirmClose">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <p>Contact us: +1-800-CAB-RIDE | support@megacitycab.com</p>
+            <div class="social-links mt-2">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p class="mt-2">© 2025 Mega City Cab. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Particle Animation
+        const particleContainer = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.width = `${Math.random() * 10 + 5}px`;
+            particle.style.height = particle.style.width;
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.top = `${Math.random() * 100}vh`;
+            particle.style.animationDuration = `${Math.random() * 5 + 5}s`;
+            particle.style.animationDelay = `${Math.random() * 5}s`;
+            particleContainer.appendChild(particle);
+        }
+
+        // Global Variables
+        let selectedCategoryName = null;
+
+        // Authentication Check and Initialization
+        $(document).ready(function () {
+            // Username is already set via JSP
+            loadCategories();
+            checkNotifications('<%= userId %>');
+        });
+
+        // Logout Handler
+        $('#logoutBtn').click(function () {
+            $.ajax({
+                url: 'LogoutServlet', // Assuming a servlet handles logout
+                method: 'POST',
+                success: function () {
+                    showNotification('Logged out successfully!', 'success');
+                    setTimeout(() => window.location.href = 'index.html', 2000);
+                },
+                error: function () {
+                    showNotification('Logout failed!', 'error');
+                }
+            });
+        });
+
+        // Load Categories
+        function loadCategories() {
+            $.ajax({
+                url: "http://localhost:8080/CABSERVICE/api/categories",
+                method: "GET",
+                success: function (categories) {
+                    const categoriesDiv = $('#categories');
+                    categoriesDiv.empty();
+                    const categoryArray = Array.isArray(categories) ? categories : [categories];
+                    categoryArray.forEach(category => {
+                        categoriesDiv.append(`
+                            <div class="category-card" data-category-name="${category.categoryName}">
+                                <h4>${category.categoryName}</h4>
+                                <p>${category.description}</p>
+                            </div>
+                        `);
+                    });
+                    $('.category-card').click(function () {
+                        $('.category-card').removeClass('selected');
+                        $(this).addClass('selected');
+                        selectedCategoryName = $(this).data('category-name');
+                        $('#categorySelection').hide();
+                        $('#bookingForm').show();
+                        initializeBookingForm();
+                    });
+                },
+                error: () => showNotification('Failed to load categories!', 'error')
+            });
+        }
+
+        // Initialize Booking Form
+        function initializeBookingForm() {
+            $.ajax({
+                url: "http://localhost:8080/CABSERVICE/api/bookingstations",
+                method: "GET",
+                success: function (stations) {
+                    const stationArray = Array.isArray(stations) ? stations : [stations];
+                    const uniqueStations = [...new Set(stationArray.flatMap(s => [s.fromStationName, s.toStationName]))];
+                    $('#pickUpStation, #dropOffStation').empty().append('<option value="">Select location</option>');
+                    uniqueStations.forEach(stationName => {
+                        $('#pickUpStation, #dropOffStation').append(
+                            `<option value="${stationName}">${stationName}</option>`
+                        );
+                    });
+                },
+                error: () => showNotification('Failed to load stations!', 'error')
+            });
+
+            $.ajax({
+                url: `http://localhost:8080/CABSERVICE/api/cars?category=${encodeURIComponent(selectedCategoryName)}`,
+                method: "GET",
+                success: function (cars) {
+                    $('#carSelect').empty().append('<option value="">Choose vehicle</option>');
+                    const carArray = Array.isArray(cars) ? cars : [cars];
+                    const availableCars = carArray.filter(car => car.status === 'Available');
+                    if (availableCars.length === 0) {
+                        showNotification('No vehicles available in this category!', 'warning');
+                    }
+                    availableCars.forEach(car => {
+                        $('#carSelect').append(`
+                            <option value="${car.carId}" 
+                                    data-model="${car.model}"
+                                    data-capacity="${car.capacity}"
+                                    data-base-fare="${car.baseFare}"
+                                    data-price-per-km="${car.pricePerKm}">
+                                ${car.model} (Capacity: ${car.capacity})
+                            </option>
+                        `);
+                    });
+                },
+                error: () => showNotification('Failed to load vehicles!', 'error')
+            });
+
+            $.ajax({
+                url: "http://localhost:8080/CABSERVICE/api/drivers",
+                method: "GET",
+                success: function (drivers) {
+                    $('#driverSelect').empty().append('<option value="">Available drivers</option>');
+                    const driverArray = Array.isArray(drivers) ? drivers : [drivers];
+                    driverArray.filter(driver => driver.status === 'Available').forEach(driver => {
+                        $('#driverSelect').append(`
+                            <option value="${driver.driverId}" 
+                                    data-name="${driver.name}">
+                                ${driver.name} (${driver.licenseNumber})
+                            </option>
+                        `);
+                    });
+                },
+                error: () => showNotification('Failed to load drivers!', 'error')
+            });
+        }
+
+        // Distance Calculation
+        $('#pickUpStation, #dropOffStation').change(function () {
+            const from = $('#pickUpStation').val();
+            const to = $('#dropOffStation').val();
+            if (from && to && from !== to) {
+                $.ajax({
+                    url: `http://localhost:8080/CABSERVICE/api/bookingstations/${encodeURIComponent(from)}/${encodeURIComponent(to)}`,
+                    method: "GET",
+                    success: function (distanceData) {
+                        if (distanceData && distanceData.distanceKm) {
+                            $('#distance').val(distanceData.distanceKm);
+                            calculateBilling();
+                        } else {
+                            $('#distance').val('');
+                            showNotification('Distance not available for this route!', 'warning');
+                        }
+                    },
+                    error: () => {
+                        $('#distance').val('');
+                        showNotification('Error fetching distance!', 'error');
+                    }
+                });
+            } else if (from === to) {
+                showNotification('Pickup and dropoff locations must be different!', 'warning');
+                $('#distance').val('');
+            }
+        });
+
+        // Calculate Billing
+        function calculateBilling() {
+            const distance = parseFloat($('#distance').val());
+            const passengers = parseInt($('#numPassengers').val());
+            const car = $('#carSelect option:selected');
+            if (distance && passengers && car.val()) {
+                const baseFare = parseFloat(car.data('base-fare'));
+                const pricePerKm = parseFloat(car.data('price-per-km'));
+                const distanceFare = distance * pricePerKm;
+                const passengerFare = passengers > 4 ? (passengers - 4) * 1 : 0;
+                const discount = 0;
+                const tax = (baseFare + distanceFare + passengerFare) * 0.1;
+                const totalFare = baseFare + distanceFare + passengerFare + tax - discount;
+                return { baseFare, distanceFare, passengerFare, discount, tax, totalFare };
+            }
+            return null;
+        }
+
+        // Booking Form Submission
+        $('#bookingForm').submit(function (e) {
+            e.preventDefault();
+            const pickup = $('#pickUpStation').val();
+            const dropoff = $('#dropOffStation').val();
+            const car = $('#carSelect option:selected');
+            const driver = $('#driverSelect option:selected');
+            const passengers = parseInt($('#numPassengers').val());
+            const dateTime = $('#dateTime').val();
+
+            if (!validateForm(pickup, dropoff, car, driver, passengers, dateTime)) return;
+
+            const billing = calculateBilling();
+            if (!billing) {
+                showNotification('Unable to calculate billing!', 'error');
+                return;
+            }
+
+            const bookingData = {
+                userId: '<%= userId %>',
+                pickUpStation: pickup,
+                dropOffStation: dropoff,
+                distance: parseFloat($('#distance').val()),
+                dateTime: dateTime.replace('T', ' ') + ':00',
+                numPassengers: passengers,
+                carModel: car.data('model'),
+                driverName: driver.data('name'),
+                categoryName: selectedCategoryName,
+                status: 'Pending',
+                alertSent: false
+            };
+
+            $.ajax({
+                url: "http://localhost:8080/CABSERVICE/api/bookings",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(bookingData),
+                success: function (response, textStatus, jqXHR) {
+                    console.log('Booking response:', response);
+                    let bookingId = response.bookingId || response.id;
+
+                    if (!bookingId) {
+                        const locationHeader = jqXHR.getResponseHeader('Location');
+                        if (locationHeader) {
+                            bookingId = locationHeader.split('/').pop();
+                        } else {
+                            $.ajax({
+                                url: `http://localhost:8080/CABSERVICE/api/bookings?userId=<%= userId %>`,
+                                method: "GET",
+                                success: function (bookings) {
+                                    const bookingArray = Array.isArray(bookings) ? bookings : [bookings];
+                                    const latestBooking = bookingArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+                                    bookingId = latestBooking.bookingId;
+                                    proceedWithBooking(bookingId, bookingData, billing);
+                                },
+                                error: () => {
+                                    showNotification('Booking created, but unable to retrieve ID!', 'warning');
+                                }
+                            });
+                            return;
+                        }
+                    }
+
+                    proceedWithBooking(bookingId, bookingData, billing);
+                },
+                error: function (xhr) {
+                    console.error('Booking error:', xhr);
+                    showNotification(xhr.responseJSON?.message || 'Booking request failed!', 'error');
+                }
+            });
+        });
+
+        // Proceed with Booking Process
+        function proceedWithBooking(bookingId, bookingData, billing) {
+            console.log('Proceeding with bookingId:', bookingId);
+            sendNotification('<%= userId %>', 'Your booking request is pending confirmation.', 'Booking');
+            sendAdminNotification(`New booking request (ID: ${bookingId}) from <%= username %>`, 'System');
+            submitBilling(bookingId, billing);
+            showBookingModal(bookingData, billing);
+            sessionStorage.setItem('currentBookingId', bookingId);
+        }
+
+        // Submit Billing Function
+        function submitBilling(bookingId, billing) {
+            const billingData = {
+                bookingId: bookingId,
+                baseFare: parseFloat(billing.baseFare.toFixed(2)),
+                distanceFare: parseFloat(billing.distanceFare.toFixed(2)),
+                passengerFare: parseFloat(billing.passengerFare.toFixed(2)),
+                discount: parseFloat(billing.discount.toFixed(2)),
+                tax: parseFloat(billing.tax.toFixed(2)),
+                totalFare: parseFloat(billing.totalFare.toFixed(2))
+            };
+            $.ajax({
+                url: "http://localhost:8080/CABSERVICE/api/billing",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(billingData),
+                success: function (response) {
+                    console.log('Billing submitted successfully:', response);
+                    showNotification('Billing submitted successfully!', 'success');
+                },
+                error: function (xhr) {
+                    console.error('Billing submission failed:', xhr);
+                    showNotification(xhr.responseJSON?.message || 'Billing submission failed! Please try again.', 'error');
+                }
+            });
+        }
+
+        // Show Popup Modal
+        function showBookingModal(bookingData, billing) {
+            $('#modalCategory').text(bookingData.categoryName);
+            $('#modalPickup').text(bookingData.pickUpStation);
+            $('#modalDropoff').text(bookingData.dropOffStation);
+            $('#modalDateTime').text(bookingData.dateTime);
+            $('#modalDistance').text(bookingData.distance);
+            $('#modalPassengers').text(bookingData.numPassengers);
+            $('#modalVehicle').text(bookingData.carModel);
+            $('#modalDriver').text(bookingData.driverName);
+            $('#modalBaseFare').text(`Rs. ${billing.baseFare.toFixed(2)}`);
+            $('#modalDistanceFare').text(`Rs. ${billing.distanceFare.toFixed(2)}`);
+            $('#modalPassengerFare').text(`Rs. ${billing.passengerFare.toFixed(2)}`);
+            $('#modalDiscount').text(`Rs. ${billing.discount.toFixed(2)}`);
+            $('#modalTax').text(`Rs. ${billing.tax.toFixed(2)}`);
+            $('#modalTotalFare').text(`Rs. ${billing.totalFare.toFixed(2)}`);
+            $('#modalStatus').text(bookingData.status);
+
+            $('#bookingModal').css('display', 'flex');
+            $('body > *:not(#bookingModal, #notification)').addClass('blur-background');
+        }
+
+        // Close Modal
+        $('#closeModal, #confirmClose').click(function () {
+            $('#bookingModal').hide();
+            $('body > *:not(#bookingModal, #notification)').removeClass('blur-background');
+            window.location.reload();
+        });
+
+        // Print Bill
+        $('#printBill').click(function () {
+            const printContent = document.querySelector('.modal-body').innerHTML;
+            const printWindow = window.open('', '', 'width=800,height=600');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Mega City Cab - Bill</title>
+                    <style>
+                        body { font-family: 'Roboto', sans-serif; padding: 20px; }
+                        h4 { color: #1E3A8A; font-family: 'Poppins', sans-serif; }
+                        p { margin: 5px 0; }
+                        strong { color: #1E3A8A; }
+                        .total-amount { font-size: 1.5rem; font-weight: 700; color: #FBBF24; }
+                        hr { border: 1px solid #D1D5DB; }
+                    </style>
+                </head>
+                <body>
+                    <h2 style="text-align: center; color: #1E3A8A;">Mega City Cab - Booking Receipt</h2>
+                    ${printContent}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        });
+
+        // Notification System
+        function showNotification(message, type) {
+            const notification = $('#notification');
+            notification.text(message).removeClass('success error warning info').addClass(type).fadeIn();
+            setTimeout(() => notification.fadeOut(), 3000);
+        }
+
+        function sendNotification(userId, message, type) {
+            $.ajax({
+                url: "http://localhost:8080/CABSERVICE/api/notifications",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ userId, message, type, isRead: false }),
+                error: () => console.log('Failed to send notification')
+            });
+        }
+
+        function sendAdminNotification(message, type) {
+            $.ajax({
+                url: "http://localhost:8080/CABSERVICE/api/users?role=admin",
+                method: "GET",
+                success: function (admins) {
+                    const adminArray = Array.isArray(admins) ? admins : [admins];
+                    adminArray.forEach(admin => {
+                        sendNotification(admin.userId, message, type);
+                    });
+                },
+                error: () => console.log('Failed to fetch admins')
+            });
+        }
+
+        function checkNotifications(userId) {
+            $.ajax({
+                url: `http://localhost:8080/CABSERVICE/api/notifications?userId=${encodeURIComponent(userId)}&isRead=false`,
+                method: "GET",
+                success: function (notifications) {
+                    const notificationArray = Array.isArray(notifications) ? notifications : [notifications];
+                    notificationArray.forEach(n => showNotification(n.message, n.type.toLowerCase()));
+                },
+                error: () => console.log('Failed to check notifications')
+            });
+        }
+
+        // Form Validation
+        function validateForm(pickup, dropoff, car, driver, passengers, dateTime) {
+            if (!pickup || !dropoff || pickup === dropoff) {
+                showNotification('Pickup and dropoff locations must be different and selected!', 'warning');
+                return false;
+            }
+            if (!car.val()) {
+                showNotification('Please select a vehicle!', 'warning');
+                return false;
+            }
+            if (passengers > parseInt(car.data('capacity'))) {
+                showNotification(`Selected vehicle can only accommodate ${car.data('capacity')} passengers!`, 'warning');
+                return false;
+            }
+            if (!driver.val()) {
+                showNotification('Please select a driver!', 'warning');
+                return false;
+            }
+            if (!$('#distance').val()) {
+                showNotification('Please select valid locations to calculate distance!', 'warning');
+                return false;
+            }
+            const bookingDateTime = new Date(dateTime);
+            if (bookingDateTime < new Date()) {
+                showNotification('Booking date and time cannot be in the past!', 'warning');
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <%
+        } // End of else block for logged-in user
+    %>
+</body>
+</html>

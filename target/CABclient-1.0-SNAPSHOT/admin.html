@@ -7,179 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: #F4F7FA;
-            min-height: 100vh;
-            font-family: 'Roboto', sans-serif;
-            color: #333;
-        }
-        header {
-            background: #1E3A8A;
-            color: #FFFFFF;
-            padding: 15px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-        }
-        .logo {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 1.5rem;
-        }
-        .nav-menu a {
-            color: #FFFFFF;
-            margin-left: 20px;
-            text-decoration: none;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 400;
-            transition: color 0.3s ease;
-        }
-        .nav-menu a:hover {
-            color: #FBBF24;
-        }
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        .card {
-            background: #FFFFFF;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        h2 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            color: #1E3A8A;
-            margin-bottom: 20px;
-        }
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .table th, .table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #D1D5DB;
-        }
-        .table th {
-            background: #1E3A8A;
-            color: #FFFFFF;
-            font-family: 'Poppins', sans-serif;
-        }
-        .btn-approve {
-            background: #28A745;
-            color: #FFFFFF;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            transition: background 0.3s ease;
-        }
-        .btn-approve:hover {
-            background: #218838;
-        }
-        .btn-cancel {
-            background: #DC3545;
-            color: #FFFFFF;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            transition: background 0.3s ease;
-        }
-        .btn-cancel:hover {
-            background: #C82333;
-        }
-        .btn-details {
-            background: #FBBF24;
-            color: #1E3A8A;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            transition: background 0.3s ease;
-        }
-        .btn-details:hover {
-            background: #EAA923;
-        }
-        .notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 15px 20px;
-            border-radius: 6px;
-            color: #FFF;
-            z-index: 200;
-            display: none;
-            max-width: 500px; /* Increased width for better visibility */
-            width: 90%;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
-        .notification.success { background: #28A745; }
-        .notification.error { background: #DC3545; }
-        .notification.warning { background: #FFC107; color: #333; }
-        .notification.info { background: #17A2B8; }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: #FFFFFF;
-            border-radius: 10px;
-            padding: 20px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #D1D5DB;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-        .modal-header h3 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            color: #1E3A8A;
-            margin: 0;
-        }
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #1E3A8A;
-            cursor: pointer;
-        }
-        .modal-body p {
-            margin: 5px 0;
-            font-family: 'Roboto', sans-serif;
-        }
-        .modal-body strong {
-            color: #1E3A8A;
-        }
-    </style>
+  
 </head>
 <body>
     <!-- Header -->
@@ -250,7 +78,7 @@
             setTimeout(() => window.location.href = 'index.html', 2000);
         });
 
-        // Load Pending Bookings (Only Booking Details, No Billing in Table)
+        // Load Pending Bookings
         function loadPendingBookings() {
             $.ajax({
                 url: "http://localhost:8080/CABSERVICE/api/bookings?status=Pending",
@@ -292,19 +120,19 @@
                 dataType: "json",
                 success: function (booking) {
                     booking.status = status;
-                    booking.alertSent = false; // Reset alertSent for new notification
+                    booking.alertSent = false; // Reset alertSent for new notification/email
                     $.ajax({
                         url: "http://localhost:8080/CABSERVICE/api/bookings",
                         method: "PUT",
                         contentType: "application/json",
                         data: JSON.stringify(booking),
                         success: function () {
-                            const message = `Your booking (ID: ${bookingId}) has been ${status.toLowerCase()}.`;
+                            const message = `Booking (ID: ${bookingId}) ${status.toLowerCase()} successfully. Email sent to user.`;
                             sendNotification(booking.userId, message, 'Booking');
                             if (status === 'Confirmed') {
                                 updateVehicleAndDriverStatus(booking);
                             }
-                            showNotification(`Booking ${status}!`, 'success');
+                            showNotification(message, 'success');
                             loadPendingBookings();
                         },
                         error: function (xhr) {
@@ -338,14 +166,12 @@
                             data: JSON.stringify(car),
                             error: function (xhr) {
                                 console.error('Car status update error:', xhr);
-                                console.log('Failed to update car status');
                             }
                         });
                     }
                 },
                 error: function (xhr) {
                     console.error('Fetch cars error:', xhr);
-                    console.log('Failed to fetch cars for status update');
                 }
             });
 
@@ -365,14 +191,12 @@
                             data: JSON.stringify(driver),
                             error: function (xhr) {
                                 console.error('Driver status update error:', xhr);
-                                console.log('Failed to update driver status');
                             }
                         });
                     }
                 },
                 error: function (xhr) {
                     console.error('Fetch drivers error:', xhr);
-                    console.log('Failed to fetch drivers for status update');
                 }
             });
         }
@@ -439,6 +263,7 @@
             setTimeout(() => notification.fadeOut(), 3000);
         }
 
+        // Send Notification to User (Database)
         function sendNotification(user_id, message, type) {
             $.ajax({
                 url: "http://localhost:8080/CABSERVICE/api/notifications",
@@ -447,12 +272,12 @@
                 data: JSON.stringify({ user_id, message, type, isRead: false }),
                 error: function (xhr) {
                     console.error('Notification error:', xhr);
-                    console.log('Failed to send notification');
                 }
             });
         }
 
-        function checkNotifications(user_id) {
+        // Check Notifications for Admin
+        function checkNotifications(userId) {
             $.ajax({
                 url: `http://localhost:8080/CABSERVICE/api/notifications?userId=${encodeURIComponent(userId)}&isRead=false`,
                 method: "GET",
@@ -463,7 +288,6 @@
                 },
                 error: function (xhr) {
                     console.error('Notifications error:', xhr);
-                    console.log('Failed to check notifications');
                 }
             });
         }

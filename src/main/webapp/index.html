@@ -1,342 +1,525 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="utf-8">
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <title>Mega City Cab</title>
-        <meta content="" name="description">
-        <meta content="" name="keywords">
-        <link href="assets/css/style.css" rel="stylesheet">
+    <title>Mega City Cab</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+    <link href="assets/css/style.css" rel="stylesheet">
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-        <!-- Google Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
-        <!-- Vendor CSS Files -->
-        <link href="assets/vendor/aos/aos.css" rel="stylesheet">
-        <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-        <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-        <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-        <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+    <!-- Template Main CSS File -->
+    <link href="assets/css/style.css" rel="stylesheet">
 
-        <!-- Template Main CSS File -->
-        <link href="assets/css/style.css" rel="stylesheet">
+    <style>
+        /* Counts Section Styling */
+        .counts {
+            padding: 60px 0;
+            background: #f5f7fa;
+        }
 
+        .counts .section-title {
+            margin-bottom: 40px;
+        }
 
-        <script>
-            // Check authentication status when page loads
-            document.addEventListener('DOMContentLoaded', function () {
-                const loggedInUser = sessionStorage.getItem('loggedInUser');
-                const loginButton = document.querySelector('.getstarted');
+        .counts .count-box {
+            text-align: center;
+            padding: 30px 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
 
-                if (loggedInUser) {
-                    loginButton.textContent = 'Logout';
-                    loginButton.href = '#';
-                    loginButton.onclick = function () {
-                        sessionStorage.removeItem('loggedInUser');
-                        window.location.href = 'index.html';
-                    };
-                } else {
-                    loginButton.textContent = 'Login';
-                    loginButton.href = 'register-login.html';
-                }
-            });
+        .counts .count-box:hover {
+            transform: translateY(-10px);
+        }
 
-            function handleBookingClick() {
-                const loggedInUser = sessionStorage.getItem('loggedInUser');
-                if (!loggedInUser) {
-                    alert('Please login first!');
-                    window.location.href = 'register-login.html';
-                    return false;
-                }
-                window.location.href = 'booking.html';
-                return true;
+        .counts .count-box span {
+            font-size: 48px;
+            line-height: 48px;
+            display: block;
+            font-weight: 700;
+            color: #124265;
+            margin-bottom: 10px;
+        }
+
+        .counts .count-box p {
+            padding: 8px 0 0 0;
+            margin: 0;
+            font-family: "Raleway", sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            color: #1e6ca6;
+        }
+
+        .counts .count-box i {
+            font-size: 32px;
+            color: #2487ce;
+            margin-bottom: 15px;
+        }
+
+        /* Custom Alert Modal Styling */
+        .custom-alert {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-alert.show {
+            display: flex;
+        }
+
+        .alert-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
             }
-        </script>
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
 
-    </head>
+        .alert-box i {
+            font-size: 48px;
+            color: #2487ce;
+            margin-bottom: 20px;
+        }
 
-    <body>
+        .alert-box h3 {
+            color: #124265;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-family: "Raleway", sans-serif;
+        }
 
-        <!-- ======= Header ======= -->
-        <header id="header" class="fixed-top">
-            <div class="container d-flex align-items-center justify-content-between">
+        .alert-box p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
 
-                <h1 class="logo"><a href="student.html">Mega City Cab</a></h1>
+        .alert-box .btn-login {
+            background: #2487ce;
+            color: #fff;
+            padding: 10px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
 
-                <nav id="navbar" class="navbar">
-                    <ul>
-                        <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-                        <li><a class="nav-link scrollto" href="#about">About</a></li>
-                        <li><a class="nav-link scrollto" href="#services">Services</a></li>
-                        <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
-                        <li><a class="nav-link scrollto" href="help.html">Help</a></li>
-                        <li><a style="background-color: #FFD700" class="nav-link scrollto user-profile" href="user-profile.html">PROFILE</a></li>
-                        <li><a style="background-color: #052c65" class="getstarted scrollto" href="register-login.html">Login</a></li>
-                    </ul>
-                    <i class="bi bi-list mobile-nav-toggle"></i>
-                </nav>
+        .alert-box .btn-login:hover {
+            background: #1e6ca6;
+        }
+    </style>
 
+    <script>
+        // Check authentication status when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            const loggedInUser = sessionStorage.getItem('loggedInUser');
+            const loginButton = document.querySelector('.getstarted');
+
+            if (loggedInUser) {
+                loginButton.textContent = 'Logout';
+                loginButton.href = '#';
+                loginButton.onclick = function () {
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = 'index.html';
+                };
+            } else {
+                loginButton.textContent = 'Login';
+                loginButton.href = 'register-login.html';
+            }
+        });
+
+        function handleBookingClick() {
+            const loggedInUser = sessionStorage.getItem('loggedInUser');
+            if (!loggedInUser) {
+                showCustomAlert();
+                return false;
+            }
+            window.location.href = 'booking.html';
+            return true;
+        }
+
+        function showCustomAlert() {
+            const alertModal = document.getElementById('customAlert');
+            alertModal.classList.add('show');
+        }
+
+        function closeCustomAlert() {
+            const alertModal = document.getElementById('customAlert');
+            alertModal.classList.remove('show');
+            window.location.href = 'register-login.html';
+        }
+    </script>
+</head>
+
+<body>
+
+    <!-- ======= Header ======= -->
+    <header id="header" class="fixed-top">
+        <div class="container d-flex align-items-center justify-content-between">
+            <h1 class="logo"><a href="student.html">Mega City Cab</a></h1>
+            <nav id="navbar" class="navbar">
+                <ul>
+                    <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+                    <li><a class="nav-link scrollto" href="#about">About</a></li>
+                    <li><a class="nav-link scrollto" href="#services">Services</a></li>
+                    <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+                    <li><a class="nav-link scrollto" href="help.html">Help</a></li>
+                    <li><a class="nav-link scrollto" href="user-profile.html">Profile</a></li>
+                    <li><a class="getstarted scrollto" href="register-login.html">Login</a></li>
+                </ul>
+                <i class="bi bi-list mobile-nav-toggle"></i>
+            </nav>
+        </div>
+    </header>
+    <!-- End Header -->
+
+    <!-- ======= Custom Alert Modal ======= -->
+    <div id="customAlert" class="custom-alert">
+        <div class="alert-box">
+            <i class="fas fa-lock"></i>
+            <h3>Please Login First!</h3>
+            <p>You need to be logged in to book a cab. Please login to continue.</p>
+            <a href="#" class="btn-login" onclick="closeCustomAlert()">Go to Login</a>
+        </div>
+    </div>
+
+    <!-- ======= Hero Section ======= -->
+    <section id="hero" class="d-flex align-items-center">
+        <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
+            <div class="row justify-content-center">
+                <div class="col-xl-7 col-lg-9 text-center">
+                    <h1>Your Reliable Cab Service in Colombo</h1>
+                    <h2>Book a cab now and enjoy a comfortable ride!</h2>
+                </div>
             </div>
-        </header><!-- End Header -->
+            <div class="text-center">
+                <a href="booking.html" class="btn-get-started scrollto" onclick="return handleBookingClick();">Book a Cab</a>
+            </div>
 
-        <!-- ======= Hero Section ======= -->
-        <section id="hero" class="d-flex align-items-center">
-            <div class="container position-relative" data-aos="fade-up" data-aos-delay="100">
-                <div class="row justify-content-center">
-                    <div class="col-xl-7 col-lg-9 text-center">
-                        <h1>Your Reliable Cab Service in Colombo</h1>
-                        <h2>Book a cab now and enjoy a comfortable ride!</h2>
+            <div class="row icon-boxes">
+                <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="icon-box">
+                        <div class="icon"><i class="fas fa-taxi"></i></div>
+                        <h4 class="title"><a href="">Easy Booking</a></h4>
+                        <p class="description">Book your cab in just a few clicks. Fast and hassle-free!</p>
                     </div>
                 </div>
-                <div class="text-center">
-                    <a href="booking.html" class="btn-get-started scrollto">Book a Cab</a>
+
+                <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="icon-box">
+                        <div class="icon"><i class="fas fa-clock"></i></div>
+                        <h4 class="title"><a href="">24/7 Availability</a></h4>
+                        <p class="description">We are available round the clock to serve you anytime, anywhere.</p>
+                    </div>
                 </div>
 
-                <div class="row icon-boxes">
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="200">
-                        <div class="icon-box">
-                            <div class="icon"><i class="ri-car-line"></i></div>
-                            <h4 class="title"><a href="">Easy Booking</a></h4>
-                            <p class="description">Book your cab in just a few clicks. Fast and hassle-free!</p>
-                        </div>
+                <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="icon-box">
+                        <div class="icon"><i class="fas fa-shield-alt"></i></div>
+                        <h4 class="title"><a href="">Safe & Secure</a></h4>
+                        <p class="description">Your safety is our priority. We ensure secure and reliable rides.</p>
                     </div>
+                </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="300">
-                        <div class="icon-box">
-                            <div class="icon"><i class="ri-time-line"></i></div>
-                            <h4 class="title"><a href="">24/7 Availability</a></h4>
-                            <p class="description">We are available round the clock to serve you anytime, anywhere.</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="400">
-                        <div class="icon-box">
-                            <div class="icon"><i class="ri-shield-check-line"></i></div>
-                            <h4 class="title"><a href="">Safe & Secure</a></h4>
-                            <p class="description">Your safety is our priority. We ensure secure and reliable rides.</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
-                        <div class="icon-box">
-                            <div class="icon"><i class="ri-customer-service-line"></i></div>
-                            <h4 class="title"><a href="">Customer Support</a></h4>
-                            <p class="description">Our support team is always ready to assist you with any queries.</p>
-                        </div>
+                <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
+                    <div class="icon-box">
+                        <div class="icon"><i class="fas fa-headset"></i></div>
+                        <h4 class="title"><a href="">Customer Support</a></h4>
+                        <p class="description">Our support team is always ready to assist you with any queries.</p>
                     </div>
                 </div>
             </div>
-        </section><!-- End Hero -->
+        </div>
+    </section>
+    <!-- End Hero -->
 
-        <main id="main">
+    <main id="main">
 
-            <!-- ======= About Section ======= -->
-            <section id="about" class="about">
-                <div class="container" data-aos="fade-up">
-
-                    <div class="section-title">
-                        <h2>About Us</h2>
-                    </div>
-
-                    <div class="row content">
-                        <div class="col-lg-6">
-                            <p>
-                                Mega City Cab is a leading cab service provider in Colombo, offering reliable and comfortable rides to thousands of customers every month. Our mission is to provide seamless transportation solutions with a focus on customer satisfaction and safety.
-                            </p>
-                        </div>
-                        <div class="col-lg-6 pt-4 pt-lg-0">
-                            <ul>
-                                <li><i class="ri-check-double-line"></i> Easy and quick cab booking system.</li>
-                                <li><i class="ri-check-double-line"></i> Transparent pricing with no hidden charges.</li>
-                                <li><i class="ri-check-double-line"></i> Well-maintained vehicles and professional drivers.</li>
-                            </ul>
-                            <a href="about.jsp" class="btn-learn-more">Learn More</a>
-                        </div>
-                    </div>
-
+        <!-- ======= About Section ======= -->
+        <section id="about" class="about">
+            <div class="container" data-aos="fade-up">
+                <div class="section-title">
+                    <h2>About Us</h2>
                 </div>
-            </section><!-- End About Section -->
 
-            <!-- ======= Services Section ======= -->
-            <section id="services" class="services section-bg py-5">
-                <div class="container text-center" data-aos="fade-up">
-                    <div class="section-title mb-4">
-                        <h2 class="fw-bold text-uppercase">Our Services</h2>
-                        <p class="text-muted">We offer a wide range of services to meet your transportation needs.</p>
+                <div class="row content">
+                    <div class="col-lg-6">
+                        <p>
+                            Mega City Cab is Colombo’s premier cab service, delivering reliable, comfortable, and safe transportation to thousands of satisfied customers each month. We are dedicated to redefining urban mobility with a commitment to excellence, ensuring every ride is a seamless and enjoyable experience.
+                        </p>
                     </div>
-
-                    <div class="row g-4">
-                        <!-- Service 1: City Rides -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="service-card" data-aos="zoom-in" data-aos-delay="100">
-                                <img src="/assets/img/service1.jpg" alt="City Rides" class="service-img">
-                                <div class="service-icon"><i class="ri-car-line"></i></div>
-                                <h4><a href="#">City Rides</a></h4>
-                                <p>Affordable and comfortable rides within the city.</p>
-                            </div>
-                        </div>
-
-                        <!-- Service 2: Airport Transfers -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="service-card" data-aos="zoom-in" data-aos-delay="200">
-                                <img src="/assets/img/service5.jpg" alt="Airport Transfers" class="service-img">
-                                <div class="service-icon"><i class="ri-roadster-line"></i></div>
-                                <h4><a href="#">Airport Transfers</a></h4>
-                                <p>Timely and reliable airport pickups and drop-offs.</p>
-                            </div>
-                        </div>
-
-                        <!-- Service 3: Outstation Trips -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="service-card" data-aos="zoom-in" data-aos-delay="300">
-                                <img src="/assets/img/service2.jpg" alt="Outstation Trips" class="service-img">
-                                <div class="service-icon"><i class="ri-bus-line"></i></div>
-                                <h4><a href="#">Outstation Trips</a></h4>
-                                <p>Long-distance trips with experienced drivers.</p>
-                            </div>
-                        </div>
+                    <div class="col-lg-6 pt-4 pt-lg-0">
+                        <ul>
+                            <li><i class="ri-check-double-line"></i> Effortless booking with instant confirmation.</li>
+                            <li><i class="ri-check-double-line"></i> Clear, upfront pricing—no surprises.</li>
+                            <li><i class="ri-check-double-line"></i> Immaculate vehicles driven by courteous professionals.</li>
+                        </ul>
+                        <a href="about.jsp" class="btn-learn-more">Discover More</a>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- End Services Section -->
-
-            <!-- ======= Contact Section ======= -->
-            <section id="contact" class="contact">
-                <div class="container" data-aos="fade-up">
-
-                    <div class="section-title">
-                        <h2>Contact Us</h2>
-                        <p>Have questions or need assistance? Reach out to us!</p>
-                    </div>
-
-                    <div class="row mt-5">
-                        <div class="col-lg-4">
-                            <div class="info">
-                                <div class="address">
-                                    <i class="bi bi-geo-alt"></i>
-                                    <h4>Location:</h4>
-                                    <p>123 Colombo Street, Colombo, Sri Lanka</p>
-                                </div>
-
-                                <div class="email">
-                                    <i class="bi bi-envelope"></i>
-                                    <h4>Email:</h4>
-                                    <p>info@megacitycab.com</p>
-                                </div>
-
-                                <div class="phone">
-                                    <i class="bi bi-phone"></i>
-                                    <h4>Call:</h4>
-                                    <p>+94 112 345 678</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-8 mt-5 mt-lg-0">
-                            <form action="forms/contact.php" method="post" role="form" class="php-email-form">
-                                <div class="row gy-2 gx-md-3">
-                                    <div class="col-md-6 form-group">
-                                        <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
-                                    </div>
-                                    <div class="col-md-6 form-group">
-                                        <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
-                                    </div>
-                                    <div class="form-group col-12">
-                                        <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
-                                    </div>
-                                    <div class="form-group col-12">
-                                        <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
-                                    </div>
-                                    <div class="my-3 col-12">
-                                        <div class="loading">Loading</div>
-                                        <div class="error-message"></div>
-                                        <div class="sent-message">Your message has been sent. Thank you!</div>
-                                    </div>
-                                    <div class="text-center col-12"><button type="submit">Send Message</button></div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
+        <!-- ======= Services Section ======= -->
+        <section id="services" class="services section-bg py-5">
+            <div class="container text-center" data-aos="fade-up">
+                <div class="section-title mb-4">
+                    <h2 class="fw-bold text-uppercase">Our Services</h2>
+                    <p class="text-muted">We offer a wide range of services to meet your transportation needs.</p>
                 </div>
-            </section><!-- End Contact Section -->
 
-        </main><!-- End #main -->
-
-        <!-- ======= Footer ======= -->
-        <footer id="footer">
-            <div class="footer-top">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-3 col-md-6 footer-contact">
-                            <h3>Mega City Cab</h3>
-                            <p>
-                                123 Colombo Street,<br>
-                                Colombo, Sri Lanka<br><br>
-                                <strong>Phone:</strong> +94 112 345 678<br>
-                                <strong>Email:</strong> info@megacitycab.com<br>
-                            </p>
+                <div class="row g-4">
+                    <!-- Service 1: City Rides -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="service-card" data-aos="zoom-in" data-aos-delay="100">
+                            <img src="https://taxirider.in/images/one-way-back.jpg" alt="City Rides" class="service-img">
+                            <div class="service-icon"><i class="ri-car-line"></i></div>
+                            <h4><a href="#">City Rides</a></h4>
+                            <p>Affordable and comfortable rides within the city.</p>
                         </div>
+                    </div>
 
-                        <div class="col-lg-2 col-md-6 footer-links">
-                            <h4>Useful Links</h4>
-                            <ul>
-                                <li><i class="bx bx-chevron-right"></i> <a href="#hero">Home</a></li>
-                                <li><i class="bx bx-chevron-right"></i> <a href="#about">About Us</a></li>
-                                <li><i class="bx bx-chevron-right"></i> <a href="#services">Services</a></li>
-                                <li><i class="bx bx-chevron-right"></i> <a href="#contact">Contact</a></li>
-                            </ul>
+                    <!-- Service 2: Airport Transfers -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="service-card" data-aos="zoom-in" data-aos-delay="200">
+                            <img src="https://taxirider.in/images/roud-trip-back.jpg" alt="Airport Transfers" class="service-img">
+                            <div class="service-icon"><i class="ri-roadster-line"></i></div>
+                            <h4><a href="#">Airport Transfers</a></h4>
+                            <p>Timely and reliable airport pickups and drop-offs.</p>
                         </div>
+                    </div>
 
-                        <div class="col-lg-3 col-md-6 footer-links">
-                            <h4>Our Values</h4>
-                            <ul>
-                                <li><i class="bx bx-chevron-right"></i> <a href="#">Reliability</a></li>
-                                <li><i class="bx bx-chevron-right"></i> <a href="#">Safety</a></li>
-                                <li><i class="bx bx-chevron-right"></i> <a href="#">Customer Satisfaction</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 footer-newsletter">
-                            <h4>Follow Us</h4>
-                            <div class="social-links">
-                                <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
-                                <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
-                                <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
-                            </div>
+                    <!-- Service 3: Outstation Trips -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="service-card" data-aos="zoom-in" data-aos-delay="300">
+                            <img src="https://taxirider.in/images/packages.webp" alt="Outstation Trips" class="service-img">
+                            <div class="service-icon"><i class="ri-bus-line"></i></div>
+                            <h4><a href="#">Outstation Trips</a></h4>
+                            <p>Long-distance trips with experienced drivers.</p>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
+        <!-- End Services Section -->
 
-            <div class="container d-md-flex py-4">
-                <div class="me-md-auto text-center text-md-start">
-                    <div class="copyright">
-                        &copy; Copyright <strong><span>Mega City Cab</span></strong>. All Rights Reserved.
+        <!-- ======= Counts Section ======= -->
+        <section id="counts" class="counts">
+            <div class="container" data-aos="fade-up">
+                <div class="section-title">
+                    <h2>Our Achievements</h2>
+                    <p>We're proud to share our milestones in serving you better every day.</p>
+                </div>
+
+                <div class="row gy-4">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="count-box" data-aos="fade-up" data-aos-delay="100">
+                            <i class="fas fa-taxi"></i>
+                            <span data-purecounter-start="0" data-purecounter-end="15000" data-purecounter-duration="1" class="purecounter"></span>
+                            <p>Rides Completed</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="count-box" data-aos="fade-up" data-aos-delay="200">
+                            <i class="fas fa-users"></i>
+                            <span data-purecounter-start="0" data-purecounter-end="12000" data-purecounter-duration="1" class="purecounter"></span>
+                            <p>Happy Customers</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="count-box" data-aos="fade-up" data-aos-delay="300">
+                            <i class="fas fa-user-tie"></i>
+                            <span data-purecounter-start="0" data-purecounter-end="150" data-purecounter-duration="1" class="purecounter"></span>
+                            <p>Professional Drivers</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="count-box" data-aos="fade-up" data-aos-delay="400">
+                            <i class="fas fa-clock"></i>
+                            <span data-purecounter-start="0" data-purecounter-end="8760" data-purecounter-duration="1" class="purecounter"></span>
+                            <p>Hours of Service</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </footer><!-- End Footer -->
+        </section>
+        <!-- End Counts Section -->
 
-        <div id="preloader"></div>
-        <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+        <!-- ======= Contact Section ======= -->
+        <section id="contact" class="contact">
+            <div class="container" data-aos="fade-up">
+                <div class="section-title">
+                    <h2>Contact Us</h2>
+                    <p>Have questions or need assistance? Reach out to us!</p>
+                </div>
 
-        <!-- Vendor JS Files -->
-        <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-        <script src="assets/vendor/aos/aos.js"></script>
-        <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-        <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-        <script src="assets/vendor/php-email-form/validate.js"></script>
+                <div class="row mt-5">
+                    <div class="col-lg-4">
+                        <div class="info">
+                            <div class="address">
+                                <i class="bi bi-geo-alt"></i>
+                                <h4>Location:</h4>
+                                <p>123 Colombo Street, Colombo, Sri Lanka</p>
+                            </div>
 
-        <!-- Template Main JS File -->
-        <script src="assets/js/main.js"></script>
+                            <div class="email">
+                                <i class="bi bi-envelope"></i>
+                                <h4>Email:</h4>
+                                <p>info@megacitycab.com</p>
+                            </div>
 
-    </body>
+                            <div class="phone">
+                                <i class="bi bi-phone"></i>
+                                <h4>Call:</h4>
+                                <p>+94 112 345 678</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8 mt-5 mt-lg-0">
+                        <form action="forms/contact.php" method="post" role="form" class="php-email-form">
+                            <div class="row gy-2 gx-md-3">
+                                <div class="col-md-6 form-group">
+                                    <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
+                                </div>
+                                <div class="form-group col-12">
+                                    <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
+                                </div>
+                                <div class="form-group col-12">
+                                    <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
+                                </div>
+                                <div class="my-3 col-12">
+                                    <div class="loading">Loading</div>
+                                    <div class="error-message"></div>
+                                    <div class="sent-message">Your message has been sent. Thank you!</div>
+                                </div>
+                                <div class="text-center col-12"><button type="submit">Send Message</button></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Contact Section -->
+
+    </main>
+    <!-- End #main -->
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 footer-contact">
+                        <h3>Mega City Cab</h3>
+                        <p>
+                            123 Colombo Street,<br>
+                            Colombo, Sri Lanka<br><br>
+                            <strong>Phone:</strong> +94 112 345 678<br>
+                            <strong>Email:</strong> info@megacitycab.com<br>
+                        </p>
+                    </div>
+
+                    <div class="col-lg-2 col-md-6 footer-links">
+                        <h4>Useful Links</h4>
+                        <ul>
+                            <li><i class="bx bx-chevron-right"></i> <a href="#hero">Home</a></li>
+                            <li><i class="bx bx-chevron-right"></i> <a href="#about">About Us</a></li>
+                            <li><i class="bx bx-chevron-right"></i> <a href="#services">Services</a></li>
+                            <li><i class="bx bx-chevron-right"></i> <a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 footer-links">
+                        <h4>Our Values</h4>
+                        <ul>
+                            <li><i class="bx bx-chevron-right"></i> <a href="#">Reliability</a></li>
+                            <li><i class="bx bx-chevron-right"></i> <a href="#">Safety</a></li>
+                            <li><i class="bx bx-chevron-right"></i> <a href="#">Customer Satisfaction</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 footer-newsletter">
+                        <h4>Follow Us</h4>
+                        <div class="social-links">
+                            <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+                            <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+                            <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container d-md-flex py-4">
+            <div class="me-md-auto text-center text-md-start">
+                <div class="copyright">
+                    © Copyright <strong><span>Mega City Cab</span></strong>. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- End Footer -->
+
+    <div id="preloader"></div>
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Vendor JS Files -->
+    <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="assets/vendor/php-email-form/validate.js"></script>
+
+    <!-- Template Main JS File -->
+    <script src="assets/js/main.js"></script>
+
+</body>
 
 </html>

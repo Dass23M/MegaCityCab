@@ -280,6 +280,35 @@ h6 {
     }
 }
 
+.navbar .user-profile {
+    background-color: #FFD700;
+    padding: 8px 20px;
+    border-radius: 4px;
+    color: #333;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.navbar .user-profile i {
+    font-size: 18px;
+}
+
+.navbar .user-profile:hover {
+    background-color: #e6c200;
+    color: #222;
+}
+
+@media (max-width: 991px) {
+    .navbar .user-profile {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+
 /**
 * Mobile Navigation 
 */
@@ -576,8 +605,9 @@ section {
 # About
 --------------------------------------------------------------*/
 .about .content h3 {
-    font-weight: 600;
-    font-size: 26px;
+    font-weight: 700; /* Slightly bolder for emphasis */
+    font-size: 28px; /* Slightly larger for prominence */
+    color: #333; /* Darker tone for professionalism */
 }
 
 .about .content ul {
@@ -586,49 +616,54 @@ section {
 }
 
 .about .content ul li {
-    padding-left: 28px;
+    padding-left: 32px; /* Slightly more padding for balance */
     position: relative;
+    font-size: 16px; /* Larger text for readability */
+    color: #444; /* Softer dark tone */
 }
 
-.about .content ul li+li {
-    margin-top: 10px;
+.about .content ul li + li {
+    margin-top: 12px; /* More spacing for clarity */
 }
 
 .about .content ul i {
     position: absolute;
     left: 0;
-    top: 2px;
-    font-size: 20px;
-    color: #2487ce;
+    top: 3px; /* Adjusted for vertical alignment */
+    font-size: 22px; /* Slightly larger icon */
+    color: #2487ce; /* Retained your brand color */
     line-height: 1;
 }
 
-.about .content p:last-child {
-    margin-bottom: 0;
+.about .content p {
+    font-size: 16px; /* Improved readability */
+    line-height: 1.6; /* Better line spacing */
+    color: #555; /* Professional yet approachable tone */
+    margin-bottom: 0; /* Consistent with your original */
 }
 
 .about .content .btn-learn-more {
     font-family: "Raleway", sans-serif;
     font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 1px;
+    font-size: 15px; /* Slightly larger for emphasis */
+    letter-spacing: 1.2px; /* More spacing for elegance */
     display: inline-block;
-    padding: 12px 32px;
-    border-radius: 5px;
-    transition: 0.3s;
-    line-height: 1;
+    padding: 14px 36px; /* Slightly larger button */
+    border-radius: 6px; /* Softer corners */
+    transition: all 0.3s ease; /* Smoother transition */
     color: #2487ce;
     animation-delay: 0.8s;
-    margin-top: 6px;
+    margin-top: 10px; /* More breathing room */
     border: 2px solid #2487ce;
+    text-transform: uppercase; /* Adds a premium feel */
 }
 
 .about .content .btn-learn-more:hover {
     background: #2487ce;
     color: #fff;
     text-decoration: none;
+    box-shadow: 0 4px 12px rgba(36, 135, 206, 0.3); /* Subtle hover shadow */
 }
-
 /*--------------------------------------------------------------
 # Counts
 --------------------------------------------------------------*/

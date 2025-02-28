@@ -4,365 +4,432 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile - Mega City Cab</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+
+    <!-- AOS Animation -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     
+    <!-- Custom CSS -->
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: #f3f4f6;
-            color: #374151;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
             line-height: 1.6;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
         }
 
-        .profile-container {
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-                        0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            padding: 2rem;
-            margin: 2rem auto;
-            max-width: 900px;
+        /* Header Styling (Copied from help.html) */
+        #header {
+            transition: all 0.5s;
+            background: #fff;
+            z-index: 997;
+            padding: 15px 0;
+            border-bottom: 1px solid #e6f2fb;
         }
 
-        .profile-header {
+        #header.header-scrolled {
+            border-color: #fff;
+            box-shadow: 0px 2px 15px rgba(18, 66, 101, 0.08);
+        }
+
+        #header .logo {
+            font-size: 40px;
+            margin: 0;
+            padding: 0;
+            line-height: 1;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            font-family: "Poppins", sans-serif;
+        }
+
+        #header .logo a {
+            color: #16507b;
+            text-decoration: none;
+        }
+
+        .navbar {
+            padding: 0;
+        }
+
+        .navbar ul {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        .navbar li {
+            position: relative;
+        }
+
+        .navbar a,
+        .navbar a:focus {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0 10px 30px;
+            font-size: 14px;
+            color: #16507b;
+            white-space: nowrap;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .navbar a:hover,
+        .navbar .active,
+        .navbar .active:focus,
+        .navbar li:hover>a {
+            color: #2487ce;
+        }
+
+        .navbar .getstarted,
+        .navbar .getstarted:focus {
+            background: #2487ce;
+            padding: 8px 20px;
+            margin-left: 30px;
+            border-radius: 4px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .navbar .getstarted:hover {
+            background: #3194db;
+        }
+
+        .mobile-nav-toggle {
+            color: #124265;
+            font-size: 28px;
+            cursor: pointer;
+            display: none;
+            line-height: 0;
+            transition: 0.5s;
+        }
+
+        @media (max-width: 991px) {
+            .mobile-nav-toggle {
+                display: block;
+            }
+            .navbar ul {
+                display: none;
+            }
+        }
+
+        /* Hero Section */
+        .profile-hero {
+            background: url(https://www.olacabs.com/mediaimage/wysiwyg/hero-banner.webp) no-repeat center center;
+            background-size: cover;
+            height: 500px;
+            position: relative;
+            color: #fff;
             text-align: center;
-            margin-bottom: 2.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid #e5e7eb;
+            padding-top: 100px;
+            margin-top: 0;
         }
 
-        .profile-header h2 {
-            color: #1f2937;
+        .profile-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .profile-hero h1 {
+            font-size: 2.5rem;
             font-weight: 700;
-            font-size: 1.875rem;
-            margin-bottom: 0.75rem;
+            position: relative;
+            z-index: 1;
+            padding-top: 80px;
         }
 
-        .profile-header p {
-            color: #6b7280;
-            font-size: 1.1rem;
+        .profile-hero p {
+            font-size: 1.2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Profile Container */
+        .profile-container {
+            max-width: 1000px;
+            margin: -100px auto 50px;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 2;
         }
 
         .profile-section {
-            background: #f9fafb;
-            border-radius: 12px;
-            padding: 1.5rem;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 15px;
             margin-bottom: 2rem;
-            border: 1px solid #e5e7eb;
         }
 
         .profile-section h3 {
-            color: #3b82f6;
+            color: #2487ce;
             font-weight: 600;
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .profile-item {
             display: flex;
             align-items: center;
-            padding: 0.75rem;
-            background: white;
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-            transition: transform 0.2s;
+            padding: 1rem;
+            background: #fff;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
         }
 
         .profile-item:hover {
-            transform: translateY(-2px);
+            transform: translateY(-5px);
         }
 
         .profile-item i {
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #3b82f6;
-            color: white;
-            border-radius: 8px;
+            background: #2487ce;
+            color: #fff;
+            border-radius: 50%;
             margin-right: 1rem;
-            font-size: 1rem;
-        }
-
-        .profile-item strong {
-            color: #4b5563;
-            margin-right: 0.5rem;
-            font-weight: 500;
-        }
-
-        .profile-item span {
-            color: #1f2937;
-            font-weight: 400;
+            font-size: 1.2rem;
         }
 
         .booking-card {
-            background: white;
-            border-radius: 12px;
+            background: #fff;
+            border-radius: 15px;
             padding: 1.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid #e5e7eb;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
 
         .booking-card:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            transform: translateY(-4px);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
 
         .booking-card h5 {
-            color: #3b82f6;
+            color: #2487ce;
             font-weight: 600;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
-        .booking-card p {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #4b5563;
-            margin-bottom: 0.5rem;
-        }
-
-        .booking-card i {
-            color: #3b82f6;
-            width: 20px;
-        }
-
-        .btn {
+        .btn-custom {
+            background: #2487ce;
+            color: #fff;
             padding: 0.75rem 1.5rem;
             border-radius: 10px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background-color: #3b82f6;
-            border: none;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #2563eb;
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background-color: #ef4444;
-            border: none;
-        }
-
-        .btn-danger:hover {
-            background-color: #dc2626;
-            transform: translateY(-2px);
-        }
-
-        .edit-profile {
-            background: #f9fafb;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .form-control {
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            border: 1px solid #e5e7eb;
-            background: white;
             transition: all 0.3s ease;
         }
 
-        .form-control:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        .btn-custom:hover {
+            background: #3194db;
+            color: #fff;
+            transform: translateY(-2px);
         }
 
-        .edit-profile-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+        .btn-danger-custom {
+            background: #dc3545;
+            color: #fff;
         }
 
+        .btn-danger-custom:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Adjustments */
         @media (max-width: 768px) {
-            .profile-container {
-                margin: 1rem;
-                padding: 1.5rem;
+            .profile-hero h1 {
+                font-size: 2rem;
             }
-
-            .edit-profile-form {
-                grid-template-columns: 1fr;
-            }
-
             .profile-item {
                 flex-direction: column;
                 text-align: center;
             }
-
             .profile-item i {
-                margin-right: 0;
                 margin-bottom: 0.5rem;
+            }
+            .header-container {
+                padding: 0 10px;
+            }
+            .navbar a {
+                padding: 10px 10px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="profile-container">
-        <div class="profile-header">
-            <h2><i class="fas fa-user-circle"></i> User Profile</h2>
-            <p>Manage your profile and view booking history</p>
+    <!-- ======= Header (Copied from help.html) ======= -->
+    <header id="header" class="fixed-top">
+        <div class="container d-flex align-items-center justify-content-between">
+            <h1 class="logo"><a href="index.html">Mega City Cab</a></h1>
+            <nav id="navbar" class="navbar">
+                <ul>
+                    <li><a class="nav-link scrollto" href="#hero">Home</a></li>
+                    <li><a class="nav-link scrollto" href="#about">About</a></li>
+                    <li><a class="nav-link scrollto" href="#services">Services</a></li>
+                    <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+                    <li><a class="nav-link scrollto" href="help.html">Help</a></li>
+                    <li><a class="nav-link scrollto active" href="user-profile.html">Profile</a></li>
+                    <li><a class="getstarted scrollto" href="register-login.html">Login</a></li>
+                </ul>
+                <i class="bi bi-list mobile-nav-toggle"></i>
+            </nav>
         </div>
+    </header>
 
-        <div class="profile-section">
+    <!-- Profile Hero Section -->
+    <section class="profile-hero" data-aos="fade-in">
+        <h1>Welcome, <span id="userName">User</span>!</h1>
+        <p>Your journey with Mega City Cab starts here.</p>
+    </section>
+
+    <!-- Profile Container -->
+    <div class="profile-container" data-aos="zoom-in">
+        <!-- Personal Information -->
+        <div class="profile-section" data-aos="fade-up" data-aos-delay="100">
             <h3><i class="fas fa-user"></i> Personal Information</h3>
             <div class="profile-item">
                 <i class="fas fa-user"></i>
-                <strong>Name:</strong>
-                <span id="profileName">John Doe</span>
+                <strong>Name:</strong> <span id="profileName">Loading...</span>
             </div>
             <div class="profile-item">
                 <i class="fas fa-envelope"></i>
-                <strong>Email:</strong>
-                <span id="profileEmail">john@example.com</span>
+                <strong>Email:</strong> <span id="profileEmail">Loading...</span>
             </div>
             <div class="profile-item">
                 <i class="fas fa-phone"></i>
-                <strong>Phone:</strong>
-                <span id="profilePhone">0712345678</span>
+                <strong>Phone:</strong> <span id="profilePhone">Loading...</span>
             </div>
             <div class="profile-item">
                 <i class="fas fa-map-marker-alt"></i>
-                <strong>Address:</strong>
-                <span id="profileAddress">123 Main St, Colombo</span>
+                <strong>Address:</strong> <span id="profileAddress">Loading...</span>
             </div>
             <div class="profile-item">
                 <i class="fas fa-id-card"></i>
-                <strong>NIC:</strong>
-                <span id="profileNIC">123456789V</span>
+                <strong>NIC:</strong> <span id="profileNIC">Loading...</span>
             </div>
-            <div class="profile-item">
-                <i class="fas fa-user-tag"></i>
-                <strong>Role:</strong>
-                <span id="profileRole">Customer</span>
-            </div>
-            <button class="btn btn-primary mt-3" onclick="toggleEditProfile()">
+            <button class="btn btn-custom mt-3" onclick="alert('Edit functionality coming soon!')">
                 <i class="fas fa-edit"></i> Edit Profile
             </button>
         </div>
 
-        <div class="edit-profile" id="editProfileSection" style="display: none;">
-            <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
-            <form id="editProfileForm" class="edit-profile-form">
-                <input type="text" id="editName" class="form-control" placeholder="Full Name" required>
-                <input type="email" id="editEmail" class="form-control" placeholder="Email" required>
-                <input type="tel" id="editPhone" class="form-control" placeholder="Phone Number" required>
-                <input type="text" id="editAddress" class="form-control" placeholder="Address" required>
-                <input type="text" id="editNIC" class="form-control" placeholder="NIC/Identification Number" required>
-                <input type="password" id="editPassword" class="form-control" placeholder="New Password">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Save Changes
-                </button>
-            </form>
-        </div>
-
-        <div class="profile-section booking-history">
-            <h3><i class="fas fa-car"></i> Booking History</h3>
+        <!-- Booking History -->
+        <div class="profile-section" data-aos="fade-up" data-aos-delay="200">
+            <h3><i class="fas fa-car"></i> Your Booking History</h3>
             <div id="bookingList">
-                <div class="booking-card">
-                    <h5><i class="fas fa-map-marker-alt"></i> Trip to Colombo</h5>
-                    <p><i class="fas fa-calendar-alt"></i> Date: 2025-02-10</p>
-                    <p><i class="fas fa-money-bill"></i> Price: $25.00</p>
-                    <p><i class="fas fa-car"></i> Vehicle: Sedan</p>
-                </div>
+                <p>Loading your bookings...</p>
             </div>
         </div>
 
-        <div class="text-center">
-            <button class="btn btn-danger" onclick="logout()">
+        <!-- Logout Button -->
+        <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+            <button class="btn btn-danger-custom" onclick="logout()">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </button>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
-
+    
+    <!-- AOS Animation JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
         $(document).ready(function () {
-            // Fetch user profile data
             const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
             if (!loggedInUser) {
                 window.location.href = "register-login.html";
                 return;
             }
 
-            // Fetch user details
+            // Update header login/logout button
+            const loginButton = $('.getstarted');
+            loginButton.text('Logout');
+            loginButton.on('click', function(e) {
+                e.preventDefault();
+                sessionStorage.removeItem('loggedInUser');
+                window.location.href = 'index.html';
+            });
+
+            // Fetch and display user profile
             $.ajax({
                 url: `http://localhost:8080/CABSERVICE/api/users/${loggedInUser.user_id}`,
                 type: "GET",
                 success: function (user) {
+                    $("#userName").text(user.username);
                     $("#profileName").text(user.username);
                     $("#profileEmail").text(user.email);
                     $("#profilePhone").text(user.phone);
                     $("#profileAddress").text(user.address);
                     $("#profileNIC").text(user.nic);
-                    $("#profileRole").text(user.role);
-
-                    // Populate edit form fields
-                    $("#editName").val(user.username);
-                    $("#editEmail").val(user.email);
-                    $("#editPhone").val(user.phone);
-                    $("#editAddress").val(user.address);
-                    $("#editNIC").val(user.nic);
                 },
                 error: function (xhr) {
-                    alert("Failed to fetch user details: " + xhr.responseJSON.message);
+                    alert("Failed to load profile: " + (xhr.responseJSON?.message || "Unknown error"));
                 }
             });
 
-            // Fetch booking history
+            // Fetch and display booking history for this user only
             $.ajax({
                 url: `http://localhost:8080/CABSERVICE/api/bookings?userId=${loggedInUser.user_id}`,
                 type: "GET",
                 success: function (bookings) {
                     const bookingList = $("#bookingList");
-                    bookings.forEach(booking => {
-                        bookingList.append(`
-                            <div class="booking-card">
-                                <h5>Booking ID: ${booking.bookingId}</h5>
-                                <p><strong>Pickup:</strong> ${booking.pickUpStation}</p>
-                                <p><strong>Dropoff:</strong> ${booking.dropOffStation}</p>
-                                <p><strong>Date:</strong> ${new Date(booking.dateTime).toLocaleString()}</p>
-                                <p><strong>Passengers:</strong> ${booking.numPassengers}</p>
-                                <p><strong>Car Model:</strong> ${booking.carModel}</p>
-                                <p><strong>Driver:</strong> ${booking.driverName}</p>
-                                <p><strong>Status:</strong> ${booking.status}</p>
-                            </div>
-                        `);
-                    });
+                    bookingList.empty();
+                    if (bookings.length === 0) {
+                        bookingList.append("<p>No bookings found.</p>");
+                    } else {
+                        bookings.forEach(booking => {
+                            bookingList.append(`
+                                <div class="booking-card" data-aos="fade-up" data-aos-delay="100">
+                                    <h5><i class="fas fa-map-marker-alt"></i> Booking ID: ${booking.bookingId}</h5>
+                                    <p><strong>Pickup:</strong> ${booking.pickUpStation}</p>
+                                    <p><strong>Dropoff:</strong> ${booking.dropOffStation}</p>
+                                    <p><strong>Date:</strong> ${new Date(booking.dateTime).toLocaleString()}</p>
+                                    <p><strong>Passengers:</strong> ${booking.numPassengers}</p>
+                                    <p><strong>Car Model:</strong> ${booking.carModel}</p>
+                                    <p><strong>Driver:</strong> ${booking.driverName || 'Not Assigned'}</p>
+                                    <p><strong>Status:</strong> ${booking.status}</p>
+                                </div>
+                            `);
+                        });
+                    }
                 },
                 error: function (xhr) {
-                    alert("Failed to fetch booking history: " + xhr.responseJSON.message);
+                    $("#bookingList").html("<p>Failed to load bookings.</p>");
                 }
             });
         });
-
-        function toggleEditProfile() {
-            const editSection = document.getElementById("editProfileSection");
-            editSection.style.display = editSection.style.display === "none" ? "block" : "none";
-        }
 
         function logout() {
             sessionStorage.removeItem('loggedInUser');
@@ -370,5 +437,4 @@
         }
     </script>
 </body>
-
 </html>

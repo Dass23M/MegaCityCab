@@ -4,182 +4,320 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mega City Cab - Book Your Ride</title>
+
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
     <style>
-        /* Keeping your existing CSS unchanged for brevity */
         body {
-            background: #1E3A8A;
-            min-height: 100vh;
-            font-family: 'Roboto', sans-serif;
+            font-family: "Open Sans", sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e6f2 100%);
             color: #333;
+            min-height: 100vh;
             position: relative;
             overflow-x: hidden;
         }
-        #particles {
+
+        /* Header Styling (Copied from help.html) */
+        #header {
+            transition: all 0.5s;
+            background: #fff;
+            z-index: 1000;
+            padding: 15px 0;
+            border-bottom: 1px solid #e6f2fb;
+            position: static;
+            
+        }
+
+        #header.header-scrolled {
+            border-color: #fff;
+            box-shadow: 0px 2px 15px rgba(18, 66, 101, 0.08);
+        }
+
+        #header .logo {
+            font-size: 40px;
+            margin: 0;
+            padding: 0;
+            line-height: 1;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            font-family: "Poppins", sans-serif;
+        }
+
+        #header .logo a {
+            color: #16507b;
+            text-decoration: none;
+        }
+
+        .navbar {
+            padding: 0;
+            
+           
+        }
+
+        .navbar ul {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+
+        .navbar li {
+            position: relative;
+        }
+
+        .navbar a,
+        .navbar a:focus {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0 10px 30px;
+            font-size: 14px;
+            color: #16507b;
+            white-space: nowrap;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .navbar a:hover,
+        .navbar .active,
+        .navbar .active:focus,
+        .navbar li:hover>a {
+            color: #2487ce;
+        }
+
+        .navbar .getstarted,
+        .navbar .getstarted:focus {
+            background: #2487ce;
+            padding: 8px 20px;
+            margin-left: 30px;
+            border-radius: 4px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .navbar .getstarted:hover {
+            background: #3194db;
+        }
+
+        .mobile-nav-toggle {
+            color: #124265;
+            font-size: 28px;
+            cursor: pointer;
+            display: none;
+            line-height: 0;
+            transition: 0.5s;
+        }
+
+        @media (max-width: 991px) {
+            .mobile-nav-toggle {
+                display: block;
+            }
+            .navbar ul {
+                display: none;
+            }
+        }
+
+        /* Road Animation */
+        #road-animation {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+            background: linear-gradient(180deg, #1A2E5C 0%, #3B5998 100%);
             z-index: -1;
             pointer-events: none;
+            overflow: hidden;
         }
-        .particle {
+
+        .road-line {
             position: absolute;
-            background: rgba(251, 191, 36, 0.3);
-            border-radius: 50%;
-            animation: float 10s infinite ease-in-out;
+            width: 4px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            left: 50%;
+            transform: translateX(-50%);
+            animation: moveDown 2s linear infinite;
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20vh); }
+
+        @keyframes moveDown {
+            0% { top: -20px; opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { top: 100vh; opacity: 0; }
         }
-        header {
-            background: #FFFFFF;
-            padding: 15px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-        }
-        .logo {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 1.5rem;
-            color: #1E3A8A;
-        }
-        .nav-menu a {
-            color: #1E3A8A;
-            margin-left: 20px;
-            text-decoration: none;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 400;
-            transition: color 0.3s ease;
-        }
-        .nav-menu a:hover {
-            color: #FBBF24;
-        }
+
+        /* Booking Section */
         .booking-container {
-            max-width: 900px;
-            width: 100%;
-            margin: 40px auto;
+            max-width: 1100px;
+            margin: 80px auto;
+            padding: 0 15px;
         }
+
         .booking-card {
-            background: #FFFFFF;
-            border-radius: 10px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            padding: 30px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
             position: relative;
             z-index: 1;
         }
+
         .user-info-card {
-            background: #1E3A8A;
-            color: #FFFFFF;
-            border-radius: 8px;
-            padding: 15px 20px;
-            margin-bottom: 25px;
+            background: #16507b;
+            color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
         }
+
         .user-info-card h5 {
-            font-family: 'Poppins', sans-serif;
+            font-family: "Raleway", sans-serif;
             font-weight: 600;
             margin: 0;
         }
+
         .btn-logout {
-            background: #FBBF24;
+            background: #2487ce;
             border: none;
-            padding: 8px 15px;
-            color: #1E3A8A;
-            font-size: 0.9rem;
-            transition: background 0.3s ease;
+            padding: 10px 20px;
+            color: #fff;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 600;
+            border-radius: 6px;
+            transition: transform 0.3s ease, background 0.3s ease;
         }
+
         .btn-logout:hover {
-            background: #EAA923;
+            background: #3194db;
+            transform: scale(1.05);
         }
+
         h2 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            color: #1E3A8A;
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .form-label {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 400;
-            color: #1E3A8A;
-            margin-bottom: 5px;
-        }
-        .form-control, .form-select {
-            border-radius: 6px;
-            border: 1px solid #D1D5DB;
-            padding: 12px 15px;
-            font-family: 'Roboto', sans-serif;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: #FBBF24;
-            box-shadow: 0 0 5px rgba(251, 191, 36, 0.5);
-        }
-        .input-group-text {
-            background: #1E3A8A;
-            color: #FFFFFF;
-            border: none;
-            border-radius: 6px 0 0 6px;
-            padding: 12px;
-        }
-        .btn-primary {
-            background: #FBBF24;
-            border: none;
-            border-radius: 6px;
-            padding: 12px 20px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            color: #1E3A8A;
-            transition: background 0.3s ease;
-        }
-        .btn-primary:hover {
-            background: #EAA923;
-        }
-        .category-selection {
+            font-family: "Raleway", sans-serif;
+            font-weight: 700;
+            color: #16507b;
             text-align: center;
             margin-bottom: 30px;
         }
-        .category-card {
-            display: inline-block;
-            background: #FFFFFF;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 10px;
-            width: 200px;
-            cursor: pointer;
-            border: 2px solid #D1D5DB;
-            transition: border-color 0.3s ease, transform 0.3s ease;
+
+        .form-label {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 500;
+            color: #16507b;
+            margin-bottom: 8px;
         }
-        .category-card:hover, .category-card.selected {
-            border-color: #FBBF24;
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            padding: 12px 15px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #2487ce;
+            box-shadow: 0 0 8px rgba(36, 135, 206, 0.4);
+        }
+
+        .input-group-text {
+            background: #16507b;
+            color: #fff;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            padding: 12px;
+        }
+
+        .btn-primary {
+            background: #2487ce;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 25px;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 600;
+            color: #fff;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #3194db;
             transform: scale(1.05);
         }
+
+        /* Category Selection */
+        .category-selection {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        #categories {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 10px 0;
+            padding-left: 40px;
+            justify-content: flex-start;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-card {
+            flex: 0 0 285px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            cursor: pointer;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-card:hover, .category-card.selected {
+            border-color: #2487ce;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(36, 135, 206, 0.2);
+        }
+
+        .category-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
         .category-card h4 {
-            font-family: 'Poppins', sans-serif;
+            font-family: "Montserrat", sans-serif;
             font-weight: 600;
-            color: #1E3A8A;
+            color: #16507b;
+            margin: 10px 0 5px;
+        }
+
+        .category-card p {
+            font-size: 0.95rem;
+            color: #666;
             margin: 0;
         }
-        .category-card p {
-            font-size: 0.9rem;
-            color: #666;
-        }
+
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -187,154 +325,140 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 100;
             justify-content: center;
             align-items: center;
         }
+
         .modal-content {
-            background: #FFFFFF;
-            border-radius: 10px;
-            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            padding: 25px;
             width: 90%;
-            max-width: 600px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            max-width: 650px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
+
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #D1D5DB;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
         }
+
         .modal-header h3 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            color: #1E3A8A;
+            font-family: "Raleway", sans-serif;
+            font-weight: 700;
+            color: #16507b;
             margin: 0;
         }
+
         .close-btn {
             background: none;
             border: none;
-            font-size: 1.5rem;
-            color: #1E3A8A;
+            font-size: 1.8rem;
+            color: #16507b;
             cursor: pointer;
         }
+
         .modal-body p {
-            margin: 5px 0;
-            font-family: 'Roboto', sans-serif;
+            margin: 8px 0;
+            font-family: "Open Sans", sans-serif;
         }
+
         .modal-body strong {
-            color: #1E3A8A;
+            color: #16507b;
         }
+
         .modal-footer {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
+            margin-top: 25px;
         }
-        .btn-print {
-            background: #FBBF24;
+
+        .btn-print, .btn-close-modal {
+            background: #2487ce;
             border: none;
-            border-radius: 6px;
-            padding: 10px 20px;
-            font-family: 'Poppins', sans-serif;
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-family: "Montserrat", sans-serif;
             font-weight: 600;
-            color: #1E3A8A;
+            color: #fff;
+            transition: transform 0.3s ease, background 0.3s ease;
         }
-        .btn-print:hover {
-            background: #EAA923;
+
+        .btn-print:hover, .btn-close-modal:hover {
+            background: #3194db;
+            transform: scale(1.05);
         }
-        .btn-close-modal {
-            background: #1E3A8A;
-            border: none;
-            border-radius: 6px;
-            padding: 10px 20px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            color: #FFFFFF;
-        }
-        .btn-close-modal:hover {
-            background: #162E6F;
-        }
-        .blur-background {
-            filter: blur(5px);
-            transition: filter 0.3s ease;
-        }
+
+        /* Notification */
         .notification {
             position: fixed;
-            top: 20px;
+            top: 50px;
             left: 50%;
-            transform: translateX(-50%);
-            padding: 15px 20px;
-            border-radius: 6px;
-            color: #FFF;
+            transform: translateX(-70%);
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: #fff;
             z-index: 200;
             display: none;
-            max-width: 500px; /* Increased width for better visibility */
+            max-width: 550px;
             width: 90%;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            text-align: center;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            font-family: "Open Sans", sans-serif;
         }
-        .notification.success { background: #28A745; }
-        .notification.error { background: #DC3545; }
-        .notification.warning { background: #FFC107; color: #333; }
-        .notification.info { background: #17A2B8; }
-        .status-notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 15px 20px;
-            border-radius: 6px;
-            color: #FFF;
-            z-index: 200;
-            display: none;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
-        .status-notification.success { background: #28A745; }
-        .status-notification.error { background: #DC3545; }
+
+        .notification.success { background: #28a745; }
+        .notification.error { background: #dc3545; }
+        .notification.warning { background: #2487ce; }
+        .notification.info { background: #3b5998; }
+
+        /* Footer */
         footer {
-            background: #FFFFFF;
-            padding: 20px 0;
+            background: #fff;
+            padding: 25px 0;
             text-align: center;
-            color: #1E3A8A;
+            color: #16507b;
             position: relative;
             z-index: 1;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
         }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+
         .social-links a {
-            color: #1E3A8A;
-            margin: 0 10px;
-            font-size: 1.2rem;
+            color: #16507b;
+            margin: 0 15px;
+            font-size: 1.4rem;
             transition: color 0.3s ease;
         }
+
         .social-links a:hover {
-            color: #FBBF24;
+            color: #2487ce;
         }
     </style>
 </head>
 <body>
     <!-- Background Animation -->
-    <div id="particles"></div>
+    <div id="road-animation"></div>
 
-    <!-- Header -->
-    <header>
-        <div class="header-container">
-            <div class="logo">Mega City Cab</div>
-            <nav class="nav-menu">
-                <a href="#">Home</a>
-                <a href="#">Book Now</a>
-                <a href="#">Services</a>
-                <a href="#">Contact</a>
+    <!-- Header (Copied from help.html) -->
+    <header id="header" class="fixed-top">
+        <div class="container d-flex align-items-center justify-content-between">
+            <h1 class="logo"><a href="index.html">Mega City Cab</a></h1>
+            <nav id="navbar" class="navbar">
+                <ul>
+                    <li><a class="nav-link scrollto" href="#hero">Home</a></li>
+                    <li><a class="nav-link scrollto" href="#about">About</a></li>
+                    <li><a class="nav-link scrollto" href="#services">Services</a></li>
+                    <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+                    <li><a class="nav-link scrollto" href="help.html">Help</a></li>
+                    <li><a class="nav-link scrollto" href="user-profile.html">Profile</a></li>
+                    <li><a class="getstarted scrollto" href="register-login.html">Login</a></li>
+                </ul>
+                <i class="bi bi-list mobile-nav-toggle"></i>
             </nav>
         </div>
     </header>
@@ -465,7 +589,7 @@
         </div>
     </div>
 
-    <!-- Status Notification Modal for Customer (Admin Actions) -->
+    <!-- Status Notification Modal -->
     <div class="modal" id="statusNotificationModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -487,7 +611,7 @@
 
     <!-- Footer -->
     <footer>
-        <div class="footer-container">
+        <div class="container">
             <p>Contact us: +1-800-CAB-RIDE | support@megacitycab.com</p>
             <div class="social-links mt-2">
                 <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -501,27 +625,44 @@
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
-        // Particle Animation
-        const particleContainer = document.getElementById('particles');
-        for (let i = 0; i < 20; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            particle.style.width = `${Math.random() * 10 + 5}px`;
-            particle.style.height = particle.style.width;
-            particle.style.left = `${Math.random() * 100}vw`;
-            particle.style.top = `${Math.random() * 100}vh`;
-            particle.style.animationDuration = `${Math.random() * 5 + 5}s`;
-            particle.style.animationDelay = `${Math.random() * 5}s`;
-            particleContainer.appendChild(particle);
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Road Line Animation
+        const roadContainer = document.getElementById('road-animation');
+        for (let i = 0; i < 5; i++) {
+            const line = document.createElement('div');
+            line.classList.add('road-line');
+            line.style.top = `${Math.random() * -100}px`;
+            line.style.animationDelay = `${Math.random() * 2}s`;
+            roadContainer.appendChild(line);
         }
 
         // Global Variables
         let selectedCategoryName = null;
 
-        // Authentication Check
+        // Authentication Check and Header Login/Logout Logic (Copied from help.html)
         document.addEventListener('DOMContentLoaded', function () {
             const loggedInUser = sessionStorage.getItem('loggedInUser');
+            const loginButton = document.querySelector('.getstarted');
+
+            if (loggedInUser) {
+                loginButton.textContent = 'Logout';
+                loginButton.href = '#';
+                loginButton.onclick = function () {
+                    sessionStorage.removeItem('loggedInUser');
+                    window.location.href = 'index.html';
+                };
+            } else {
+                loginButton.textContent = 'Login';
+                loginButton.href = 'register-login.html';
+            }
+
             if (!loggedInUser) {
                 showNotification('Please login first!', 'error');
                 setTimeout(() => window.location.href = 'register-login.html', 2000);
@@ -531,14 +672,14 @@
             $('#usernameDisplay').text(user.username);
             loadCategories();
             checkNotifications(user.userId);
-            pollForBookingUpdates(user.userId); // Start polling for booking status updates
+            pollForBookingUpdates(user.userId);
         });
 
-        // Logout Handler
-        $('#logoutBtn').click(function () {
-            sessionStorage.removeItem('loggedInUser');
-            showNotification('Logged out successfully!', 'success');
-            setTimeout(() => window.location.href = 'index.html', 2000);
+        // Button Bounce Effect (Add to all buttons)
+        $(document).ready(function () {
+            $('.btn-logout, .btn-primary, .btn-print, .btn-close-modal').on('click', function () {
+                $(this).addClass('active');
+            });
         });
 
         // Load Categories
@@ -551,13 +692,16 @@
                     categoriesDiv.empty();
                     const categoryArray = Array.isArray(categories) ? categories : [categories];
                     categoryArray.forEach(category => {
+                        const imageUrl = category.imagePath ? category.imagePath : "default-image.jpg";
                         categoriesDiv.append(`
                             <div class="category-card" data-category-name="${category.categoryName}">
+                                <img src="${imageUrl}" alt="${category.categoryName}" class="category-image">
                                 <h4>${category.categoryName}</h4>
                                 <p>${category.description}</p>
                             </div>
                         `);
                     });
+
                     $('.category-card').click(function () {
                         $('.category-card').removeClass('selected');
                         $(this).addClass('selected');
@@ -674,7 +818,7 @@
                 const discount = 0;
                 const tax = (baseFare + distanceFare + passengerFare) * 0.1;
                 const totalFare = baseFare + distanceFare + passengerFare + tax - discount;
-                return { baseFare, distanceFare, passengerFare, discount, tax, totalFare };
+                return {baseFare, distanceFare, passengerFare, discount, tax, totalFare};
             }
             return null;
         }
@@ -696,7 +840,8 @@
             const passengers = parseInt($('#numPassengers').val());
             const dateTime = $('#dateTime').val();
 
-            if (!validateForm(pickup, dropoff, car, driver, passengers, dateTime)) return;
+            if (!validateForm(pickup, dropoff, car, driver, passengers, dateTime))
+                return;
 
             const billing = calculateBilling();
             if (!billing) {
@@ -727,13 +872,11 @@
                     console.log('Booking response:', response);
                     let bookingId = response.bookingId || response.id;
 
-                    // If bookingId is not in response body, try extracting from Location header or fetch latest booking
                     if (!bookingId) {
                         const locationHeader = jqXHR.getResponseHeader('Location');
                         if (locationHeader) {
-                            bookingId = locationHeader.split('/').pop(); // e.g., /bookings/2 -> 2
+                            bookingId = locationHeader.split('/').pop();
                         } else {
-                            // Fallback: Fetch the latest booking for this user
                             $.ajax({
                                 url: `http://localhost:8080/CABSERVICE/api/bookings?userId=${user.userId}`,
                                 method: "GET",
@@ -855,11 +998,11 @@
             printWindow.print();
         });
 
-        // Notification System (Updated for Top Center and 5-Second Display)
+        // Notification System
         function showNotification(message, type) {
             const notification = $('#notification');
             notification.text(message).removeClass('success error warning info').addClass(type).fadeIn();
-            setTimeout(() => notification.fadeOut(), 5000); // Increased to 5 seconds
+            setTimeout(() => notification.fadeOut(), 5000);
         }
 
         function sendNotification(userId, message, type) {
@@ -867,7 +1010,7 @@
                 url: "http://localhost:8080/CABSERVICE/api/notifications",
                 method: "POST",
                 contentType: "application/json",
-                data: JSON.stringify({ userId, message, type, isRead: false }),
+                data: JSON.stringify({userId, message, type, isRead: false}),
                 error: function (xhr) {
                     console.error('Notification error:', xhr);
                     console.log('Failed to send notification');
@@ -914,7 +1057,7 @@
             });
         }
 
-        // Show Status Notification Modal for Customer
+        // Show Status Notification Modal
         function showStatusNotification(message, type, adminComment) {
             $('#statusMessage').text(message);
             $('#adminComment').text(adminComment);
@@ -941,7 +1084,6 @@
                             if (booking.alert_sent) {
                                 const message = `Your booking (ID: ${booking.bookingId}) has been ${booking.status.toLowerCase()}.`;
                                 showStatusNotification(message, 'booking', booking.admin_comment || 'No comment');
-                                // Optionally mark notification as read in backend (not implemented here)
                             }
                         });
                     },
@@ -950,7 +1092,7 @@
                         console.log('Failed to poll booking updates');
                     }
                 });
-            }, 5000); // Poll every 5 seconds
+            }, 5000);
         }
 
         // Form Validation

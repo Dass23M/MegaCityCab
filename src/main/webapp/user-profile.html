@@ -384,45 +384,69 @@
 
             // Fetch and display user profile
             $.ajax({
-                url: `http://localhost:8080/CABSERVICE/api/users/${loggedInUser.user_id}`,
+                url: `http://localhost:8080/CABSERVICE/api/users/${loggedInUser.user_id || loggedInUser.userId}`,
                 type: "GET",
                 success: function (user) {
                     $("#userName").text(user.username);
                     $("#profileName").text(user.username);
                     $("#profileEmail").text(user.email);
-                    $("#profilePhone").text(user.phone);
-                    $("#profileAddress").text(user.address);
-                    $("#profileNIC").text(user.nic);
+                    $("#profilePhone").text(user.phone || 'Not provided');
+                    $("#profileAddress").text(user.address || 'Not provided');
+                    $("#profileNIC").text(user.nic || 'Not provided');
                 },
                 error: function (xhr) {
                     alert("Failed to load profile: " + (xhr.responseJSON?.message || "Unknown error"));
                 }
             });
 
-            // Fetch and display booking history for this user only
+            // Fetch and display booking history with admin confirmation and comments
             $.ajax({
-                url: `http://localhost:8080/CABSERVICE/api/bookings?userId=${loggedInUser.user_id}`,
+                url: `http://localhost:8080/CABSERVICE/api/bookings?userId=${loggedInUser.user_id || loggedInUser.userId}`,
                 type: "GET",
                 success: function (bookings) {
                     const bookingList = $("#bookingList");
                     bookingList.empty();
-                    if (bookings.length === 0) {
+
+                    const bookingArray = Array.isArray(bookings) ? bookings : [bookings];
+                    if (bookingArray.length === 0) {
                         bookingList.append("<p>No bookings found.</p>");
                     } else {
-                        bookings.forEach(booking => {
-                            bookingList.append(`
-                                <div class="booking-card" data-aos="fade-up" data-aos-delay="100">
-                                    <h5><i class="fas fa-map-marker-alt"></i> Booking ID: ${booking.bookingId}</h5>
-                                    <p><strong>Pickup:</strong> ${booking.pickUpStation}</p>
-                                    <p><strong>Dropoff:</strong> ${booking.dropOffStation}</p>
-                                    <p><strong>Date:</strong> ${new Date(booking.dateTime).toLocaleString()}</p>
-                                    <p><strong>Passengers:</strong> ${booking.numPassengers}</p>
-                                    <p><strong>Car Model:</strong> ${booking.carModel}</p>
-                                    <p><strong>Driver:</strong> ${booking.driverName || 'Not Assigned'}</p>
-                                    <p><strong>Status:</strong> ${booking.status}</p>
-                                </div>
-                            `);
-                        });
+                        // Fetch car details to get make and model
+                        $.get("http://localhost:8080/CABSERVICE/api/cars")
+                            .then(cars => {
+                                const carArray = Array.isArray(cars) ? cars : [cars];
+                                // Fetch driver details to get name
+                                $.get("http://localhost:8080/CABSERVICE/api/drivers")
+                                    .then(drivers => {
+                                        const driverArray = Array.isArray(drivers) ? drivers : [drivers];
+                                        bookingArray.forEach(booking => {
+                                            const car = carArray.find(c => c.carId === booking.carId);
+                                            const driver = driverArray.find(d => d.driverId === (car ? car.driverId : null));
+                                            const carModel = car ? `${car.make} ${car.model}` : 'Unknown Vehicle';
+                                            const driverName = driver ? driver.name : 'Not Assigned';
+
+                                            bookingList.append(`
+                                                <div class="booking-card" data-aos="fade-up" data-aos-delay="100">
+                                                    <h5><i class="fas fa-map-marker-alt"></i> Booking ID: ${booking.bookingId}</h5>
+                                                    <p><strong>Pickup:</strong> ${booking.pickUpStation}</p>
+                                                    <p><strong>Dropoff:</strong> ${booking.dropOffStation}</p>
+                                                    <p><strong>Date:</strong> ${new Date(booking.dateTime).toLocaleString()}</p>
+                                                    <p><strong>Passengers:</strong> ${booking.numPassengers}</p>
+                                                    <p><strong>Car Model:</strong> ${carModel}</p>
+                                                    <p><strong>Driver:</strong> ${driverName}</p>
+                                                    <p><strong>Status:</strong> ${booking.status}</p>
+                                                    ${booking.admin_comment ? `<p><strong>Admin Comment:</strong> ${booking.admin_comment}</p>` : ''}
+                                                </div>
+                                            `);
+                                        });
+                                    })
+                                    .fail(() => {
+                                        bookingList.html("<p>Failed to load driver details for bookings.</p>");
+                                    });
+                            })
+                            .fail(() => {
+                                bookingList.html("<p>Failed to load car details for bookings.</p>");
+                            });
                     }
                 },
                 error: function (xhr) {

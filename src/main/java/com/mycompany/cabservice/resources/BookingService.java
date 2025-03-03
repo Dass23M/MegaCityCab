@@ -15,6 +15,7 @@ import db.DBUtils;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.List;
 
 @Path("bookings")
@@ -34,22 +35,38 @@ public class BookingService {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBooking(@PathParam("id") int id) {
-        Booking booking = dbUtils.getBooking(id);
-        if (booking == null) {
-            return Response.status(404).build();
+        try {
+            Booking booking = dbUtils.getBooking(id);
+            if (booking == null) {
+                return Response.status(404).build();
+            }
+            return Response.status(200).entity(gson.toJson(booking)).build();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Response.status(500).build();
         }
-        return Response.status(200).entity(gson.toJson(booking)).build();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON) // Added to return JSON response
     public Response addBooking(String json) {
         Booking booking = gson.fromJson(json, Booking.class);
-        boolean result = dbUtils.addBooking(booking);
-        if (result) {
-            return Response.status(201).build();
+        try {
+            int bookingId = dbUtils.addBookingAndGetId(booking); // New method to get ID
+            if (bookingId > 0) {
+                booking.setBookingId(bookingId); // Set the ID in the Booking object
+                return Response
+                        .status(201)
+                        .entity(gson.toJson(booking)) // Return the full booking object with ID
+                        .header("Location", "/bookings/" + bookingId) // Optional: Add Location header
+                        .build();
+            }
+            return Response.status(500).build();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Response.status(500).build();
         }
-        return Response.status(500).build();
     }
 
     @PUT

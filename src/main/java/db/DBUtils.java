@@ -309,18 +309,16 @@ public class DBUtils {
     ////////////////////////////////////////////////////
     // BOOKING //
     /////////////////////////////////////////////////////
-     // Retrieve all bookings
-  // =================== Booking Methods ===================
-
     // Retrieve all bookings
+    // =================== Booking Methods ===================
     public List<Booking> getBookings() {
         List<Booking> bookings = new ArrayList<>();
         String query = "SELECT * FROM bookings";
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+
+        try (Connection conn = getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+
             while (rs.next()) {
-                Booking booking = new Booking(
+                bookings.add(new Booking(
                         rs.getInt("booking_id"),
                         rs.getInt("user_id"),
                         rs.getString("pick_up_station"),
@@ -328,16 +326,15 @@ public class DBUtils {
                         rs.getDouble("distance"),
                         rs.getString("date_time"),
                         rs.getInt("num_passengers"),
-                        rs.getString("car_model"),
-                        rs.getString("driver_name"),
-                        rs.getString("category_name"),
+                        rs.getInt("car_id"),
+                        rs.getInt("driver_id"), // Added driver_id
+                        rs.getInt("category_id"),
                         rs.getString("status"),
                         rs.getBoolean("alert_sent"),
                         rs.getString("admin_comment"),
-                        rs.getTimestamp("created_at"),
-                        rs.getTimestamp("updated_at")
-                );
-                bookings.add(booking);
+                        rs.getString("created_at"),
+                        rs.getString("updated_at")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -345,13 +342,12 @@ public class DBUtils {
         return bookings;
     }
 
-    // Retrieve a booking by ID
-    public Booking getBooking(int bookingId) {
+    public Booking getBooking(int bookingId) throws SQLException {
         String query = "SELECT * FROM bookings WHERE booking_id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, bookingId);
             ResultSet rs = pstmt.executeQuery();
+
             if (rs.next()) {
                 return new Booking(
                         rs.getInt("booking_id"),
@@ -361,64 +357,73 @@ public class DBUtils {
                         rs.getDouble("distance"),
                         rs.getString("date_time"),
                         rs.getInt("num_passengers"),
-                        rs.getString("car_model"),
-                        rs.getString("driver_name"),
-                        rs.getString("category_name"),
+                        rs.getInt("car_id"),
+                        rs.getInt("driver_id"), // Added driver_id
+                        rs.getInt("category_id"),
                         rs.getString("status"),
                         rs.getBoolean("alert_sent"),
                         rs.getString("admin_comment"),
-                        rs.getTimestamp("created_at"),
-                        rs.getTimestamp("updated_at")
+                        rs.getString("created_at"),
+                        rs.getString("updated_at")
                 );
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return null;
     }
 
-    // Add a new booking
-    public boolean addBooking(Booking booking) {
-        String query = "INSERT INTO bookings (user_id, pick_up_station, drop_off_station, distance, date_time, num_passengers, car_model, driver_name, category_name, status, alert_sent, admin_comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+    public int addBookingAndGetId(Booking booking) throws SQLException {
+        String query = "INSERT INTO bookings (user_id, pick_up_station, drop_off_station, distance, date_time, "
+                + "num_passengers, car_id, driver_id, category_id, status, alert_sent, admin_comment) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+
             pstmt.setInt(1, booking.getUserId());
             pstmt.setString(2, booking.getPickUpStation());
             pstmt.setString(3, booking.getDropOffStation());
             pstmt.setDouble(4, booking.getDistance());
             pstmt.setString(5, booking.getDateTime());
             pstmt.setInt(6, booking.getNumPassengers());
-            pstmt.setString(7, booking.getCarModel());
-            pstmt.setString(8, booking.getDriverName());
-            pstmt.setString(9, booking.getCategoryName());
+            pstmt.setInt(7, booking.getCarId());
+            pstmt.setInt(8, booking.getDriverId()); // Added driver_id
+            pstmt.setInt(9, booking.getCategoryId());
             pstmt.setString(10, booking.getStatus());
             pstmt.setBoolean(11, booking.isAlertSent());
             pstmt.setString(12, booking.getAdminComment());
-            return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                }
+            }
+            return -1;
         }
-        return false;
     }
 
-    // Update an existing booking
     public boolean updateBooking(Booking booking) {
-        String query = "UPDATE bookings SET user_id = ?, pick_up_station = ?, drop_off_station = ?, distance = ?, date_time = ?, num_passengers = ?, car_model = ?, driver_name = ?, category_name = ?, status = ?, alert_sent = ?, admin_comment = ? WHERE booking_id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        String query = "UPDATE bookings SET user_id = ?, pick_up_station = ?, drop_off_station = ?, "
+                + "distance = ?, date_time = ?, num_passengers = ?, car_id = ?, driver_id = ?, category_id = ?, "
+                + "status = ?, alert_sent = ?, admin_comment = ? WHERE booking_id = ?";
+
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+
             pstmt.setInt(1, booking.getUserId());
             pstmt.setString(2, booking.getPickUpStation());
             pstmt.setString(3, booking.getDropOffStation());
             pstmt.setDouble(4, booking.getDistance());
             pstmt.setString(5, booking.getDateTime());
             pstmt.setInt(6, booking.getNumPassengers());
-            pstmt.setString(7, booking.getCarModel());
-            pstmt.setString(8, booking.getDriverName());
-            pstmt.setString(9, booking.getCategoryName());
+            pstmt.setInt(7, booking.getCarId());
+            pstmt.setInt(8, booking.getDriverId()); // Added driver_id
+            pstmt.setInt(9, booking.getCategoryId());
             pstmt.setString(10, booking.getStatus());
             pstmt.setBoolean(11, booking.isAlertSent());
             pstmt.setString(12, booking.getAdminComment());
             pstmt.setInt(13, booking.getBookingId());
+
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -426,11 +431,9 @@ public class DBUtils {
         return false;
     }
 
-    // Delete a booking
     public boolean deleteBooking(int bookingId) {
         String query = "DELETE FROM bookings WHERE booking_id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, bookingId);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -439,60 +442,59 @@ public class DBUtils {
         return false;
     }
 
-
     ///////////////////////////////////////////////
     //////////////// CAR ///////////////////////
     ////////////////////////////////////////////////
-    
     // Retrieve all cars
+    // Get all cars
     public List<Car> getCars() {
         List<Car> cars = new ArrayList<>();
         String query = "SELECT * FROM cars";
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+
+        try (Connection conn = getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+
             while (rs.next()) {
-                Car car = new Car();
-                car.setCarId(rs.getInt("car_id"));
-                car.setMake(rs.getString("make"));
-                car.setModel(rs.getString("model"));
-                car.setLicensePlate(rs.getString("license_plate"));
-                car.setCapacity(rs.getInt("capacity"));
-                car.setBaseFare(rs.getDouble("base_fare"));
-                car.setPricePerKm(rs.getDouble("price_per_km"));
-                car.setCategoryId(rs.getInt("category_id"));
-                car.setStatus(rs.getString("status"));
-                car.setCreatedAt(rs.getTimestamp("created_at"));
-                car.setUpdatedAt(rs.getTimestamp("updated_at"));
-                cars.add(car);
+                cars.add(new Car(
+                        rs.getInt("car_id"),
+                        rs.getString("make"),
+                        rs.getString("model"),
+                        rs.getString("license_plate"),
+                        rs.getInt("capacity"),
+                        rs.getDouble("base_fare"),
+                        rs.getDouble("price_per_km"),
+                        rs.getInt("category_id"),
+                        rs.getInt("driver_id"),
+                        rs.getString("status")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return cars;
     }
 
-    // Retrieve a single car by ID
+    // Get a single car by ID
     public Car getCar(int carId) throws SQLException {
         String query = "SELECT * FROM cars WHERE car_id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+
             pstmt.setInt(1, carId);
             ResultSet rs = pstmt.executeQuery();
+
             if (rs.next()) {
-                Car car = new Car();
-                car.setCarId(rs.getInt("car_id"));
-                car.setMake(rs.getString("make"));
-                car.setModel(rs.getString("model"));
-                car.setLicensePlate(rs.getString("license_plate"));
-                car.setCapacity(rs.getInt("capacity"));
-                car.setBaseFare(rs.getDouble("base_fare"));
-                car.setPricePerKm(rs.getDouble("price_per_km"));
-                car.setCategoryId(rs.getInt("category_id"));
-                car.setStatus(rs.getString("status"));
-                car.setCreatedAt(rs.getTimestamp("created_at"));
-                car.setUpdatedAt(rs.getTimestamp("updated_at"));
-                return car;
+                return new Car(
+                        rs.getInt("car_id"),
+                        rs.getString("make"),
+                        rs.getString("model"),
+                        rs.getString("license_plate"),
+                        rs.getInt("capacity"),
+                        rs.getDouble("base_fare"),
+                        rs.getDouble("price_per_km"),
+                        rs.getInt("category_id"),
+                        rs.getInt("driver_id"),
+                        rs.getString("status")
+                );
             }
         }
         return null;
@@ -500,9 +502,10 @@ public class DBUtils {
 
     // Add a new car
     public boolean addCar(Car car) {
-        String query = "INSERT INTO cars (make, model, license_plate, capacity, base_fare, price_per_km, category_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        String query = "INSERT INTO cars (make, model, license_plate, capacity, base_fare, price_per_km, category_id, driver_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+
             pstmt.setString(1, car.getMake());
             pstmt.setString(2, car.getModel());
             pstmt.setString(3, car.getLicensePlate());
@@ -510,19 +513,23 @@ public class DBUtils {
             pstmt.setDouble(5, car.getBaseFare());
             pstmt.setDouble(6, car.getPricePerKm());
             pstmt.setInt(7, car.getCategoryId());
-            pstmt.setString(8, car.getStatus());
+            pstmt.setInt(8, car.getDriverId());
+            pstmt.setString(9, car.getStatus());
+
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return false;
     }
 
     // Update an existing car
     public boolean updateCar(Car car) {
-        String query = "UPDATE cars SET make = ?, model = ?, license_plate = ?, capacity = ?, base_fare = ?, price_per_km = ?, category_id = ?, status = ? WHERE car_id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        String query = "UPDATE cars SET make = ?, model = ?, license_plate = ?, capacity = ?, base_fare = ?, price_per_km = ?, category_id = ?, driver_id = ?, status = ? WHERE car_id = ?";
+
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+
             pstmt.setString(1, car.getMake());
             pstmt.setString(2, car.getModel());
             pstmt.setString(3, car.getLicensePlate());
@@ -530,29 +537,32 @@ public class DBUtils {
             pstmt.setDouble(5, car.getBaseFare());
             pstmt.setDouble(6, car.getPricePerKm());
             pstmt.setInt(7, car.getCategoryId());
-            pstmt.setString(8, car.getStatus());
-            pstmt.setInt(9, car.getCarId());
+            pstmt.setInt(8, car.getDriverId());
+            pstmt.setString(9, car.getStatus());
+            pstmt.setInt(10, car.getCarId());
+
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return false;
     }
 
     // Delete a car
     public boolean deleteCar(int carId) {
         String query = "DELETE FROM cars WHERE car_id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+
             pstmt.setInt(1, carId);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return false;
     }
-
-
 
     ////////////////////////////////////////////////////////////////////
     /////////////////// DRIVER /////////////////////////////////
@@ -846,23 +856,16 @@ public class DBUtils {
 
         return false;
     }
-    
-    
-    //////////////////////////////////////////////
-    
-    //////////////               /////////////////
-    
-    //////////////////////////////////////////////
-    
-          // =================== Category Methods ===================
 
+    //////////////////////////////////////////////
+    //////////////               /////////////////
+    //////////////////////////////////////////////
+    // =================== Category Methods ===================
     // Get all categories
     public List<Categories> getCategories() {
         List<Categories> categoriesList = new ArrayList<>();
         String query = "SELECT * FROM categories";
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+        try (Connection conn = getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 Categories category = new Categories(
                         rs.getInt("category_id"),
@@ -881,8 +884,7 @@ public class DBUtils {
     // Get a single category by ID
     public Categories getCategory(int categoryId) {
         String query = "SELECT * FROM categories WHERE category_id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, categoryId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -902,8 +904,7 @@ public class DBUtils {
     // Add a new category
     public boolean addCategory(Categories category) {
         String query = "INSERT INTO categories (category_name, description, image_path) VALUES (?, ?, ?)";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, category.getCategoryName());
             pstmt.setString(2, category.getDescription());
             pstmt.setString(3, category.getImagePath());
@@ -917,8 +918,7 @@ public class DBUtils {
     // Update an existing category
     public boolean updateCategory(Categories category) {
         String query = "UPDATE categories SET category_name = ?, description = ?, image_path = ? WHERE category_id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, category.getCategoryName());
             pstmt.setString(2, category.getDescription());
             pstmt.setString(3, category.getImagePath());
@@ -933,8 +933,7 @@ public class DBUtils {
     // Delete a category
     public boolean deleteCategory(int categoryId) {
         String query = "DELETE FROM categories WHERE category_id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, categoryId);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -943,15 +942,12 @@ public class DBUtils {
         return false;
     }
 
-  // ================= Notification Methods =================
-    
+    // ================= Notification Methods =================
     // Retrieve all notifications
     public List<Notifications> getNotifications() {
         List<Notifications> notifications = new ArrayList<>();
         String query = "SELECT * FROM notifications";
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+        try (Connection conn = getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 Notifications notification = new Notifications(
                         rs.getInt("notification_id"),
@@ -974,8 +970,7 @@ public class DBUtils {
     public List<Notifications> getNotificationsByUserId(int userId) {
         List<Notifications> notifications = new ArrayList<>();
         String query = "SELECT * FROM notifications WHERE user_id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -999,8 +994,7 @@ public class DBUtils {
     // Get a single notification by ID
     public Notifications getNotification(int notificationId) {
         String query = "SELECT * FROM notifications WHERE notification_id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, notificationId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -1023,8 +1017,7 @@ public class DBUtils {
     // Add a new notification
     public boolean addNotification(Notifications notification) {
         String query = "INSERT INTO notifications (user_id, booking_id, message, type, is_read) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, notification.getUserId());
             pstmt.setInt(2, notification.getBookingId());
             pstmt.setString(3, notification.getMessage());
@@ -1040,8 +1033,7 @@ public class DBUtils {
     // Update an existing notification (e.g., mark as read)
     public boolean updateNotification(Notifications notification) {
         String query = "UPDATE notifications SET user_id = ?, booking_id = ?, message = ?, type = ?, is_read = ? WHERE notification_id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, notification.getUserId());
             pstmt.setInt(2, notification.getBookingId());
             pstmt.setString(3, notification.getMessage());
@@ -1058,8 +1050,7 @@ public class DBUtils {
     // Delete a notification
     public boolean deleteNotification(int notificationId) {
         String query = "DELETE FROM notifications WHERE notification_id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, notificationId);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -1067,6 +1058,5 @@ public class DBUtils {
         }
         return false;
     }
-    
 
 }

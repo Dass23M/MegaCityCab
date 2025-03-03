@@ -916,6 +916,7 @@
         // Global Variables
         let selectedCategoryId = null;
         let selectedCarId = null;
+        let selectedDriverId = null; // New variable to store driverId
         let selectedDriverName = null;
         let bookingData = null;
         let billingData = null;
@@ -923,19 +924,19 @@
         // Sample vehicle images for three categories (replace with actual API data or URLs)
         const vehicleImages = {
             "Economy": [
-                "https://via.placeholder.com/200x150?text=Economy+Car+1",
-                "https://via.placeholder.com/200x150?text=Economy+Car+2",
-                "https://via.placeholder.com/200x150?text=Economy+Car+3"
+                "https://w7.pngwing.com/pngs/659/799/png-transparent-suzuki-ertiga-maruti-suzuki-car-suzuki-compact-car-sedan-car-thumbnail.png",
+                "https://img.favpng.com/22/9/13/suzuki-wagon-r-car-suzuki-mr-wagon-maruti-png-favpng-Sx5BQb0cxfQA0bKefCzML3ekq.jpg",
+                "https://img.favpng.com/11/6/24/suzuki-alto-suzuki-lapin-car-suzuki-mehran-png-favpng-NnV6KHfRxPYTWbc8L9Ev73NNB.jpg"
             ],
             "Luxury": [
-                "https://via.placeholder.com/200x150?text=Luxury+Car+1",
-                "https://via.placeholder.com/200x150?text=Luxury+Car+2",
-                "https://via.placeholder.com/200x150?text=Luxury+Car+3"
+                "https://www.bmw.lk/content/dam/bmw/common/all-models/3-series/sedan/2021/navigation/bmw-3-series-modellfinder.png",
+                "https://d2ivfcfbdvj3sm.cloudfront.net/7fc965ab77efe6e0fa62e4ca1ea7673bb25f44570f1e3d8e88cb10/stills_0640_png/MY2022/15564/15564_st0640_116.png",
+                "https://www.mercedes-benz.co.za/content/dam/hq/passengercars/cars/c-class/c-class-saloon-w206-pi/modeloverview/06-2022/images/mercedes-benz-c-class-w206-modeloverview-696x392-06-2022.png"
             ],
             "Family": [
-                "https://via.placeholder.com/200x150?text=SUV+1",
-                "https://via.placeholder.com/200x150?text=SUV+2",
-                "https://via.placeholder.com/200x150?text=SUV+3"
+                "https://w7.pngwing.com/pngs/967/873/png-transparent-2018-toyota-corolla-2017-toyota-corolla-toyota-corolla-altis-car-electric-car-compact-car-sedan-car-accident.png",
+                "https://w7.pngwing.com/pngs/551/109/png-transparent-2018-mitsubishi-outlander-mitsubishi-motors-2017-mitsubishi-outlander-car-mitsubishi-compact-car-car-vehicle.png",
+                "https://www.pngfind.com/pngs/m/103-1039993_background-png-download-toyota-prius-c-transparent-png.png"
             ]
         };
 
@@ -1037,8 +1038,6 @@
         $('#closeVehicleImagesModal').click(function () {
             $('#vehicleImagesModal').hide();
         });
-
-        // Rest of your existing JavaScript functions...
 
         // Logout Button
         $('#logoutBtn').click(function () {
@@ -1145,15 +1144,15 @@
             });
         }
 
-        // Auto-Display Driver When Car is Selected
+        // Auto-Display Driver When Car is Selected and Store Driver ID
         $('#carSelect').change(function () {
             const selectedCar = $(this).find(':selected');
-            const driverId = selectedCar.data('driver-id');
             selectedCarId = selectedCar.val();
+            selectedDriverId = selectedCar.data('driver-id'); // Store driverId globally
 
-            if (driverId) {
+            if (selectedDriverId) {
                 $.ajax({
-                    url: `http://localhost:8080/CABSERVICE/api/drivers/${driverId}`,
+                    url: `http://localhost:8080/CABSERVICE/api/drivers/${selectedDriverId}`,
                     method: "GET",
                     success: function (driver) {
                         selectedDriverName = driver.name + ' (' + driver.licenseNumber + ')';
@@ -1166,6 +1165,7 @@
                 });
             } else {
                 $('#driverDisplay').val('');
+                selectedDriverId = null; // Reset if no driver
             }
             calculateBilling();
             checkVehicleAvailability();
@@ -1302,6 +1302,7 @@
                         dateTime: dateTime.replace('T', ' ') + ':00',
                         numPassengers: passengers,
                         carId: parseInt(selectedCarId),
+                        driverId: parseInt(selectedDriverId), // Include driverId in bookingData
                         categoryId: selectedCategoryId,
                         status: 'Pending',
                         alertSent: false
@@ -1509,7 +1510,7 @@
                 showNotification(`Selected vehicle can only accommodate ${car.data('capacity')} passengers!`, 'warning');
                 return false;
             }
-            if (!$('#driverDisplay').val()) {
+            if (!$('#driverDisplay').val() || !selectedDriverId) {
                 showNotification('No driver assigned to the selected vehicle!', 'warning');
                 return false;
             }

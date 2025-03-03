@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega City Cab Service - Customer Management</title>
+    <title>Mega City Cab Service - Driver Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -109,7 +109,7 @@
             padding: 15px;
             border-radius: 8px;
             width: 90%;
-            max-width: 500px;
+            max-width: 450px;
             max-height: 80vh;
             overflow-y: auto;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
@@ -225,56 +225,51 @@
                 <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         <div class="content">
-            <h1><i class="fas fa-users"></i> Customer Management</h1>
+            <h1><i class="fas fa-user-tie"></i> Driver Management</h1>
             <div class="card">
-                <h2><i class="fas fa-users"></i> Customer List</h2>
-                <button class="btn btn-add" onclick="showAddUserModal()">Add New Customer</button>
+                <h2><i class="fas fa-user-tie"></i> Driver List</h2>
+                <button class="btn btn-add" onclick="showAddDriverModal()">Add New Driver</button>
                 <table class="table">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Username</th>
-                            <th>Email</th>
+                            <th>Name</th>
+                            <th>License Number</th>
                             <th>Phone</th>
-                            <th>Address</th>
-                            <th>NIC</th>
-                            <th>Role</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="userTable"></tbody>
+                    <tbody id="driverTable"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="userModal">
+    <div class="modal" id="driverModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="userModalTitle"></h3>
-                <button class="close-btn" id="closeUserModal">×</button>
+                <h3 id="driverModalTitle"></h3>
+                <button class="close-btn" id="closeDriverModal">×</button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="userId">
-                <label for="username">Username:</label>
-                <input type="text" id="username" required>
-                <label for="email">Email:</label>
-                <input type="email" id="email" required>
+                <input type="hidden" id="driverId">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+                <label for="licenseNumber">License Number:</label>
+                <input type="text" id="licenseNumber" required>
                 <label for="phone">Phone:</label>
                 <input type="text" id="phone" required>
-                <label for="address">Address:</label>
-                <input type="text" id="address" required>
-                <label for="nic">NIC:</label>
-                <input type="text" id="nic" required>
-                <label for="role">Role:</label>
-                <select id="role" required>
-                    <option value="customer">Customer</option>
-                    <option value="admin">Admin</option>
+                <label for="status">Status:</label>
+                <select id="status" required>
+                    <option value="Available">Available</option>
+                    <option value="Busy">Busy</option>
+                    <option value="Off Duty">Off Duty</option>
                 </select>
             </div>
             <div style="display: flex; justify-content: space-between; margin-top: 15px;">
-                <button class="btn btn-approve" id="saveUser">Save</button>
-                <button class="btn btn-cancel" id="cancelUser">Cancel</button>
+                <button class="btn btn-approve" id="saveDriver">Save</button>
+                <button class="btn btn-cancel" id="cancelDriver">Cancel</button>
             </div>
         </div>
     </div>
@@ -303,7 +298,7 @@
                 setTimeout(() => window.location.href = 'register-login.html', 2000);
                 return;
             }
-            loadUserManagement();
+            loadDriverManagement();
             showNotification('Welcome to Mega City Cab Colombo!', 'success');
         });
 
@@ -313,116 +308,108 @@
             setTimeout(() => window.location.href = 'index.html', 2000);
         });
 
-        function loadUserManagement() {
-            loadUsers();
+        function loadDriverManagement() {
+            loadDrivers();
         }
 
-        function loadUsers() {
-            $.get("http://localhost:8080/CABSERVICE/api/users", { cache: false })
-                .done(users => {
-                    const userArray = Array.isArray(users) ? users : [users];
-                    const table = $('#userTable').empty();
-                    userArray.forEach(user => {
+        function loadDrivers() {
+            $.get("http://localhost:8080/CABSERVICE/api/drivers", { cache: false })
+                .done(drivers => {
+                    const driverArray = Array.isArray(drivers) ? drivers : [drivers];
+                    const table = $('#driverTable').empty();
+                    driverArray.forEach(driver => {
                         table.append(`
                             <tr>
-                                <td>${user.userId}</td>
-                                <td>${user.username}</td>
-                                <td>${user.email}</td>
-                                <td>${user.phone}</td>
-                                <td>${user.address}</td>
-                                <td>${user.nic}</td>
-                                <td>${user.role}</td>
+                                <td>${driver.driverId}</td>
+                                <td>${driver.name}</td>
+                                <td>${driver.licenseNumber}</td>
+                                <td>${driver.phone}</td>
+                                <td>${driver.status}</td>
                                 <td>
-                                    <button class="btn btn-edit" onclick="showEditUserModal(${user.userId})">Edit</button>
-                                    <button class="btn btn-delete" onclick="showDeleteConfirmation(${user.userId})">Delete</button>
+                                    <button class="btn btn-edit" onclick="showEditDriverModal(${driver.driverId})">Edit</button>
+                                    <button class="btn btn-delete" onclick="showDeleteConfirmation(${driver.driverId})">Delete</button>
                                 </td>
                             </tr>
                         `);
                     });
                 })
-                .fail(() => showNotification('Failed to load users!', 'error'));
+                .fail(() => showNotification('Failed to load drivers!', 'error'));
         }
 
-        function showAddUserModal() {
-            $('#userModalTitle').text('Add New Customer');
-            $('#userId').val('');
-            $('#username').val('');
-            $('#email').val('');
+        function showAddDriverModal() {
+            $('#driverModalTitle').text('Add New Driver');
+            $('#driverId').val('');
+            $('#name').val('');
+            $('#licenseNumber').val('');
             $('#phone').val('');
-            $('#address').val('');
-            $('#nic').val('');
-            $('#role').val('customer');
-            $('#userModal').css('display', 'flex');
+            $('#status').val('Available');
+            $('#driverModal').css('display', 'flex');
 
-            $('#saveUser').off('click').on('click', saveUser);
-            $('#cancelUser, #closeUserModal').off('click').on('click', () => $('#userModal').hide());
+            $('#saveDriver').off('click').on('click', saveDriver);
+            $('#cancelDriver, #closeDriverModal').off('click').on('click', () => $('#driverModal').hide());
         }
 
-        function showEditUserModal(userId) {
-            $('#userModalTitle').text('Edit Customer');
-            $('#userModal').css('display', 'flex');
+        function showEditDriverModal(driverId) {
+            $('#driverModalTitle').text('Edit Driver');
+            $('#driverModal').css('display', 'flex');
 
-            $.get(`http://localhost:8080/CABSERVICE/api/users/${userId}`).then(user => {
-                $('#userId').val(user.userId);
-                $('#username').val(user.username);
-                $('#email').val(user.email);
-                $('#phone').val(user.phone);
-                $('#address').val(user.address);
-                $('#nic').val(user.nic);
-                $('#role').val(user.role);
+            $.get(`http://localhost:8080/CABSERVICE/api/drivers/${driverId}`).then(driver => {
+                $('#driverId').val(driver.driverId);
+                $('#name').val(driver.name);
+                $('#licenseNumber').val(driver.licenseNumber);
+                $('#phone').val(driver.phone);
+                $('#status').val(driver.status);
             });
 
-            $('#saveUser').off('click').on('click', saveUser);
-            $('#cancelUser, #closeUserModal').off('click').on('click', () => $('#userModal').hide());
+            $('#saveDriver').off('click').on('click', saveDriver);
+            $('#cancelDriver, #closeDriverModal').off('click').on('click', () => $('#driverModal').hide());
         }
 
-        function saveUser() {
-            const user = {
-                userId: $('#userId').val() ? parseInt($('#userId').val()) : null,
-                username: $('#username').val(),
-                email: $('#email').val(),
+        function saveDriver() {
+            const driver = {
+                driverId: $('#driverId').val() ? parseInt($('#driverId').val()) : null,
+                name: $('#name').val(),
+                licenseNumber: $('#licenseNumber').val(),
                 phone: $('#phone').val(),
-                address: $('#address').val(),
-                nic: $('#nic').val(),
-                role: $('#role').val()
+                status: $('#status').val()
             };
 
-            const method = user.userId ? 'PUT' : 'POST';
-            const url = user.userId ? `http://localhost:8080/CABSERVICE/api/users` : `http://localhost:8080/CABSERVICE/api/users`;
+            const method = driver.driverId ? 'PUT' : 'POST';
+            const url = driver.driverId ? `http://localhost:8080/CABSERVICE/api/drivers` : `http://localhost:8080/CABSERVICE/api/drivers`;
 
             $.ajax({
                 url: url,
                 method: method,
                 contentType: "application/json",
-                data: JSON.stringify(user),
+                data: JSON.stringify(driver),
                 success: () => {
-                    showNotification(`Customer ${user.userId ? 'updated' : 'added'} successfully!`, 'success');
-                    loadUsers();
-                    $('#userModal').hide();
+                    showNotification(`Driver ${driver.driverId ? 'updated' : 'added'} successfully!`, 'success');
+                    loadDrivers();
+                    $('#driverModal').hide();
                 },
-                error: () => showNotification(`Failed to ${user.userId ? 'update' : 'add'} customer!`, 'error')
+                error: () => showNotification(`Failed to ${driver.driverId ? 'update' : 'add'} driver!`, 'error')
             });
         }
 
-        function showDeleteConfirmation(userId) {
-            $('#confirmationMessage').text(`Delete customer ID: ${userId}?`);
+        function showDeleteConfirmation(driverId) {
+            $('#confirmationMessage').text(`Delete driver ID: ${driverId}?`);
             $('#deleteConfirmation').css('display', 'flex');
             $('#confirmDelete').off('click').on('click', () => {
-                deleteUser(userId);
+                deleteDriver(driverId);
                 $('#deleteConfirmation').hide();
             });
             $('#cancelDelete').off('click').on('click', () => $('#deleteConfirmation').hide());
         }
 
-        function deleteUser(userId) {
+        function deleteDriver(driverId) {
             $.ajax({
-                url: `http://localhost:8080/CABSERVICE/api/users/${userId}`,
+                url: `http://localhost:8080/CABSERVICE/api/drivers/${driverId}`,
                 method: "DELETE",
                 success: () => {
-                    showNotification(`Customer ID ${userId} deleted successfully!`, 'success');
-                    loadUsers();
+                    showNotification(`Driver ID ${driverId} deleted successfully!`, 'success');
+                    loadDrivers();
                 },
-                error: () => showNotification('Failed to delete customer!', 'error')
+                error: () => showNotification('Failed to delete driver!', 'error')
             });
         }
 

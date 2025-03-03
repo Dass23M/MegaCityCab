@@ -2,141 +2,184 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Colombo Mega City Cab Service - Car Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega City Cab Service - Car Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(to bottom, #1a2a6c, #b21f1f, #fdbb2d);
-            background-image: url('https://images.pexels.com/photos/1203768/pexels-photo-1203768.jpeg?auto=compress&cs=tinysrgb&w=600');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            font-family: 'Roboto', sans-serif;
+            background: #f4f7fa;
             margin: 0;
-            padding: 20px;
-            color: #333;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        h1 {
-            color: #fff;
-            text-align: center;
-            font-size: 36px;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
         }
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        .sidebar {
+            width: 220px;
+            background: #fff;
+            padding: 15px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
         }
-        th, td {
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #1a2a6c;
-            color: white;
-        }
-        td {
-            background-color: rgba(249, 249, 249, 0.9);
-        }
-        tr:nth-child(even) td {
-            background-color: rgba(241, 241, 241, 0.9);
-        }
-        button {
-            background-color: #fdbb2d;
+        .sidebar h2 {
             color: #1a2a6c;
-            padding: 8px 16px;
-            margin: 4px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            font-weight: bold;
+            text-align: center;
+            margin: 15px 0 25px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
         }
-        button:hover {
-            background-color: #e6a626;
-        }
-        .edit-btn {
-            background-color: #2196F3;
-            color: white;
-        }
-        .edit-btn:hover {
-            background-color: #1976D2;
-        }
-        .delete-btn {
-            background-color: #b21f1f;
-            color: white;
-        }
-        .delete-btn:hover {
-            background-color: #961a1a;
-        }
-        .form-container, .update-form {
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            margin: 20px auto;
-            width: 450px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        .form-container input, .update-form input, .form-container select, .update-form select {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            box-sizing: border-box;
-            background-color: #fff;
-        }
-        .update-form input:disabled, .update-form select:disabled {
-            background-color: #f1f1f1;
-        }
-        .update-form {
-            display: none;
-        }
-        .cancel-btn {
-            background-color: #b21f1f;
-            color: white;
-        }
-        .cancel-btn:hover {
-            background-color: #961a1a;
-        }
-        /* Enhanced Notification Styles */
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 8px;
+        .sidebar a {
+            padding: 12px;
+            color: #1a2a6c;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            min-width: 300px;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            transition: background 0.2s;
+        }
+        .sidebar a:hover {
+            background: #ffd700;
+            color: #fff;
+        }
+        .sidebar a i {
+            margin-right: 8px;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        h1 {
+            color: #1a2a6c;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .card h2 {
+            font-family: 'Poppins', sans-serif;
+            color: #16507b;
+            margin-bottom: 15px;
+            font-size: 1.25rem;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .table th, .table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .table th {
+            background: #16507b;
+            color: #fff;
+            font-weight: 600;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
             z-index: 1000;
         }
-        .notification.success {
-            background-color: #28a745;
-            color: white;
-            border-left: 5px solid #218838;
+        .modal-content {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
-        .notification.error {
-            background-color: #dc3545;
-            color: white;
-            border-left: 5px solid #c82333;
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 10px;
         }
-        .notification i {
-            margin-right: 10px;
-            font-size: 18px;
+        .modal-header h3 {
+            font-family: 'Poppins', sans-serif;
+            color: #16507b;
+            margin: 0;
+            font-size: 1.2rem;
         }
-        .notification span {
-            flex-grow: 1;
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #16507b;
+            cursor: pointer;
         }
-        /* Confirmation Dialog Styles */
+        .modal-body label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #16507b;
+            font-weight: 600;
+        }
+        .modal-body input, .modal-body select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e5e7eb;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        .notification {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            min-width: 250px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1100;
+        }
+        .notification.success { background: #28a745; color: #fff; }
+        .notification.error { background: #dc3545; color: #fff; }
+        .notification i { margin-right: 8px; font-size: 1rem; }
+        .btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-add { background: #007bff; color: #fff; margin-bottom: 15px; }
+        .btn-approve { background: #28a745; color: #fff; }
+        .btn-cancel { background: #dc3545; color: #fff; }
+        .btn-edit { background: #ffc107; color: #fff; }
+        .btn-delete { background: #dc3545; color: #fff; }
+        .btn:hover { filter: brightness(90%); }
         .confirmation-overlay {
             display: none;
             position: fixed;
@@ -144,354 +187,305 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             justify-content: center;
             align-items: center;
-            z-index: 2000;
+            z-index: 1200;
         }
         .confirmation-box {
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 10px;
-            width: 400px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 350px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-        .confirmation-box h4 {
-            color: #b21f1f;
-            margin-bottom: 15px;
-        }
-        .confirmation-box p {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .confirmation-box .btn {
-            margin: 0 10px;
-            padding: 8px 20px;
-        }
-        .confirmation-box .btn-confirm {
-            background-color: #b21f1f;
-            color: white;
-        }
-        .confirmation-box .btn-confirm:hover {
-            background-color: #961a1a;
-        }
-        .confirmation-box .btn-cancel {
-            background-color: #6c757d;
-            color: white;
-        }
-        .confirmation-box .btn-cancel:hover {
-            background-color: #5a6268;
-        }
-        button i {
-            margin-right: 5px;
+        @media (max-width: 768px) {
+            .sidebar { width: 200px; }
+            .content { padding: 15px; }
+            .table { font-size: 0.85rem; }
+            .modal-content { width: 95%; }
+            .notification { 
+                min-width: 200px;
+                font-size: 0.9rem; 
+            }
         }
     </style>
 </head>
 <body>
-    <h1><i class="fas fa-taxi"></i> Colombo Mega City Cab Service - Car Management</h1>
-
-    <!-- Create Car Form -->
-    <div class="form-container" id="createForm">
-        <h3><i class="fas fa-plus"></i> Add New Vehicle</h3>
-        <input type="text" id="carMake" placeholder="Vehicle Make">
-        <input type="text" id="carModel" placeholder="Vehicle Model">
-        <input type="text" id="carLicensePlate" placeholder="License Plate">
-        <input type="number" id="carCapacity" placeholder="Passenger Capacity" min="1">
-        <input type="number" step="0.01" id="carBaseFare" placeholder="Base Fare (Rs)" min="0">
-        <input type="number" step="0.01" id="carPricePerKm" placeholder="Price per Km (Rs)" min="0">
-        <select id="carCategoryId">
-            <option value="">Select Service Category</option>
-            <!-- Categories will be populated here -->
-        </select>
-        <select id="carStatus">
-            <option value="Available">Available</option>
-            <option value="In Service">In Service</option>
-            <option value="Unavailable">Unavailable</option>
-        </select>
-        <button onclick="createCar()"><i class="fas fa-save"></i> Add Vehicle</button>
+        <div class="dashboard-container">
+            <div class="sidebar">
+                <h2><i class="fas fa-taxi"></i> Mega City Cab</h2>
+                <a href="Admin-Dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard Overview</a>
+                <a href="customer-management.html"><i class="fas fa-users"></i> Customer Management</a>
+                <a href="booking-management.html"><i class="fas fa-calendar-check"></i> Booking Management</a>
+                <a href="driver-management.html"><i class="fas fa-user-tie"></i> Driver Management</a>
+                <a href="car-management.html"><i class="fas fa-car"></i> Car Management</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        <div class="content">
+            <h1><i class="fas fa-car"></i> Car Management</h1>
+            <div class="card">
+                <h2><i class="fas fa-car"></i> Car List</h2>
+                <button class="btn btn-add" onclick="showAddCarModal()">Add New Car</button>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Make</th>
+                            <th>Model</th>
+                            <th>License Plate</th>
+                            <th>Capacity</th>
+                            <th>Base Fare</th>
+                            <th>Price/Km</th>
+                            <th>Category</th>
+                            <th>Driver</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="carTable"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <!-- Update Car Form -->
-    <div class="update-form" id="updateForm">
-        <h3><i class="fas fa-edit"></i> Edit Vehicle</h3>
-        <input type="text" id="updateCarId" disabled>
-        <input type="text" id="updateCarMake" placeholder="Vehicle Make">
-        <input type="text" id="updateCarModel" placeholder="Vehicle Model">
-        <input type="text" id="updateCarLicensePlate" placeholder="License Plate">
-        <input type="number" id="updateCarCapacity" placeholder="Passenger Capacity" min="1">
-        <input type="number" step="0.01" id="updateCarBaseFare" placeholder="Base Fare (Rs)" min="0">
-        <input type="number" step="0.01" id="updateCarPricePerKm" placeholder="Price per Km (Rs)" min="0">
-        <select id="updateCarCategoryId">
-            <option value="">Select Service Category</option>
-            <!-- Categories will be populated here -->
-        </select>
-        <select id="updateCarStatus">
-            <option value="Available">Available</option>
-            <option value="In Service">In Service</option>
-            <option value="Unavailable">Unavailable</option>
-        </select>
-        <button onclick="submitUpdate()"><i class="fas fa-save"></i> Update Vehicle</button>
-        <button class="cancel-btn" onclick="cancelUpdate()"><i class="fas fa-times"></i> Cancel</button>
+    <div class="modal" id="carModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="carModalTitle"></h3>
+                <button class="close-btn" id="closeCarModal">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="carId">
+                <label for="make">Make:</label>
+                <input type="text" id="make" required>
+                <label for="model">Model:</label>
+                <input type="text" id="model" required>
+                <label for="licensePlate">License Plate:</label>
+                <input type="text" id="licensePlate" required>
+                <label for="capacity">Capacity:</label>
+                <input type="number" id="capacity" min="1" required>
+                <label for="baseFare">Base Fare (Rs):</label>
+                <input type="number" id="baseFare" step="0.01" min="0" required>
+                <label for="pricePerKm">Price per Km (Rs):</label>
+                <input type="number" id="pricePerKm" step="0.01" min="0" required>
+                <label for="categoryId">Category:</label>
+                <select id="categoryId" required></select>
+                <label for="driverId">Driver:</label>
+                <select id="driverId" required></select>
+                <label for="status">Status:</label>
+                <select id="status" required>
+                    <option value="Available">Available</option>
+                    <option value="In Service">In Service</option>
+                    <option value="Out of Service">Out of Service</option>
+                </select>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                <button class="btn btn-approve" id="saveCar">Save</button>
+                <button class="btn btn-cancel" id="cancelCar">Cancel</button>
+            </div>
+        </div>
     </div>
 
-    <h3><i class="fas fa-list"></i> Vehicle Fleet</h3>
-    <table id="carsTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Make</th>
-                <th>Model</th>
-                <th>License Plate</th>
-                <th>Capacity</th>
-                <th>Base Fare</th>
-                <th>Price per Km</th>
-                <th>Category</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Car rows will be inserted here dynamically -->
-        </tbody>
-    </table>
+    <div class="confirmation-overlay" id="deleteConfirmation">
+        <div class="confirmation-box">
+            <h4><i class="fas fa-exclamation-triangle"></i> Confirm Deletion</h4>
+            <p id="confirmationMessage"></p>
+            <button class="btn btn-approve" id="confirmDelete">Yes</button>
+            <button class="btn btn-cancel" id="cancelDelete">No</button>
+        </div>
+    </div>
 
-    <!-- Notification -->
     <div class="notification" id="notification">
         <i id="notificationIcon"></i>
         <span id="notificationMessage"></span>
     </div>
 
-    <!-- Confirmation Dialog -->
-    <div class="confirmation-overlay" id="deleteConfirmation">
-        <div class="confirmation-box">
-            <h4><i class="fas fa-exclamation-triangle"></i> Confirm Vehicle Removal</h4>
-            <p id="confirmationMessage"></p>
-            <button class="btn btn-confirm" id="confirmDelete"><i class="fas fa-check"></i> Yes, Remove</button>
-            <button class="btn btn-cancel" id="cancelDelete"><i class="fas fa-times"></i> Cancel</button>
-        </div>
-    </div>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const carsApiUrl = 'http://localhost:8080/CABSERVICE/api/cars';
-        const categoriesApiUrl = 'http://localhost:8080/CABSERVICE/api/categories';
-        let categories = [];
-
-        // Load categories on page load
-        async function loadCategories() {
-            try {
-                const response = await fetch(categoriesApiUrl);
-                if (!response.ok) throw new Error('Failed to fetch categories');
-                categories = await response.json();
-                const createSelect = document.getElementById('carCategoryId');
-                const updateSelect = document.getElementById('updateCarCategoryId');
-                createSelect.innerHTML = '<option value="">Select Service Category</option>';
-                updateSelect.innerHTML = '<option value="">Select Service Category</option>';
-                categories.forEach(category => {
-                    const option = `<option value="${category.categoryId}">${category.categoryName}</option>`;
-                    createSelect.innerHTML += option;
-                    updateSelect.innerHTML += option;
-                });
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-                showNotification('Failed to load service categories!', 'error');
-            }
-        }
-
-        // Function to fetch and display all cars
-        async function getCars() {
-            try {
-                const response = await fetch(carsApiUrl);
-                if (!response.ok) throw new Error('Failed to fetch vehicles');
-                const cars = await response.json();
-                const tableBody = document.querySelector('#carsTable tbody');
-                tableBody.innerHTML = '';
-                cars.forEach(car => {
-                    const category = categories.find(cat => cat.categoryId === car.categoryId);
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${car.carId}</td>
-                        <td>${car.make}</td>
-                        <td>${car.model}</td>
-                        <td>${car.licensePlate}</td>
-                        <td>${car.capacity}</td>
-                        <td>Rs ${car.baseFare.toFixed(2)}</td>
-                        <td>Rs ${car.pricePerKm.toFixed(2)}</td>
-                        <td>${category ? category.categoryName : 'Unknown'}</td>
-                        <td>${car.status}</td>
-                        <td>
-                            <button class="edit-btn" onclick="editCar(${car.carId}, '${car.make}', '${car.model}', '${car.licensePlate}', ${car.capacity}, ${car.baseFare}, ${car.pricePerKm}, ${car.categoryId}, '${car.status}')">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="delete-btn" onclick="showDeleteConfirmation(${car.carId})">
-                                <i class="fas fa-trash"></i> Remove
-                            </button>
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Error fetching vehicles:', error);
-                showNotification('Failed to load vehicle fleet!', 'error');
-            }
-        }
-
-        // Function to create a new car
-        async function createCar() {
-            const make = document.getElementById('carMake').value.trim();
-            const model = document.getElementById('carModel').value.trim();
-            const licensePlate = document.getElementById('carLicensePlate').value.trim();
-            const capacity = parseInt(document.getElementById('carCapacity').value);
-            const baseFare = parseFloat(document.getElementById('carBaseFare').value);
-            const pricePerKm = parseFloat(document.getElementById('carPricePerKm').value);
-            const categoryId = parseInt(document.getElementById('carCategoryId').value);
-            const status = document.getElementById('carStatus').value;
-
-            if (!make || !model || !licensePlate || isNaN(capacity) || isNaN(baseFare) || 
-                isNaN(pricePerKm) || isNaN(categoryId) || !status) {
-                showNotification('Please fill in all fields with valid values!', 'error');
+        $(document).ready(function () {
+            const loggedInUser = sessionStorage.getItem('loggedInUser');
+            if (!loggedInUser || JSON.parse(loggedInUser).role !== 'admin') {
+                showNotification('Please login as an admin!', 'error');
+                setTimeout(() => window.location.href = 'register-login.html', 2000);
                 return;
             }
-
-            const newCar = { make, model, licensePlate, capacity, baseFare, pricePerKm, categoryId, status };
-
-            try {
-                const response = await fetch(carsApiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newCar)
-                });
-                if (!response.ok) throw new Error('Failed to add vehicle');
-                showNotification('Vehicle added successfully!', 'success');
-                getCars();
-                clearCreateForm();
-            } catch (error) {
-                console.error('Error adding vehicle:', error);
-                showNotification('Failed to add vehicle!', 'error');
-            }
-        }
-
-        function clearCreateForm() {
-            document.getElementById('carMake').value = '';
-            document.getElementById('carModel').value = '';
-            document.getElementById('carLicensePlate').value = '';
-            document.getElementById('carCapacity').value = '';
-            document.getElementById('carBaseFare').value = '';
-            document.getElementById('carPricePerKm').value = '';
-            document.getElementById('carCategoryId').value = '';
-            document.getElementById('carStatus').value = 'Available';
-        }
-
-        // Function to show the update form with prefilled values
-        function editCar(carId, make, model, licensePlate, capacity, baseFare, pricePerKm, categoryId, status) {
-            document.getElementById('updateCarId').value = carId;
-            document.getElementById('updateCarMake').value = make;
-            document.getElementById('updateCarModel').value = model;
-            document.getElementById('updateCarLicensePlate').value = licensePlate;
-            document.getElementById('updateCarCapacity').value = capacity;
-            document.getElementById('updateCarBaseFare').value = baseFare;
-            document.getElementById('updateCarPricePerKm').value = pricePerKm;
-            document.getElementById('updateCarCategoryId').value = categoryId;
-            document.getElementById('updateCarStatus').value = status;
-            document.getElementById('updateForm').style.display = 'block';
-        }
-
-        // Function to submit the updated car data
-        async function submitUpdate() {
-            const carId = document.getElementById('updateCarId').value;
-            const make = document.getElementById('updateCarMake').value.trim();
-            const model = document.getElementById('updateCarModel').value.trim();
-            const licensePlate = document.getElementById('updateCarLicensePlate').value.trim();
-            const capacity = parseInt(document.getElementById('updateCarCapacity').value);
-            const baseFare = parseFloat(document.getElementById('updateCarBaseFare').value);
-            const pricePerKm = parseFloat(document.getElementById('updateCarPricePerKm').value);
-            const categoryId = parseInt(document.getElementById('updateCarCategoryId').value);
-            const status = document.getElementById('updateCarStatus').value;
-
-            if (!make || !model || !licensePlate || isNaN(capacity) || isNaN(baseFare) || 
-                isNaN(pricePerKm) || isNaN(categoryId) || !status) {
-                showNotification('Please fill in all fields with valid values!', 'error');
-                return;
-            }
-
-            const updatedCar = { carId: parseInt(carId), make, model, licensePlate, capacity, baseFare, pricePerKm, categoryId, status };
-
-            try {
-                const response = await fetch(carsApiUrl, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(updatedCar)
-                });
-                if (!response.ok) throw new Error('Failed to update vehicle');
-                showNotification('Vehicle updated successfully!', 'success');
-                getCars();
-                cancelUpdate();
-            } catch (error) {
-                console.error('Error updating vehicle:', error);
-                showNotification('Failed to update vehicle!', 'error');
-            }
-        }
-
-        // Function to cancel update and hide the update form
-        function cancelUpdate() {
-            document.getElementById('updateForm').style.display = 'none';
-        }
-
-        // Function to show delete confirmation dialog
-        function showDeleteConfirmation(carId) {
-            document.getElementById('confirmationMessage').textContent = `Are you sure you want to remove Vehicle ID: ${carId}?`;
-            document.getElementById('deleteConfirmation').style.display = 'flex';
-            document.getElementById('confirmDelete').onclick = async () => {
-                await deleteCar(carId);
-                document.getElementById('deleteConfirmation').style.display = 'none';
-            };
-            document.getElementById('cancelDelete').onclick = () => {
-                document.getElementById('deleteConfirmation').style.display = 'none';
-            };
-        }
-
-        // Function to delete a car
-        async function deleteCar(carId) {
-            try {
-                const response = await fetch(`${carsApiUrl}/${carId}`, {
-                    method: 'DELETE'
-                });
-                if (!response.ok) throw new Error('Failed to remove vehicle');
-                showNotification('Vehicle removed successfully!', 'success');
-                getCars();
-            } catch (error) {
-                console.error('Error removing vehicle:', error);
-                showNotification('Failed to remove vehicle!', 'error');
-            }
-        }
-
-        // Notification function
-        function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            const icon = document.getElementById('notificationIcon');
-            const messageSpan = document.getElementById('notificationMessage');
-            
-            messageSpan.textContent = message;
-            notification.classList.remove('success', 'error');
-            notification.classList.add(type);
-            
-            if (type === 'success') {
-                icon.className = 'fas fa-check-circle';
-            } else {
-                icon.className = 'fas fa-times-circle';
-            }
-            
-            notification.style.opacity = '1';
-            setTimeout(() => {
-                notification.style.opacity = '0';
-            }, 3000);
-        }
-
-        // Load data when page loads
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadCategories();
-            getCars();
+            loadCarManagement();
+            showNotification('Welcome to Mega City Cab Colombo!', 'success');
         });
+
+        $('#logoutBtn').click(function () {
+            sessionStorage.removeItem('loggedInUser');
+            showNotification('Logged out successfully!', 'success');
+            setTimeout(() => window.location.href = 'index.html', 2000);
+        });
+
+        function loadCarManagement() {
+            loadCars();
+        }
+
+        function loadCars() {
+            $.get("http://localhost:8080/CABSERVICE/api/cars", { cache: false })
+                .done(cars => {
+                    const carArray = Array.isArray(cars) ? cars : [cars];
+                    const table = $('#carTable').empty();
+                    Promise.all([
+                        $.get("http://localhost:8080/CABSERVICE/api/categories"),
+                        $.get("http://localhost:8080/CABSERVICE/api/drivers")
+                    ]).then(([categories, drivers]) => {
+                        const categoryArray = Array.isArray(categories) ? categories : [categories];
+                        const driverArray = Array.isArray(drivers) ? drivers : [drivers];
+                        carArray.forEach(car => {
+                            const category = categoryArray.find(c => c.categoryId === car.categoryId);
+                            const driver = driverArray.find(d => d.driverId === car.driverId);
+                            table.append(`
+                                <tr>
+                                    <td>${car.carId}</td>
+                                    <td>${car.make}</td>
+                                    <td>${car.model}</td>
+                                    <td>${car.licensePlate}</td>
+                                    <td>${car.capacity}</td>
+                                    <td>Rs. ${car.baseFare.toFixed(2)}</td>
+                                    <td>Rs. ${car.pricePerKm.toFixed(2)}</td>
+                                    <td>${category ? category.categoryName : 'Unknown'}</td>
+                                    <td>${driver ? driver.name : 'Unassigned'}</td>
+                                    <td>${car.status}</td>
+                                    <td>
+                                        <button class="btn btn-edit" onclick="showEditCarModal(${car.carId})">Edit</button>
+                                        <button class="btn btn-delete" onclick="showDeleteConfirmation(${car.carId})">Delete</button>
+                                    </td>
+                                </tr>
+                            `);
+                        });
+                    });
+                })
+                .fail(() => showNotification('Failed to load cars!', 'error'));
+        }
+
+        function showAddCarModal() {
+            $('#carModalTitle').text('Add New Car');
+            $('#carId').val('');
+            $('#make').val('');
+            $('#model').val('');
+            $('#licensePlate').val('');
+            $('#capacity').val('');
+            $('#baseFare').val('');
+            $('#pricePerKm').val('');
+            $('#categoryId').empty();
+            $('#driverId').empty();
+            $('#status').val('Available');
+            $('#carModal').css('display', 'flex');
+
+            Promise.all([
+                $.get("http://localhost:8080/CABSERVICE/api/categories"),
+                $.get("http://localhost:8080/CABSERVICE/api/drivers")
+            ]).then(([categories, drivers]) => {
+                const categoryArray = Array.isArray(categories) ? categories : [categories];
+                const driverArray = Array.isArray(drivers) ? drivers : [drivers];
+                categoryArray.forEach(c => $('#categoryId').append(`<option value="${c.categoryId}">${c.categoryName}</option>`));
+                $('#driverId').append(`<option value="">Unassigned</option>`);
+                driverArray.forEach(d => $('#driverId').append(`<option value="${d.driverId}">${d.name}</option>`));
+            });
+
+            $('#saveCar').off('click').on('click', saveCar);
+            $('#cancelCar, #closeCarModal').off('click').on('click', () => $('#carModal').hide());
+        }
+
+        function showEditCarModal(carId) {
+            $('#carModalTitle').text('Edit Car');
+            $('#carModal').css('display', 'flex');
+
+            $.get(`http://localhost:8080/CABSERVICE/api/cars/${carId}`).then(car => {
+                $('#carId').val(car.carId);
+                $('#make').val(car.make);
+                $('#model').val(car.model);
+                $('#licensePlate').val(car.licensePlate);
+                $('#capacity').val(car.capacity);
+                $('#baseFare').val(car.baseFare);
+                $('#pricePerKm').val(car.pricePerKm);
+                $('#status').val(car.status);
+
+                Promise.all([
+                    $.get("http://localhost:8080/CABSERVICE/api/categories"),
+                    $.get("http://localhost:8080/CABSERVICE/api/drivers")
+                ]).then(([categories, drivers]) => {
+                    const categoryArray = Array.isArray(categories) ? categories : [categories];
+                    const driverArray = Array.isArray(drivers) ? drivers : [drivers];
+                    $('#categoryId').empty();
+                    $('#driverId').empty();
+                    categoryArray.forEach(c => $('#categoryId').append(`<option value="${c.categoryId}" ${c.categoryId === car.categoryId ? 'selected' : ''}>${c.categoryName}</option>`));
+                    $('#driverId').append(`<option value="" ${!car.driverId ? 'selected' : ''}>Unassigned</option>`);
+                    driverArray.forEach(d => $('#driverId').append(`<option value="${d.driverId}" ${d.driverId === car.driverId ? 'selected' : ''}>${d.name}</option>`));
+                });
+            });
+
+            $('#saveCar').off('click').on('click', saveCar);
+            $('#cancelCar, #closeCarModal').off('click').on('click', () => $('#carModal').hide());
+        }
+
+        function saveCar() {
+            const car = {
+                carId: $('#carId').val() ? parseInt($('#carId').val()) : null,
+                make: $('#make').val(),
+                model: $('#model').val(),
+                licensePlate: $('#licensePlate').val(),
+                capacity: parseInt($('#capacity').val()),
+                baseFare: parseFloat($('#baseFare').val()),
+                pricePerKm: parseFloat($('#pricePerKm').val()),
+                categoryId: parseInt($('#categoryId').val()),
+                driverId: $('#driverId').val() ? parseInt($('#driverId').val()) : null,
+                status: $('#status').val()
+            };
+
+            const method = car.carId ? 'PUT' : 'POST';
+            const url = car.carId ? `http://localhost:8080/CABSERVICE/api/cars` : `http://localhost:8080/CABSERVICE/api/cars`;
+
+            $.ajax({
+                url: url,
+                method: method,
+                contentType: "application/json",
+                data: JSON.stringify(car),
+                success: () => {
+                    showNotification(`Car ${car.carId ? 'updated' : 'added'} successfully!`, 'success');
+                    loadCars();
+                    $('#carModal').hide();
+                },
+                error: () => showNotification(`Failed to ${car.carId ? 'update' : 'add'} car!`, 'error')
+            });
+        }
+
+        function showDeleteConfirmation(carId) {
+            $('#confirmationMessage').text(`Delete car ID: ${carId}?`);
+            $('#deleteConfirmation').css('display', 'flex');
+            $('#confirmDelete').off('click').on('click', () => {
+                deleteCar(carId);
+                $('#deleteConfirmation').hide();
+            });
+            $('#cancelDelete').off('click').on('click', () => $('#deleteConfirmation').hide());
+        }
+
+        function deleteCar(carId) {
+            $.ajax({
+                url: `http://localhost:8080/CABSERVICE/api/cars/${carId}`,
+                method: "DELETE",
+                success: () => {
+                    showNotification(`Car ID ${carId} deleted successfully!`, 'success');
+                    loadCars();
+                },
+                error: () => showNotification('Failed to delete car!', 'error')
+            });
+        }
+
+        function showNotification(message, type) {
+            $('#notificationMessage').text(message);
+            $('#notification').removeClass('success error').addClass(type)
+                .css('opacity', '1');
+            $('#notificationIcon').removeClass('fa-check-circle fa-times-circle').addClass(type === 'success' ? 'fa-check-circle' : 'fa-times-circle');
+            setTimeout(() => $('#notification').css('opacity', '0'), 2500);
+        }
     </script>
 </body>
 </html>

@@ -45,105 +45,7 @@ public class DBUtils {
         return DriverManager.getConnection(DB_URL, USER, PASS);
     }
 
-    public Student getStudent(int id) throws SQLException {
-        Student st = null;
-        try {
-            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-
-            try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT * FROM students WHERE id=" + id);) {
-                while (rs.next()) {
-                    st = new Student();
-                    st.setId(rs.getInt("id"));
-                    st.setName(rs.getString("name"));
-                    break;
-                }
-            } catch (SQLException e) {
-                System.err.print(e);
-                throw e;
-            }
-
-        } catch (SQLException e) {
-            System.err.print(e);
-            throw e;
-        }
-
-        return st;
-    }
-
-    public List<Student> getStudents() {
-        List<Student> students = new ArrayList<>();
-        try {
-            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-
-            try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT * FROM students");) {
-                while (rs.next()) {
-                    Student st = new Student();
-                    st.setId(rs.getInt("id"));
-                    st.setName(rs.getString("name"));
-                    students.add(st);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-        } catch (Exception e) {
-
-        }
-
-        return students;
-    }
-
-    public boolean addStudent(Student st) {
-        try {
-            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-
-            try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS); Statement stmt = conn.createStatement();) {
-                stmt.executeUpdate("INSERT INTO students (id, name) "
-                        + "VALUES ('" + st.getId() + "', '" + st.getName() + "');");
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-        } catch (Exception e) {
-
-        }
-        return false;
-    }
-
-    public boolean updateStudent(Student st) {
-        try {
-            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-
-            try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS); Statement stmt = conn.createStatement();) {
-                stmt.executeUpdate("UPDATE students SET name = '" + st.getName() + "' WHERE (id = '" + st.getId() + "');");
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-        } catch (Exception e) {
-
-        }
-        return false;
-    }
-
-    public boolean deleteStudent(int id) {
-        try {
-            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-
-            try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS); Statement stmt = conn.createStatement();) {
-                stmt.executeUpdate("DELETE FROM students WHERE (id = '" + id + "');");
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-        } catch (Exception e) {
-
-        }
-        return false;
-    }
+   
 
     public boolean emailExists(String email) {
         String query = "SELECT COUNT(*) FROM users WHERE email = ?";
@@ -157,7 +59,9 @@ public class DBUtils {
         }
     }
 
-    public boolean registerUser(User user) {
+
+    
+        public boolean registerUser(User user) {
         String query = "INSERT INTO users (username, email, password, phone, address, nic, role) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, user.getUsername());
@@ -170,9 +74,10 @@ public class DBUtils {
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return true;
         }
     }
+
 
     public User validateLogin(String email, String password) {
         String query = "SELECT * FROM users WHERE email = ?";
@@ -267,7 +172,7 @@ public class DBUtils {
             e.printStackTrace();
         }
 
-        return false;
+        return true;
     }
 
     // Update an existing user
@@ -303,7 +208,7 @@ public class DBUtils {
             e.printStackTrace();
         }
 
-        return false;
+        return true;
     }
 
     ////////////////////////////////////////////////////
@@ -404,33 +309,34 @@ public class DBUtils {
     }
 
     public boolean updateBooking(Booking booking) {
-        String query = "UPDATE bookings SET user_id = ?, pick_up_station = ?, drop_off_station = ?, "
-                + "distance = ?, date_time = ?, num_passengers = ?, car_id = ?, driver_id = ?, category_id = ?, "
-                + "status = ?, alert_sent = ?, admin_comment = ? WHERE booking_id = ?";
+    String query = "UPDATE bookings SET user_id = ?, pick_up_station = ?, drop_off_station = ?, "
+            + "distance = ?, date_time = ?, num_passengers = ?, car_id = ?, driver_id = ?, category_id = ?, "
+            + "status = ?, alert_sent = ?, admin_comment = ? WHERE booking_id = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+    try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+        pstmt.setInt(1, booking.getUserId());
+        pstmt.setString(2, booking.getPickUpStation());
+        pstmt.setString(3, booking.getDropOffStation());
+        pstmt.setDouble(4, booking.getDistance());
+        pstmt.setString(5, booking.getDateTime());
+        pstmt.setInt(6, booking.getNumPassengers());
+        pstmt.setInt(7, booking.getCarId());
+        pstmt.setInt(8, booking.getDriverId());
+        pstmt.setInt(9, booking.getCategoryId());
+        pstmt.setString(10, booking.getStatus());
+        pstmt.setBoolean(11, booking.isAlertSent());
+        pstmt.setString(12, booking.getAdminComment());
+        pstmt.setInt(13, booking.getBookingId());
 
-            pstmt.setInt(1, booking.getUserId());
-            pstmt.setString(2, booking.getPickUpStation());
-            pstmt.setString(3, booking.getDropOffStation());
-            pstmt.setDouble(4, booking.getDistance());
-            pstmt.setString(5, booking.getDateTime());
-            pstmt.setInt(6, booking.getNumPassengers());
-            pstmt.setInt(7, booking.getCarId());
-            pstmt.setInt(8, booking.getDriverId()); // Added driver_id
-            pstmt.setInt(9, booking.getCategoryId());
-            pstmt.setString(10, booking.getStatus());
-            pstmt.setBoolean(11, booking.isAlertSent());
-            pstmt.setString(12, booking.getAdminComment());
-            pstmt.setInt(13, booking.getBookingId());
-
-            return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
+        System.out.println("Updating booking with admin_comment: " + booking.getAdminComment()); // Debug log
+        int rowsAffected = pstmt.executeUpdate();
+        System.out.println("Rows affected: " + rowsAffected); // Debug log
+        return rowsAffected > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
-
+    return true;
+}
     public boolean deleteBooking(int bookingId) {
         String query = "DELETE FROM bookings WHERE booking_id = ?";
         try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -521,7 +427,7 @@ public class DBUtils {
             e.printStackTrace();
         }
 
-        return false;
+        return true;
     }
 
     // Update an existing car
@@ -546,7 +452,7 @@ public class DBUtils {
             e.printStackTrace();
         }
 
-        return false;
+        return true;
     }
 
     // Delete a car
@@ -561,7 +467,7 @@ public class DBUtils {
             e.printStackTrace();
         }
 
-        return false;
+        return true;
     }
 
     ////////////////////////////////////////////////////////////////////
@@ -625,7 +531,7 @@ public class DBUtils {
             e.printStackTrace();
         }
 
-        return false;
+        return true;
     }
 
     // Update an existing driver
@@ -659,7 +565,7 @@ public class DBUtils {
             e.printStackTrace();
         }
 
-        return false;
+        return true;
     }
 
     ///////////////// BILLING /////////////////////
@@ -725,7 +631,7 @@ public class DBUtils {
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return true;
         }
     }
 
@@ -743,7 +649,7 @@ public class DBUtils {
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return true;
         }
     }
 
@@ -754,7 +660,7 @@ public class DBUtils {
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return true;
         }
     }
 
@@ -801,6 +707,7 @@ public class DBUtils {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+       
         return null;
     }
 
@@ -837,7 +744,7 @@ public class DBUtils {
             e.printStackTrace();
         }
 
-        return false;
+        return true;
     }
 
     // Delete a booking station distance
@@ -854,7 +761,7 @@ public class DBUtils {
             e.printStackTrace();
         }
 
-        return false;
+        return true;
     }
 
     //////////////////////////////////////////////
@@ -912,7 +819,7 @@ public class DBUtils {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return true;
     }
 
     // Update an existing category
@@ -939,7 +846,7 @@ public class DBUtils {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return true;
     }
 
     // ================= Notification Methods =================

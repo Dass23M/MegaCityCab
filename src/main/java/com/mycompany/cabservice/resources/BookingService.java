@@ -49,17 +49,17 @@ public class BookingService {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON) // Added to return JSON response
+    @Produces(MediaType.APPLICATION_JSON)
     public Response addBooking(String json) {
         Booking booking = gson.fromJson(json, Booking.class);
         try {
-            int bookingId = dbUtils.addBookingAndGetId(booking); // New method to get ID
+            int bookingId = dbUtils.addBookingAndGetId(booking);
             if (bookingId > 0) {
-                booking.setBookingId(bookingId); // Set the ID in the Booking object
+                booking.setBookingId(bookingId);
                 return Response
                         .status(201)
-                        .entity(gson.toJson(booking)) // Return the full booking object with ID
-                        .header("Location", "/bookings/" + bookingId) // Optional: Add Location header
+                        .entity(gson.toJson(booking))
+                        .header("Location", "/bookings/" + bookingId)
                         .build();
             }
             return Response.status(500).build();
@@ -71,13 +71,24 @@ public class BookingService {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON) // Added to return JSON response
     public Response updateBooking(String json) {
         Booking booking = gson.fromJson(json, Booking.class);
-        boolean result = dbUtils.updateBooking(booking);
-        if (result) {
-            return Response.status(200).build();
+        try {
+            boolean result = dbUtils.updateBooking(booking);
+            if (result) {
+                // Fetch the updated booking to return it
+                Booking updatedBooking = dbUtils.getBooking(booking.getBookingId());
+                if (updatedBooking != null) {
+                    return Response.status(200).entity(gson.toJson(updatedBooking)).build();
+                }
+                return Response.status(500).build();
+            }
+            return Response.status(500).build();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Response.status(500).build();
         }
-        return Response.status(500).build();
     }
 
     @DELETE

@@ -19,7 +19,7 @@ public class Booking {
     private String dateTime;
     private int numPassengers;
     private int carId;
-    private int driverId; // New field
+    private int driverId;
     private int categoryId;
     private String status;
     private boolean alertSent;
@@ -27,8 +27,9 @@ public class Booking {
     private String createdAt;
     private String updatedAt;
 
+    
     public Booking() {}
-    // Constructor updated to include driverId
+    // Constructor
     public Booking(int bookingId, int userId, String pickUpStation, String dropOffStation, double distance,
                    String dateTime, int numPassengers, int carId, int driverId, int categoryId, String status,
                    boolean alertSent, String adminComment, String createdAt, String updatedAt) {
@@ -40,7 +41,7 @@ public class Booking {
         this.dateTime = dateTime;
         this.numPassengers = numPassengers;
         this.carId = carId;
-        this.driverId = driverId; // Added
+        this.driverId = driverId;
         this.categoryId = categoryId;
         this.status = status;
         this.alertSent = alertSent;
@@ -49,7 +50,7 @@ public class Booking {
         this.updatedAt = updatedAt;
     }
 
-    // Getters and setters
+    // Getters and Setters
     public int getBookingId() { return bookingId; }
     public void setBookingId(int bookingId) { this.bookingId = bookingId; }
     public int getUserId() { return userId; }
@@ -66,8 +67,8 @@ public class Booking {
     public void setNumPassengers(int numPassengers) { this.numPassengers = numPassengers; }
     public int getCarId() { return carId; }
     public void setCarId(int carId) { this.carId = carId; }
-    public int getDriverId() { return driverId; } // Added getter
-    public void setDriverId(int driverId) { this.driverId = driverId; } // Added setter
+    public int getDriverId() { return driverId; }
+    public void setDriverId(int driverId) { this.driverId = driverId; }
     public int getCategoryId() { return categoryId; }
     public void setCategoryId(int categoryId) { this.categoryId = categoryId; }
     public String getStatus() { return status; }

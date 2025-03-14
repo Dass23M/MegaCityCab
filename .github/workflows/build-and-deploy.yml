@@ -1,0 +1,34 @@
+name: Build & Deploy Mega City Cab
+
+on:
+  push:
+    branches:
+      - main
+      - CabFrontend
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java environment
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Build the Backend
+        run: |
+          cd CABSERVICE
+          mvn clean package
+
+      - name: Run Backend Tests
+        run: |
+          cd CABSERVICE
+          mvn test
+
+      - name: Deploy to GlassFish Server
+        run: |
+          scp CABSERVICE/target/*.war user@your-server:/opt/glassfish/domains/domain1/autodeploy/

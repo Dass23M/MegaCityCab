@@ -359,7 +359,7 @@
                             </div>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                            <input type="password" id="regPassword" class="form-control" placeholder="Password" required>
+                                <input type="password" id="regPassword" class="form-control" placeholder="Password" required>
                             </div>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
@@ -433,7 +433,7 @@
             once: true
         });
 
-        // Function to show Bootstrap alert
+        // Function to show Bootstrap alert (no redirect by default)
         function showAlert(type, message, redirectUrl = null) {
             const alertContainer = $('#alertContainer');
             alertContainer.empty(); // Clear previous alerts
@@ -448,7 +448,7 @@
             
             alertContainer.append(alertHtml);
 
-            // Auto-dismiss after 2 seconds and redirect if provided
+            // Auto-dismiss after 2 seconds, only redirect if explicitly provided
             setTimeout(() => {
                 $('.alert').alert('close');
                 if (redirectUrl) {
@@ -478,8 +478,8 @@
                             role: response.role
                         }));
 
-                        showAlert('success', `Login Successful! Welcome back, ${response.username}!`, 
-                            response.role === 'customer' ? 'index.html' : 'Admin-Dashboard.html');
+                        const redirectUrl = response.role === 'customer' ? 'index.html' : 'Admin-Dashboard.html';
+                        showAlert('success', `Login Successful! Welcome back, ${response.username}!`, redirectUrl);
                     },
                     error: function(xhr) {
                         showAlert('danger', xhr.responseJSON ? xhr.responseJSON.message : 'Invalid credentials');
@@ -503,7 +503,7 @@
                     address: $("#regAddress").val(),
                     nic: $("#regNIC").val(),
                     role: $("#regRole").val(),
-                    password: $("#regPassword").val() // Fixed typo from previous version
+                    password: $("#regPassword").val()
                 };
 
                 $.ajax({
@@ -512,14 +512,23 @@
                     contentType: "application/json",
                     data: JSON.stringify(userData),
                     success: function(response) {
-                        sessionStorage.setItem('loggedInUser', JSON.stringify({
-                            user_id: response.userId,
-                            username: response.username,
-                            role: response.role
-                        }));
+                        // Use the username from the form input if response.username is undefined
+                        const displayUsername = response.username || userData.username;
 
-                        showAlert('success', `Registration Successful! Welcome aboard, ${response.username}!`, 
-                            response.role === 'customer' ? 'index.html' : 'Admin-Dashboard.html');
+                        // Show success message without redirecting
+                        showAlert('success', `Registration Successful! Welcome aboard, ${displayUsername}!`);
+                        
+                        // Switch to login tab after 2 seconds
+                        setTimeout(() => {
+                            $('#login-tab').tab('show');
+                            
+                            // Auto-fill login form with registered credentials
+                            $("#loginEmail").val(userData.email);
+                            $("#loginPassword").val(userData.password);
+
+                            // Clear registration form
+                            $("#registerForm")[0].reset();
+                        }, 2000);
                     },
                     error: function(xhr) {
                         showAlert('danger', xhr.responseJSON ? xhr.responseJSON.message : 'Something went wrong');

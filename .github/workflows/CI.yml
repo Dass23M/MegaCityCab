@@ -21,12 +21,12 @@ jobs:
 
       - name: Build the Backend
         run: |
-          cd main
+          cd CABSERVICE
           mvn clean package
 
       - name: Run Backend Tests
         run: |
-          cd main
+          cd CABSERVICE
           mvn test
 
       - name: Deploy to GlassFish Server
